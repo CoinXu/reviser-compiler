@@ -19,11 +19,11 @@
 + uint32
 + uint64
 
-## Data Structure
+## Data struct
 + struct
 + enum
 
-## Decorate
+## DECORATE
 + required
 + maxlength
 + minlength
@@ -38,13 +38,14 @@
 + extends
 
 # Identifier
-+ block start: `{`.
-+ block end: `}`;
-+ statement end: `;`. 
-+ decorate: Decorate.
-+ type: Data Types.
-+ structure: `struct` or `enum`.
-+ name: Characters only allow `a-z`, `A-Z`, `0-9`, `_`. Do not start with `0-9`. 
++ BLOCK_START: `{`.
++ BLOCK_END: `}`;
++ STATEMENT_END: `;`. 
++ STATEMENT_SEPARATOR: `,`
++ DECORATE: decorate.
++ TYPE: Data types or Data struct.
++ STRUCTURE: `struct` or `enum`.
++ NAME: Characters only allow `a-z`, `A-Z`, `0-9`, `_`. Do not start with `0-9`. 
 
 # Define description mark.
 + []: optional
@@ -53,7 +54,7 @@
 
 # statement format:
 ## 1. struct
-Format:  [decorate][<SPACE>](type)[<SPACE>](name)[<SPACE>][default](end)
+Format: [DECORATE][<SPACE>](TYPE)[<SPACE>](NAME)[<SPACE>][default](STATEMENT_END)
 
 Example:
 ```
@@ -62,16 +63,17 @@ bool bar true;
 float baz 1.0;
 ```
 ## 2. enum
-Format: (name)[<SPACE>]=[<SPACE>](int32 or string)
+Format: (NAME)[<SPACE>][=[<SPACE>](int32 or string)](STATEMENT_SEPARATOR)
 
 Example:
 ```
-foo = 1;
-bar = "bar";
+foo = 1,
+bar = "bar",
+baz
 ```
 
-## 3. Structure
-Format: (structure)<SPALCE>(name)(block start)[statement](block end);
+## 3. structure
+Format: (STRUCTURE)<SPACE>(NAME)(BLOCK_START)[statement](BLOCK_END)
 
 Example:
 ```
