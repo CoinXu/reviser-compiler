@@ -32,6 +32,8 @@ namespace tokenizer {
     int line;            // 行号
     int column_start;    // 列开始位置
     int column_end;      // 列结束位置
+    int pos_start;       // 全部字符中开始位置
+    int pos_end;         // 全部字符中结束位置
   };
 
   class Tokenizer {
@@ -47,19 +49,20 @@ namespace tokenizer {
 
     static const int cTabWidth = 8;
 
-    template<typename CharacterClass>
-    inline void consumeCharacters();
+    template<typename CharacterClass> inline void ConsumeCharacters();
+    template<typename CharacterClass> inline void TryConsumeCharacters();
 
   public:
     Tokenizer(std::string input);
     ~Tokenizer();
 
-    const Token& getCurrentToken();
-    const Token& getPreviousToken();
+    const Token& Current();
+    const Token& Previous();
 
-    void findNextToken();
-    void getNextChar();
-    bool getNextToken();
+    void Printf(const Token* token);
+    void PrintPoint(const std::string mark);
+    void NextChar();
+    bool Next();
   };
 } // tokenizer
 } // reviser

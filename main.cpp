@@ -43,16 +43,19 @@ int main(int args, char** argv) {
   is.read(buffer, length);
   is.close();
 
-  cout << "file [" << filename << "] content is:" << endl;
+  cout << "================ [" << filename << "] ================" << endl;
   cout.write(buffer, length);
-
+  cout << "================ [" << filename << "] ================" << endl;
+  
   delete buffer;
 
   // 转为string，传给Tokenizer
   string input(buffer);
 
   Tokenizer* tokenizer = new Tokenizer(input);
-  tokenizer->getNextToken();
+  while(tokenizer->Next()) {
+    tokenizer->Printf(&tokenizer->Current());
+  };
   
   return 0;
 }
