@@ -48,13 +48,13 @@
 + NAME: Characters only allow `a-z`, `A-Z`, `0-9`, `_`. Do not start with `0-9`. 
 
 # Define description mark.
-+ []: optional
-+ (): required
-+ <>: description
++ `[]`: optional
++ `()`: required
++ `<>`: description
 
 # statement format:
 ## 1. struct
-Format: [DECORATE][<SPACE>](TYPE)[<SPACE>](NAME)[<SPACE>][default](STATEMENT_END)
+Format: `[DECORATE][<SPACE>](TYPE)[<SPACE>](NAME)[<SPACE>][default](STATEMENT_END)`
 
 Example:
 ```
@@ -63,7 +63,7 @@ bool bar true;
 float baz 1.0;
 ```
 ## 2. enum
-Format: (NAME)[<SPACE>][=[<SPACE>](int32 or string)](STATEMENT_SEPARATOR)
+Format: `(NAME)[<SPACE>][=[<SPACE>](int32 or string)](STATEMENT_SEPARATOR)`
 
 Example:
 ```
@@ -73,7 +73,7 @@ baz
 ```
 
 ## 3. structure
-Format: (STRUCTURE)<SPACE>(NAME)(BLOCK_START)[statement](BLOCK_END)
+Format: `(STRUCTURE)<SPACE>(NAME)(BLOCK_START)[statement](BLOCK_END)`
 
 Example:
 ```
