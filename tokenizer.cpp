@@ -20,21 +20,36 @@ TokenTypeNameMap MakeTokenTypeNameMap() {
   TokenTypeNameMap map = {
     { BLOCK_START,         '{' },
     { BLOCK_END,           '}' },
-    { STATEMENT_END,       ';' },
-    { STATEMENT_SEPARATOR, ',' }
+    { STATEMENT_END,       ';' }
   };
 
   return map;
 }
 
+bool IsDataTypeLetter(const char* c) {
+  return c == "bool" || c == "float" || c == "double" || c == "int32" 
+    || c == "int64" || c == "string" || c == "uint32" || c == "uint64";
+}
+
+bool IsDataStructLetter(const char* c) {
+  return c == "struct" || c == "enum";
+}
+
+bool IsDecoratorLetter(const char* c) {
+  return c == "optional" || c == "required" || c == "maxlen" || c == "minlen" 
+    || c == "range" || c == "max" || c == "min" || c == "interval";
+}
+
+bool IsOperatorLetter(const char* c) {
+  return c == "import" || c == "package" || c == "extends";
+}
+
 static const TokenTypeNameMap TokenTypeName = MakeTokenTypeNameMap();
 
-#define CHARACTER_CLASS(NAME, EXPERSSION) \
-class NAME {                              \
-public:                                   \
-  static inline bool is(char c) {         \
-    return EXPERSSION;                    \
-  }                                       \
+#define CHARACTER_CLASS(NAME, EXPERSSION)                    \
+class NAME {                                                 \
+public:                                                      \
+  static inline bool InClass(char c) { return EXPERSSION; }  \
 }
 
 CHARACTER_CLASS(Whitespace, c == ' ' || c == '\n' || c == '\t' || c == '\r' || 
@@ -49,13 +64,10 @@ CHARACTER_CLASS(Letter, ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
 CHARACTER_CLASS(BlockStart, c == TokenTypeName.at(BLOCK_START));
 CHARACTER_CLASS(BlockEnd, c == TokenTypeName.at(BLOCK_END));
 CHARACTER_CLASS(StatementEnd, c == TokenTypeName.at(STATEMENT_END));
-CHARACTER_CLASS(StatementSeparator, c == TokenTypeName.at(STATEMENT_SEPARATOR));
 
 #undef CHARACTER_CLASS
 
 Tokenizer::Tokenizer(std::string input): input_(input) {
-  std::cout << "s" << MakeTokenTypeNameMap().at(BLOCK_START) << std::endl;
-
   current_char_ = input_.at(0);
   current_pos_ = 0;
   line_ = 1;
@@ -69,16 +81,21 @@ Tokenizer::~Tokenizer() {}
 
 // 依次对比字符，直到找到不是该字符集的字符为止
 template<typename CharacterClass> inline void Tokenizer::ConsumeCharacters() {
-  while(CharacterClass::is(current_char_)) {
+  while(CharacterClass::InClass(current_char_)) {
     NextChar();
   }
 }
 
 // 依次对比字符，直到找到该字符集的为止
 template<typename CharacterClass> inline void Tokenizer::TryConsumeCharacters() {
-  while(!CharacterClass::is(current_char_)) {
+  while(!CharacterClass::InClass(current_char_)) {
     NextChar();
   }
+}
+
+// 当前字符是否是某个字符集中的字符
+template<typename CharacterClass> inline bool Tokenizer::InCharacters() {
+  return CharacterClass::InClass(current_char_);
 }
 
 const Token& Tokenizer::Current() {
@@ -124,34 +141,57 @@ void Tokenizer::NextChar() {
 }
 
 bool Tokenizer::Next() {
-  previous_ = current_;
-
   ConsumeCharacters<Whitespace>();
-  
-  int start_pos = current_pos_ - 1;
+
+  previous_ = current_;
+  int start_pos = current_pos_;
   int start_line = line_;
 
-  ConsumeCharacters<Letter>();
+  // TODO try statment marker
+  // 1. DIGIT
+  // 2. LETTER
+  // 3. BLOCK_START
+  // 4. BLOCK_END
+  // 5. STATEMENT_END
 
-  std::string letter(input_.substr(start_pos, current_pos_ - start_pos - 1));
-
-  if (letter.compare("enum") == 0 || letter.compare("struct") == 0) {
-    TryConsumeCharacters<BlockEnd>();
-
-    current_.type = STRUCTURE;
+  if (current_char_ == TokenTypeName.at(BLOCK_START)) {
+    current_.type = BLOCK_START;
+  } else if (current_char_ == TokenTypeName.at(BLOCK_END)) {
+    current_.type = BLOCK_END;
+  } else if (current_char_ == TokenTypeName.at(STATEMENT_END)) {
+    current_.type = STATEMENT_END;
+  } else if (InCharacters<Digit>()) {
+    ConsumeCharacters<Digit>();
     current_.text = input_.substr(start_pos, current_pos_ - start_pos);
-    current_.line = start_line;
-    current_.column_start = previous_.column_end;
-    current_.column_end = column_;
-    current_.pos_start = previous_.pos_end;
-    current_.pos_end = current_pos_;
+    current_.type = DIGIT;
+  } else if (InCharacters<Letter>()) {
+    ConsumeCharacters<Letter>();
+    current_.text = input_.substr(start_pos, current_pos_ - start_pos);
 
-    NextChar();
+    if (IsDataStructLetter(current_.text.data())) {
+      current_.type = DATA_STRUCT;
+    } else if (IsDataTypeLetter(current_.text.data())) {
+      current_.type = DATA_TYPES;
+    } else if (IsDecoratorLetter(current_.text.data())) {
+      current_.type = DECORATOR;
+    } else if (IsOperatorLetter(current_.text.data())) {
+      current_.type = OPERATOR;
+    } else {
+      current_.type = LETTER;
+    }
+  } else {
+    current_.type = CODE_END;
+  }
 
-    return true;
-  } 
+  current_.line = start_line;
+  current_.column_start = previous_.column_end;
+  current_.column_end = column_;
+  current_.pos_start = previous_.pos_end;
+  current_.pos_end = current_pos_;
 
-  return false;
+  NextChar();
+ 
+  return current_.type != CODE_END;
 }
 } // tokenizer
 } // reviser

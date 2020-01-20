@@ -14,14 +14,16 @@ namespace tokenizer {
 
   enum TokenType {
     CODE_START,
+    DATA_TYPES,
+    DATA_STRUCT,
+    DECORATOR, 
+    OPERATOR,
     BLOCK_START,
     BLOCK_END,
     STATEMENT_END,
-    STATEMENT_SEPARATOR,
-    DECORATE,
-    TYPE,
-    STRUCTURE,
-    NAME,
+    IDENTIFIER,
+    DIGIT,
+    LETTER,
     CODE_END
   };
 
@@ -51,6 +53,7 @@ namespace tokenizer {
 
     template<typename CharacterClass> inline void ConsumeCharacters();
     template<typename CharacterClass> inline void TryConsumeCharacters();
+    template<typename CharacterClass> inline bool InCharacters();
 
   public:
     Tokenizer(std::string input);

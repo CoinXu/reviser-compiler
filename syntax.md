@@ -23,10 +23,11 @@
 + struct
 + enum
 
-## DECORATE
+## DECORATER
++ optional
 + required
-+ maxlength
-+ minlength
++ maxlen
++ minlen
 + range
 + max
 + min
@@ -59,6 +60,8 @@ Format: `[DECORATE][<SPACE>](TYPE)[<SPACE>](NAME)[<SPACE>][default](STATEMENT_EN
 Example:
 ```
 required string foo "foo";
+maxlen(10) string foo;
+max(100) int32 foo 0;
 bool bar true;
 float baz 1.0;
 ```
