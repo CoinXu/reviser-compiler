@@ -63,7 +63,7 @@ CHARACTER_CLASS(Whitespace, c == ' ' || c == '\n' || c == '\t' || c == '\r' ||
                             c == '\v' || c == '\f');
 CHARACTER_CLASS(WhitespaceNoNewLine, c == ' ' || c == '\t' || c == '\r' 
                             || c == '\v' || c == '\f');
-
+CHARACTER_CLASS(NewLine, c == '\n');
 CHARACTER_CLASS(Digit, '0' <= c && c <= '9');
 CHARACTER_CLASS(Identifier, ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
                           ('0' <= c && c <= '9') || (c == '_'));
@@ -217,7 +217,9 @@ bool Tokenizer::Next() {
       current_.type = IDENTIFIER;
     }
   } else {
-    current_.type = CODE_END;
+    TryConsumeCharacters<NewLine>();
+    const std::string message = input_.substr(start_pos,  current_pos_ - 1 - start_pos);
+    throw std::runtime_error("unkown token error: \n" + message);
   }
 
   current_.line = start_line;

@@ -4,6 +4,8 @@ enum Color {
   Pink = 16	
 }
 
+$one = 1
+
 struct Foo {
   required("some tips") string foo "foo";
   bool baz true;
