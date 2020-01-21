@@ -3,5 +3,6 @@ cmake_minimum_required(VERSION 3.5)
 add_compile_options(-std=c++11)
 
 project(reviser)
+set(CMAKE_BUILD_TYPE Debug)
 aux_source_directory(. CMAKE_RESOURCES)
 add_executable(reviser ${CMAKE_RESOURCES})

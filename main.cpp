@@ -47,7 +47,7 @@ int main(int args, char** argv) {
   cout.write(buffer, length);
   cout << "================ [" << filename << "] ================" << endl;
   
-  delete buffer;
+  // delete[] buffer;
 
   // 转为string，传给Tokenizer
   string input(buffer);

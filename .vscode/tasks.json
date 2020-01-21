@@ -1,30 +1,14 @@
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
-  // 参考 ： https://blog.csdn.net/qq_34347375/article/details/80851417
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build", //在launch.json文件中有用到
+      "label": "build",
       "type": "shell",
-      "command": "gcc",
-      "args": [
-        "-g",
-        "${file}",
-        "-o",
-        "${fileDirname}/${fileBasenameNoExtension}"
-      ],
+      "command": "cd build && make",
+      "args": [],
       "group": {
         "kind": "build",
         "isDefault": true
-      },
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": false
       }
     }
   ]

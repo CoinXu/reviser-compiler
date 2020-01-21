@@ -26,21 +26,21 @@ TokenTypeNameMap MakeTokenTypeNameMap() {
   return map;
 }
 
-bool IsDataTypeLetter(const char* c) {
+bool IsDataTypeLetter(const std::string c) {
   return c == "bool" || c == "float" || c == "double" || c == "int32" 
     || c == "int64" || c == "string" || c == "uint32" || c == "uint64";
 }
 
-bool IsDataStructLetter(const char* c) {
+bool IsDataStructLetter(const std::string c) {
   return c == "struct" || c == "enum";
 }
 
-bool IsDecoratorLetter(const char* c) {
+bool IsDecoratorLetter(const std::string c) {
   return c == "optional" || c == "required" || c == "maxlen" || c == "minlen" 
     || c == "range" || c == "max" || c == "min" || c == "interval";
 }
 
-bool IsOperatorLetter(const char* c) {
+bool IsOperatorLetter(const std::string c) {
   return c == "import" || c == "package" || c == "extends";
 }
 
@@ -144,7 +144,7 @@ bool Tokenizer::Next() {
   ConsumeCharacters<Whitespace>();
 
   previous_ = current_;
-  int start_pos = current_pos_;
+  int start_pos = current_pos_ - 1;
   int start_line = line_;
 
   // TODO try statment marker
@@ -155,26 +155,29 @@ bool Tokenizer::Next() {
   // 5. STATEMENT_END
 
   if (current_char_ == TokenTypeName.at(BLOCK_START)) {
+    current_.text = current_char_;
     current_.type = BLOCK_START;
   } else if (current_char_ == TokenTypeName.at(BLOCK_END)) {
+    current_.text = current_char_;
     current_.type = BLOCK_END;
   } else if (current_char_ == TokenTypeName.at(STATEMENT_END)) {
+    current_.text = current_char_;
     current_.type = STATEMENT_END;
   } else if (InCharacters<Digit>()) {
     ConsumeCharacters<Digit>();
-    current_.text = input_.substr(start_pos, current_pos_ - start_pos);
+    current_.text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
     current_.type = DIGIT;
   } else if (InCharacters<Letter>()) {
     ConsumeCharacters<Letter>();
-    current_.text = input_.substr(start_pos, current_pos_ - start_pos);
+    current_.text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
 
-    if (IsDataStructLetter(current_.text.data())) {
+    if (IsDataStructLetter(current_.text)) {
       current_.type = DATA_STRUCT;
-    } else if (IsDataTypeLetter(current_.text.data())) {
+    } else if (IsDataTypeLetter(current_.text)) {
       current_.type = DATA_TYPES;
-    } else if (IsDecoratorLetter(current_.text.data())) {
+    } else if (IsDecoratorLetter(current_.text)) {
       current_.type = DECORATOR;
-    } else if (IsOperatorLetter(current_.text.data())) {
+    } else if (IsOperatorLetter(current_.text)) {
       current_.type = OPERATOR;
     } else {
       current_.type = LETTER;
