@@ -20,11 +20,17 @@ TokenTypeNameMap MakeTokenTypeNameMap() {
   TokenTypeNameMap map = {
     { BLOCK_START,         '{' },
     { BLOCK_END,           '}' },
-    { STATEMENT_END,       ';' }
+    { PARAMS_START,        '(' },
+    { PARAMS_END,          ')' },
+    { STATEMENT_SEPARATOR, ',' },
+    { STATEMENT_END,       ';' },
+    { CONNECTOR,           '.' },
+    { LETTER,              '"' }
   };
 
   return map;
 }
+
 
 bool IsDataTypeLetter(const std::string c) {
   return c == "bool" || c == "float" || c == "double" || c == "int32" 
@@ -58,12 +64,17 @@ CHARACTER_CLASS(WhitespaceNoNewLine, c == ' ' || c == '\t' || c == '\r'
                             || c == '\v' || c == '\f');
 
 CHARACTER_CLASS(Digit, '0' <= c && c <= '9');
-CHARACTER_CLASS(Letter, ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
+CHARACTER_CLASS(Identifier, ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
                           ('0' <= c && c <= '9') || (c == '_'));
 
 CHARACTER_CLASS(BlockStart, c == TokenTypeName.at(BLOCK_START));
 CHARACTER_CLASS(BlockEnd, c == TokenTypeName.at(BLOCK_END));
+CHARACTER_CLASS(ParamsStart, c == TokenTypeName.at(PARAMS_START));
+CHARACTER_CLASS(ParamsEnd, c == TokenTypeName.at(PARAMS_END));
+CHARACTER_CLASS(StatementSeparator, c == TokenTypeName.at(STATEMENT_SEPARATOR));
 CHARACTER_CLASS(StatementEnd, c == TokenTypeName.at(STATEMENT_END));
+CHARACTER_CLASS(Connector, c == TokenTypeName.at(CONNECTOR));
+CHARACTER_CLASS(Letter, c == TokenTypeName.at(LETTER));
 
 #undef CHARACTER_CLASS
 
@@ -141,46 +152,63 @@ void Tokenizer::NextChar() {
 }
 
 bool Tokenizer::Next() {
+  if (current_pos_ == input_.size()) {
+    return false;
+  }
+
   ConsumeCharacters<Whitespace>();
 
   previous_ = current_;
+  current_.text = current_char_;
+
   int start_pos = current_pos_ - 1;
   int start_line = line_;
 
-  // TODO try statment marker
-  // 1. DIGIT
-  // 2. LETTER
-  // 3. BLOCK_START
-  // 4. BLOCK_END
-  // 5. STATEMENT_END
-
   if (current_char_ == TokenTypeName.at(BLOCK_START)) {
-    current_.text = current_char_;
     current_.type = BLOCK_START;
+    NextChar();
   } else if (current_char_ == TokenTypeName.at(BLOCK_END)) {
-    current_.text = current_char_;
     current_.type = BLOCK_END;
+    NextChar();
+  } else if (current_char_ == TokenTypeName.at(STATEMENT_SEPARATOR)) {
+    current_.type = STATEMENT_SEPARATOR;
+    NextChar();
   } else if (current_char_ == TokenTypeName.at(STATEMENT_END)) {
-    current_.text = current_char_;
     current_.type = STATEMENT_END;
+    NextChar();
+  } else if (current_char_ == TokenTypeName.at(PARAMS_START)) {
+    current_.type = PARAMS_START;
+    NextChar();
+  } else if (current_char_ == TokenTypeName.at(PARAMS_END)) {
+    current_.type = PARAMS_END;
+    NextChar();
+  } else if (current_char_ == TokenTypeName.at(CONNECTOR)) {
+    current_.type = CONNECTOR;
+    NextChar();
+  } else if (current_char_ == TokenTypeName.at(LETTER)) {
+    current_.type = LETTER;
+    NextChar();
+    TryConsumeCharacters<Letter>();
+    NextChar();
+    current_.text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
   } else if (InCharacters<Digit>()) {
+    current_.type = DIGIT;
     ConsumeCharacters<Digit>();
     current_.text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
-    current_.type = DIGIT;
-  } else if (InCharacters<Letter>()) {
-    ConsumeCharacters<Letter>();
+  } else if (InCharacters<Identifier>()) {
+    ConsumeCharacters<Identifier>();
+    const std::string text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
     current_.text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
-
-    if (IsDataStructLetter(current_.text)) {
+    if (IsDataStructLetter(text)) {
       current_.type = DATA_STRUCT;
-    } else if (IsDataTypeLetter(current_.text)) {
+    } else if (IsDataTypeLetter(text)) {
       current_.type = DATA_TYPES;
-    } else if (IsDecoratorLetter(current_.text)) {
+    } else if (IsDecoratorLetter(text)) {
       current_.type = DECORATOR;
-    } else if (IsOperatorLetter(current_.text)) {
+    } else if (IsOperatorLetter(text)) {
       current_.type = OPERATOR;
     } else {
-      current_.type = LETTER;
+      current_.type = IDENTIFIER;
     }
   } else {
     current_.type = CODE_END;
@@ -191,8 +219,6 @@ bool Tokenizer::Next() {
   current_.column_end = column_;
   current_.pos_start = previous_.pos_end;
   current_.pos_end = current_pos_;
-
-  NextChar();
  
   return current_.type != CODE_END;
 }

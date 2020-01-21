@@ -13,18 +13,22 @@ namespace reviser {
 namespace tokenizer {
 
   enum TokenType {
-    CODE_START,
-    DATA_TYPES,
-    DATA_STRUCT,
-    DECORATOR, 
-    OPERATOR,
-    BLOCK_START,
-    BLOCK_END,
-    STATEMENT_END,
-    IDENTIFIER,
-    DIGIT,
-    LETTER,
-    CODE_END
+    CODE_START,                      // 代码开始
+    DATA_TYPES,                      // 数据类型: bool/float/double/int32...
+    DATA_STRUCT,                     // 数据结构类型: struct/enum
+    DECORATOR,                       // 修饰函数: optional/required/max/range...
+    OPERATOR,                        // 操作符: import/package/extends...
+    BLOCK_START,                     // 代码块开始: {
+    BLOCK_END,                       // 代码块结束: }
+    PARAMS_START,                    // 参数开始: (
+    PARAMS_END,                      // 参数结束: )
+    STATEMENT_SEPARATOR,             // 语句分隔符: , 
+    STATEMENT_END,                   // 表达式结束: ;
+    CONNECTOR,                       // 链接符: .
+    IDENTIFIER,                      // 标记
+    DIGIT,                           // 数字
+    LETTER,                          // 字符: 以"包裹
+    CODE_END                         // 代码结束
   };
 
   struct Token {
