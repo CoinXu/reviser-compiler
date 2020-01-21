@@ -46,7 +46,6 @@ int main(int args, char** argv) {
   std::cout.write(buffer, length);
   std::cout << "================ [" << filename << "] ================" << std::endl;
 
-  // delete[] buffer;
 
   // 转为string，传给Tokenizer
   std::string input(buffer, length);
@@ -55,6 +54,8 @@ int main(int args, char** argv) {
   while(tokenizer->Next()) {
     tokenizer->PrintfThreeAddressCode(&tokenizer->Current());
   };
+
+  delete[] buffer;
 
   return 0;
 }

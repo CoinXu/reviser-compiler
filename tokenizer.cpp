@@ -1,7 +1,7 @@
 /**
  * @date 2018-10-28
  * @author duanxian0605@163.com
- * @description 定义.reviser文件内容标记，词法定义参考syntax.md
+ * @description 词法分析，词法定义参考syntax.md
  */
 
 #include <string>
