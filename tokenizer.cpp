@@ -219,7 +219,7 @@ bool Tokenizer::Next() {
   } else {
     TryConsumeCharacters<NewLine>();
     const std::string message = input_.substr(start_pos,  current_pos_ - 1 - start_pos);
-    throw std::runtime_error("unkown token error: \n" + message);
+    throw std::runtime_error("unkown token error: \n  " + message + "\n  ^");
   }
 
   current_.line = start_line;
