@@ -1,10 +1,8 @@
 enum Color {
   Red,
   Blue,
-  Pink = 16	
+  Pink = 16
 }
-
-$one = 1
 
 struct Foo {
   required("some tips") string foo "foo";

@@ -13,11 +13,29 @@
 namespace reviser {
 namespace tokenizer {
 
-// 定义Token类型名称
-typedef std::map<TokenType, char> TokenTypeNameMap;
+bool IsDataTypeLetter(const std::string c) {
+  return c == "bool" || c == "float" || c == "double" || c == "int32"
+    || c == "int64" || c == "string" || c == "uint32" || c == "uint64";
+}
 
-TokenTypeNameMap MakeTokenTypeNameMap() {
-  TokenTypeNameMap map = {
+bool IsDataStructLetter(const std::string c) {
+  return c == "struct" || c == "enum";
+}
+
+bool IsDecoratorLetter(const std::string c) {
+  return c == "optional" || c == "required" || c == "maxlen" || c == "minlen"
+    || c == "range" || c == "max" || c == "min" || c == "interval";
+}
+
+bool IsOperatorLetter(const std::string c) {
+  return c == "import" || c == "package" || c == "extends";
+}
+
+// 定义Token类型名称
+typedef std::map<TokenType, char> TokenTypeMarkMap;
+
+TokenTypeMarkMap MakeTokenTypeMarkMap() {
+  TokenTypeMarkMap map = {
     { BLOCK_START,         '{' },
     { BLOCK_END,           '}' },
     { PARAMS_START,        '(' },
@@ -32,26 +50,27 @@ TokenTypeNameMap MakeTokenTypeNameMap() {
   return map;
 }
 
+static const TokenTypeMarkMap TokenTypeMark = MakeTokenTypeMarkMap();
 
-bool IsDataTypeLetter(const std::string c) {
-  return c == "bool" || c == "float" || c == "double" || c == "int32" 
-    || c == "int64" || c == "string" || c == "uint32" || c == "uint64";
-}
-
-bool IsDataStructLetter(const std::string c) {
-  return c == "struct" || c == "enum";
-}
-
-bool IsDecoratorLetter(const std::string c) {
-  return c == "optional" || c == "required" || c == "maxlen" || c == "minlen" 
-    || c == "range" || c == "max" || c == "min" || c == "interval";
-}
-
-bool IsOperatorLetter(const std::string c) {
-  return c == "import" || c == "package" || c == "extends";
-}
-
-static const TokenTypeNameMap TokenTypeName = MakeTokenTypeNameMap();
+static const std::map<TokenType, std::string> TokenTypeNameMap = {
+  { CODE_START,                      "code_start" },
+  { DATA_TYPES,                      "data_types" },
+  { DATA_STRUCT,                     "data_struct" },
+  { DECORATOR,                       "decorator" },
+  { OPERATOR,                        "operator" },
+  { BLOCK_START,                     "block_start" },
+  { BLOCK_END,                       "block_end" },
+  { PARAMS_START,                    "params_start" },
+  { PARAMS_END,                      "params_end" },
+  { STATEMENT_SEPARATOR,             "statement_separator" },
+  { STATEMENT_END,                   "statement_end" },
+  { CONNECTOR,                       "connector" },
+  { ASSIGN,                          "assign" },
+  { IDENTIFIER,                      "identifier" },
+  { DIGIT,                           "digit" },
+  { LETTER,                          "letter" },
+  { CODE_END,                        "code_end" }
+};
 
 #define CHARACTER_CLASS(NAME, EXPERSSION)                    \
 class NAME {                                                 \
@@ -59,24 +78,24 @@ public:                                                      \
   static inline bool InClass(char c) { return EXPERSSION; }  \
 }
 
-CHARACTER_CLASS(Whitespace, c == ' ' || c == '\n' || c == '\t' || c == '\r' || 
+CHARACTER_CLASS(Whitespace, c == ' ' || c == '\n' || c == '\t' || c == '\r' ||
                             c == '\v' || c == '\f');
-CHARACTER_CLASS(WhitespaceNoNewLine, c == ' ' || c == '\t' || c == '\r' 
+CHARACTER_CLASS(WhitespaceNoNewLine, c == ' ' || c == '\t' || c == '\r'
                             || c == '\v' || c == '\f');
 CHARACTER_CLASS(NewLine, c == '\n');
 CHARACTER_CLASS(Digit, '0' <= c && c <= '9');
 CHARACTER_CLASS(Identifier, ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
                           ('0' <= c && c <= '9') || (c == '_'));
 
-CHARACTER_CLASS(BlockStart, c == TokenTypeName.at(BLOCK_START));
-CHARACTER_CLASS(BlockEnd, c == TokenTypeName.at(BLOCK_END));
-CHARACTER_CLASS(ParamsStart, c == TokenTypeName.at(PARAMS_START));
-CHARACTER_CLASS(ParamsEnd, c == TokenTypeName.at(PARAMS_END));
-CHARACTER_CLASS(StatementSeparator, c == TokenTypeName.at(STATEMENT_SEPARATOR));
-CHARACTER_CLASS(StatementEnd, c == TokenTypeName.at(STATEMENT_END));
-CHARACTER_CLASS(Connector, c == TokenTypeName.at(CONNECTOR));
-CHARACTER_CLASS(Letter, c == TokenTypeName.at(LETTER));
-CHARACTER_CLASS(Assign, c == TokenTypeName.at(ASSIGN));
+CHARACTER_CLASS(BlockStart, c == TokenTypeMark.at(BLOCK_START));
+CHARACTER_CLASS(BlockEnd, c == TokenTypeMark.at(BLOCK_END));
+CHARACTER_CLASS(ParamsStart, c == TokenTypeMark.at(PARAMS_START));
+CHARACTER_CLASS(ParamsEnd, c == TokenTypeMark.at(PARAMS_END));
+CHARACTER_CLASS(StatementSeparator, c == TokenTypeMark.at(STATEMENT_SEPARATOR));
+CHARACTER_CLASS(StatementEnd, c == TokenTypeMark.at(STATEMENT_END));
+CHARACTER_CLASS(Connector, c == TokenTypeMark.at(CONNECTOR));
+CHARACTER_CLASS(Letter, c == TokenTypeMark.at(LETTER));
+CHARACTER_CLASS(Assign, c == TokenTypeMark.at(ASSIGN));
 
 #undef CHARACTER_CLASS
 
@@ -87,7 +106,6 @@ Tokenizer::Tokenizer(std::string input): input_(input) {
   column_ = 0;
 
   NextChar();
-  Printf(&current_);
 }
 
 Tokenizer::~Tokenizer() {}
@@ -123,7 +141,7 @@ void Tokenizer::Printf(const Token* token) {
   std::cout << "=============== token ===============" << std::endl;
   std::cout << "token.type: " << token->type << std::endl;
   std::cout << "token.text: " << token->text << std::endl;
-  std::cout << "token.line: " << token->line << std::endl;
+  std::cout << "token.line: " << token->start_line << std::endl;
   std::cout << "token.column_start: " << token->column_start << std::endl;
   std::cout << "token.column_end: " << token->column_end << std::endl;
   std::cout << "token.pos_start: " << token->pos_start << std::endl;
@@ -131,8 +149,15 @@ void Tokenizer::Printf(const Token* token) {
   std::cout << "====================================" << std::endl;
 }
 
+void Tokenizer::PrintfThreeAddressCode(const Token* token) {
+  std::cout << token->start_line << ":" << token->column_start;
+  std::cout << "~" << token->end_line << ":" << token->column_end;
+  std::cout << " <" << TokenTypeNameMap.at(token->type) << ", ";
+  std::cout << token->text << ">" << std::endl;
+}
+
 void Tokenizer::PrintPoint(const std::string mark) {
-  std::cout << mark << "line: " << line_ 
+  std::cout << mark << "line: " << line_
     << " column: " << column_
     << " char: " << current_char_
     << " current_pos: " << current_pos_
@@ -144,7 +169,7 @@ void Tokenizer::NextChar() {
     line_++;
     column_ = 0;
   } else if (current_char_ == '\t') {
-    column_ += cTabWidth - column_ % cTabWidth; 
+    column_ += cTabWidth - column_ % cTabWidth;
   } else {
     column_++;
   }
@@ -163,34 +188,35 @@ bool Tokenizer::Next() {
   previous_ = current_;
   current_.text = current_char_;
 
-  int start_pos = current_pos_ - 1;
+  int start_column = column_;
   int start_line = line_;
+  int start_pos = current_pos_ - 1;
 
-  if (current_char_ == TokenTypeName.at(BLOCK_START)) {
+  if (current_char_ == TokenTypeMark.at(BLOCK_START)) {
     current_.type = BLOCK_START;
     NextChar();
-  } else if (current_char_ == TokenTypeName.at(BLOCK_END)) {
+  } else if (current_char_ == TokenTypeMark.at(BLOCK_END)) {
     current_.type = BLOCK_END;
     NextChar();
-  } else if (current_char_ == TokenTypeName.at(STATEMENT_SEPARATOR)) {
+  } else if (current_char_ == TokenTypeMark.at(STATEMENT_SEPARATOR)) {
     current_.type = STATEMENT_SEPARATOR;
     NextChar();
-  } else if (current_char_ == TokenTypeName.at(STATEMENT_END)) {
+  } else if (current_char_ == TokenTypeMark.at(STATEMENT_END)) {
     current_.type = STATEMENT_END;
     NextChar();
-  } else if (current_char_ == TokenTypeName.at(PARAMS_START)) {
+  } else if (current_char_ == TokenTypeMark.at(PARAMS_START)) {
     current_.type = PARAMS_START;
     NextChar();
-  } else if (current_char_ == TokenTypeName.at(ASSIGN)) {
+  } else if (current_char_ == TokenTypeMark.at(ASSIGN)) {
     current_.type = ASSIGN;
     NextChar();
-  } else if (current_char_ == TokenTypeName.at(PARAMS_END)) {
+  } else if (current_char_ == TokenTypeMark.at(PARAMS_END)) {
     current_.type = PARAMS_END;
     NextChar();
-  } else if (current_char_ == TokenTypeName.at(CONNECTOR)) {
+  } else if (current_char_ == TokenTypeMark.at(CONNECTOR)) {
     current_.type = CONNECTOR;
     NextChar();
-  } else if (current_char_ == TokenTypeName.at(LETTER)) {
+  } else if (current_char_ == TokenTypeMark.at(LETTER)) {
     current_.type = LETTER;
     NextChar();
     TryConsumeCharacters<Letter>();
@@ -222,12 +248,13 @@ bool Tokenizer::Next() {
     throw std::runtime_error("unkown token error: \n  " + message + "\n  ^");
   }
 
-  current_.line = start_line;
-  current_.column_start = previous_.column_end;
-  current_.column_end = column_;
-  current_.pos_start = previous_.pos_end;
-  current_.pos_end = current_pos_;
- 
+  current_.start_line = start_line;
+  current_.end_line = line_;
+  current_.column_start = start_column;
+  current_.column_end = column_ - 1;
+  current_.pos_start = start_pos;
+  current_.pos_end = current_pos_ - 1;
+
   return current_.type != CODE_END;
 }
 } // tokenizer

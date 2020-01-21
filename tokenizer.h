@@ -22,7 +22,7 @@ namespace tokenizer {
     BLOCK_END,                       // 代码块结束: }
     PARAMS_START,                    // 参数开始: (
     PARAMS_END,                      // 参数结束: )
-    STATEMENT_SEPARATOR,             // 语句分隔符: , 
+    STATEMENT_SEPARATOR,             // 语句分隔符: ,
     STATEMENT_END,                   // 表达式结束: ;
     CONNECTOR,                       // 链接符: .
     ASSIGN,                          // 赋值符: =
@@ -36,7 +36,8 @@ namespace tokenizer {
     TokenType type;
     std::string text;
 
-    int line;            // 行号
+    int start_line;       // 开始行号
+    int end_line;         // 结束行号
     int column_start;    // 列开始位置
     int column_end;      // 列结束位置
     int pos_start;       // 全部字符中开始位置
@@ -48,7 +49,7 @@ namespace tokenizer {
     std::string input_;
     Token current_;
     Token previous_;
-    
+
     char current_char_;
     int current_pos_;
     int line_;
@@ -68,6 +69,7 @@ namespace tokenizer {
     const Token& Previous();
 
     void Printf(const Token* token);
+    void PrintfThreeAddressCode(const Token* token);
     void PrintPoint(const std::string mark);
     void NextChar();
     bool Next();

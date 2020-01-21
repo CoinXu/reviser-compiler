@@ -9,13 +9,12 @@
 
 #include "tokenizer.h"
 
-using namespace std;
 using namespace reviser::tokenizer;
 
 int main(int args, char** argv) {
-  cout << "args::" << args;
+  std::cout << "args::" << args;
   for (int i = 0; i < args; ++i) {
-    cout << "args::[" << i << "] = " << argv[i] << endl;
+    std::cout << "args::[" << i << "] = " << argv[i] << std::endl;
   }
 
   if (args == 1) {
@@ -24,13 +23,13 @@ int main(int args, char** argv) {
 
   char* filename = argv[1];
 
-  cout << "open file: " << filename << endl;
+  std::cout << "open file: " << filename << std::endl;
 
   // read file
-  ifstream is(filename, ifstream::binary);
-  
+  std::ifstream is(filename, std::ifstream::binary);
+
   if (!is) {
-    cout << "not found file [" << filename << "]";
+    std::cout << "not found file [" << filename << "]";
     return 1;
   }
 
@@ -43,19 +42,19 @@ int main(int args, char** argv) {
   is.read(buffer, length);
   is.close();
 
-  cout << "================ [" << filename << "] ================" << endl;
-  cout.write(buffer, length);
-  cout << "================ [" << filename << "] ================" << endl;
-  
+  std::cout << "================ [" << filename << "] ================" << std::endl;
+  std::cout.write(buffer, length);
+  std::cout << "================ [" << filename << "] ================" << std::endl;
+
   // delete[] buffer;
 
   // 转为string，传给Tokenizer
-  string input(buffer);
+  std::string input(buffer, length);
 
   Tokenizer* tokenizer = new Tokenizer(input);
   while(tokenizer->Next()) {
-    tokenizer->Printf(&tokenizer->Current());
+    tokenizer->PrintfThreeAddressCode(&tokenizer->Current());
   };
-  
+
   return 0;
 }
