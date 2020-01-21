@@ -4,7 +4,7 @@
     {
       "label": "build",
       "type": "shell",
-      "command": "cd build && make",
+      "command": "mkdir -p build && cd build && cmake .. && make",
       "args": [],
       "group": {
         "kind": "build",
