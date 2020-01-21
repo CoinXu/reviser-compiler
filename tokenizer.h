@@ -25,6 +25,7 @@ namespace tokenizer {
     STATEMENT_SEPARATOR,             // 语句分隔符: , 
     STATEMENT_END,                   // 表达式结束: ;
     CONNECTOR,                       // 链接符: .
+    ASSIGN,                          // 赋值符: =
     IDENTIFIER,                      // 标记
     DIGIT,                           // 数字
     LETTER,                          // 字符: 以"包裹

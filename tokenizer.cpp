@@ -25,6 +25,7 @@ TokenTypeNameMap MakeTokenTypeNameMap() {
     { STATEMENT_SEPARATOR, ',' },
     { STATEMENT_END,       ';' },
     { CONNECTOR,           '.' },
+    { ASSIGN,              '=' },
     { LETTER,              '"' }
   };
 
@@ -75,6 +76,7 @@ CHARACTER_CLASS(StatementSeparator, c == TokenTypeName.at(STATEMENT_SEPARATOR));
 CHARACTER_CLASS(StatementEnd, c == TokenTypeName.at(STATEMENT_END));
 CHARACTER_CLASS(Connector, c == TokenTypeName.at(CONNECTOR));
 CHARACTER_CLASS(Letter, c == TokenTypeName.at(LETTER));
+CHARACTER_CLASS(Assign, c == TokenTypeName.at(ASSIGN));
 
 #undef CHARACTER_CLASS
 
@@ -179,6 +181,9 @@ bool Tokenizer::Next() {
   } else if (current_char_ == TokenTypeName.at(PARAMS_START)) {
     current_.type = PARAMS_START;
     NextChar();
+  } else if (current_char_ == TokenTypeName.at(ASSIGN)) {
+    current_.type = ASSIGN;
+    NextChar();
   } else if (current_char_ == TokenTypeName.at(PARAMS_END)) {
     current_.type = PARAMS_END;
     NextChar();
@@ -198,7 +203,8 @@ bool Tokenizer::Next() {
   } else if (InCharacters<Identifier>()) {
     ConsumeCharacters<Identifier>();
     const std::string text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
-    current_.text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
+    current_.text = text;
+
     if (IsDataStructLetter(text)) {
       current_.type = DATA_STRUCT;
     } else if (IsDataTypeLetter(text)) {

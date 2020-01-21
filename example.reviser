@@ -1,7 +1,7 @@
 enum Color {
   Red,
   Blue,
-  Pink	
+  Pink = 16	
 }
 
 struct Foo {
