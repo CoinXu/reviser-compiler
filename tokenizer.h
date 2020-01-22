@@ -4,13 +4,13 @@
  * @description 定义.reviser文件内容标记，词法定义参考syntax.md
  */
 
-#ifndef DATA_REVIER_TOKENIZER
-#define DATA_REVIER_TOKENIZER
+#ifndef REVISER_COMPILER_TOKENIZER
+#define REVISER_COMPILER_TOKENIZER
 
 #include <string>
 
 namespace reviser {
-namespace tokenizer {
+namespace compiler {
 
   enum TokenType {
     CODE_START,                      // 代码开始

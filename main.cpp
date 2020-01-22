@@ -9,7 +9,7 @@
 
 #include "tokenizer.h"
 
-using namespace reviser::tokenizer;
+using namespace reviser::compiler;
 
 int main(int args, char** argv) {
   std::cout << "args::" << args;

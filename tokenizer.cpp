@@ -11,7 +11,7 @@
 #include "tokenizer.h"
 
 namespace reviser {
-namespace tokenizer {
+namespace compiler {
 
 bool IsDataTypeLetter(const std::string c) {
   return c == "bool" || c == "float" || c == "double" || c == "int32"
