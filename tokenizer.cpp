@@ -167,7 +167,7 @@ void Tokenizer::PrintPoint(const std::string mark) {
 void Tokenizer::NextChar() {
   if (current_char_ == '\n') {
     line_++;
-    column_ = 0;
+    column_ = 1;
   } else if (current_char_ == '\t') {
     column_ += cTabWidth - column_ % cTabWidth;
   } else {
@@ -188,9 +188,9 @@ bool Tokenizer::Next() {
   previous_ = current_;
   current_.text = current_char_;
 
-  int start_column = column_;
   int start_line = line_;
-  int start_pos = current_pos_ - 1;
+  int start_column = column_;
+  int start_pos = current_pos_;
 
   if (current_char_ == TokenTypeMark.at(BLOCK_START)) {
     current_.type = BLOCK_START;
@@ -221,30 +221,29 @@ bool Tokenizer::Next() {
     NextChar();
     TryConsumeCharacters<Letter>();
     NextChar();
-    current_.text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
+    current_.text = input_.substr(start_pos - 1, current_pos_ - start_pos);
   } else if (InCharacters<Digit>()) {
     current_.type = DIGIT;
     ConsumeCharacters<Digit>();
-    current_.text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
+    current_.text = input_.substr(start_pos - 1, current_pos_ - start_pos);
   } else if (InCharacters<Identifier>()) {
     ConsumeCharacters<Identifier>();
-    const std::string text = input_.substr(start_pos, current_pos_ - 1 - start_pos);
-    current_.text = text;
+    current_.text = input_.substr(start_pos - 1, current_pos_ - start_pos);
 
-    if (IsDataStructLetter(text)) {
+    if (IsDataStructLetter(current_.text)) {
       current_.type = DATA_STRUCT;
-    } else if (IsDataTypeLetter(text)) {
+    } else if (IsDataTypeLetter(current_.text)) {
       current_.type = DATA_TYPES;
-    } else if (IsDecoratorLetter(text)) {
+    } else if (IsDecoratorLetter(current_.text)) {
       current_.type = DECORATOR;
-    } else if (IsOperatorLetter(text)) {
+    } else if (IsOperatorLetter(current_.text)) {
       current_.type = OPERATOR;
     } else {
       current_.type = IDENTIFIER;
     }
   } else {
     TryConsumeCharacters<NewLine>();
-    const std::string message = input_.substr(start_pos,  current_pos_ - 1 - start_pos);
+    const std::string message = input_.substr(start_pos - 1,  current_pos_ - start_pos);
     throw std::runtime_error("unkown token error: \n  " + message + "\n  ^");
   }
 
@@ -253,7 +252,7 @@ bool Tokenizer::Next() {
   current_.column_start = start_column;
   current_.column_end = column_ - 1;
   current_.pos_start = start_pos;
-  current_.pos_end = current_pos_ - 1;
+  current_.pos_end = current_pos_;
 
   return current_.type != CODE_END;
 }
