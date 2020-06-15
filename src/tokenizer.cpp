@@ -4,18 +4,15 @@
  * @description 词法分析，词法定义参考syntax.md
  */
 
-#include <string>
 #include <iostream>
-#include <map>
+#include <iterator>
+#include <algorithm>
 
+#include "message.h"
 #include "tokenizer.h"
 
 namespace reviser {
 namespace compiler {
-
-// 定义Token类型名称
-typedef std::map<TokenType, char> TokenTypeMarkMap;
-
 
 #define CHARACTER_CLASS(NAME, EXPERSSION)                    \
 class NAME {                                                 \
@@ -41,17 +38,23 @@ CHARACTER_CLASS(CharQuote, c == Quote);
 
 #undef CHARACTER_CLASS
 
-Tokenizer::Tokenizer(std::string input): input(input) {
+message::Message message("tokenizer");
+
+Tokenizer::Tokenizer(std::string input_): input(input_) {
   peek = input.at(0);
   pos = 0;
   line = 1;
   column = 0;
+
+  type = {"bool", "float", "double", "int32", "int64", "uint32", "uint64", "string"};
+  decorater = {"optional", "required"};
 
   NextChar();
 }
 
 Tokenizer::~Tokenizer() {}
 
+// private
 template<typename CharacterClass> inline void Tokenizer::ConsumeCharacters() {
   while(CharacterClass::InClass(peek)) {
     NextChar();
@@ -68,6 +71,17 @@ template<typename CharacterClass> inline bool Tokenizer::InCharacters() {
   return CharacterClass::InClass(peek);
 }
 
+bool Tokenizer::TypeIdentifier(const std::string id) {
+  auto result = std::find(std::begin(type), std::end(type), id);
+  return result != std::end(decorater);
+}
+
+bool Tokenizer::DecoraterIdentifier(const std::string id) {
+  auto result = std::find(std::begin(decorater), std::end(decorater), id);
+  return result != std::end(decorater);
+}
+
+// public
 const Token& Tokenizer::Current() {
   return current;
 }
@@ -77,23 +91,17 @@ const Token& Tokenizer::Previous() {
 }
 
 void Tokenizer::Printf(const Token* token) {
-  std::cout << "=============== token ===============" << std::endl;
-  std::cout << "token.type: " << token->type << std::endl;
-  std::cout << "token.text: " << token->text << std::endl;
-  std::cout << "token.line: " << token->start_line << std::endl;
-  std::cout << "token.column_start: " << token->column_start << std::endl;
-  std::cout << "token.column_end: " << token->column_end << std::endl;
-  std::cout << "token.pos_start: " << token->pos_start << std::endl;
-  std::cout << "token.pos_end: " << token->pos_end << std::endl;
-  std::cout << "====================================" << std::endl;
+  message.SetLine(token->start_line);
+  message.SetColumn(token->column_start);
+  message.Debug("token.type: " + std::to_string(token->type));
+  message.Debug("token.text: " + token->text);
 }
 
 void Tokenizer::PrintPoint(const std::string mark) {
-  std::cout << mark << "line: " << line
-    << " column: " << column
-    << " char: " << peek
-    << " currentpos: " << pos
-    << std::endl;
+  message.SetLine(line);
+  message.SetColumn(column);
+  message.Debug("pos: " + std::to_string(pos));
+  message.Debug("char: " + std::to_string(peek));
 }
 
 void Tokenizer::NextChar() {
@@ -157,10 +165,22 @@ bool Tokenizer::Next() {
       if (InCharacters<Identifier>()) {
         ConsumeCharacters<Identifier>();
         current.text = input.substr(start_pos - 1, pos - start_pos);
+
+        if (TypeIdentifier(current.text)) {
+          current.type = DataType;
+        } else if (DecoraterIdentifier(current.text)) {
+          current.type = Decorater;
+        } else if (current.text == "struct") {
+          current.type = Struct;
+        } else if (current.text == "enum") {
+          current.type = Enum;
+        } else {
+          current.type = ID;
+        }
       } else {
         TryConsumeCharacters<NewLine>();
-        const std::string message = input.substr(start_pos - 1,  pos - start_pos);
-        throw std::runtime_error("unkown token error: \n  " + message + "\n  ^");
+        const std::string content = input.substr(start_pos - 1,  pos - start_pos);
+        message.Runtime("unkown token error: \n  " + content + "\n  ^");
       }
   }
 

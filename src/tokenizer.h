@@ -8,19 +8,19 @@
 #define REVISER_COMPILER_TOKENIZER
 
 #include <string>
-#include <array>
+#include <vector>
 
 namespace reviser {
 namespace compiler {
 
   enum TokenType {
-    Type,
+    DataType,
     Decorater,
     Struct,
+    Enum,
     ID,
     Letter,
     Digit,
-    Enum,
     Bool,
     CodeEnd,
     Assign = '=',
@@ -47,10 +47,9 @@ namespace compiler {
   class Tokenizer {
   private:
     std::string input;
-    std::array<std::string, 2> types = {
-      "",
-      ""
-    };
+    std::vector<std::string> type;
+    std::vector<std::string> decorater;
+
     Token current;
     Token previous;
 
@@ -69,6 +68,9 @@ namespace compiler {
 
     // 当前字符是否是某个字符集中的字符
     template<typename CharacterClass> inline bool InCharacters();
+
+    bool TypeIdentifier(const std::string id);
+    bool DecoraterIdentifier(const std::string id);
 
   public:
     Tokenizer(std::string input);
