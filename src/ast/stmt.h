@@ -11,10 +11,10 @@
 #include <ast/node.h>
 
 namespace reviser {
-namespace compiler {
-  class Stmt {
+namespace ast {
+  class Stmt: Node {
   public:
-    std::string to_string();
+    std::string generate();
   };
 }; // compiler
 }; // reviser

@@ -10,10 +10,10 @@
 #include <string>
 
 namespace reviser {
-namespace compiler {
+namespace ast {
   class Node {
   public:
-    std::string to_string();
+    virtual std::string generate() = 0;
   };
 }; // compiler
 }; // reviser

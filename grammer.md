@@ -22,7 +22,7 @@ declare -> "bool" id ["=" bool]
          | "uint32" id ["=" uint32]
          | "uint64" id ["=" uint64]
          | "string" id ["=" string]
-		 | id id "=" id "." id
+    		 | id id "=" id "." id
 id      -> letter (letter | digit)*
 letter  -> a | ... | z | A | ... | Z | _
 digit   -> 0 | ... | 9

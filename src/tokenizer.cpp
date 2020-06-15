@@ -66,8 +66,17 @@ Tokenizer::Tokenizer(std::string input_): input(input_) {
   line = 1;
   column = 0;
 
-  type = {"bool", "float", "double", "int32", "int64", "uint32", "uint64", "string"};
-  decorater = {"optional", "required"};
+  type.push_back("bool");
+  type.push_back("float");
+  type.push_back("double");
+  type.push_back("int32");
+  type.push_back("int64");
+  type.push_back("uint32");
+  type.push_back("uint64");
+  type.push_back("string");
+
+  decorater.push_back("optional");
+  decorater.push_back("required");
 
   NextChar();
 }
