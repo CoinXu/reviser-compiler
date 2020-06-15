@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
+#include <map>
 
 #include "message.h"
 #include "tokenizer.h"
@@ -39,6 +40,25 @@ CHARACTER_CLASS(CharQuote, c == Quote);
 #undef CHARACTER_CLASS
 
 message::Message message("tokenizer");
+
+std::map<TokenType, std::string> TokenTypeNameMap = {
+  { DataType, "DataType" },
+  { Decorater, "Decorater" },
+  { Struct, "Struct" },
+  { Enum, "Enum" },
+  { ID, "ID" },
+  { Letter, "Letter" },
+  { Digit, "Digit" },
+  { Bool, "Bool" },
+  { CodeEnd, "CodeEnd" },
+  { Assign, "Assig" },
+  { LeftBrace, "LeftBrace" },
+  { RightBrace, "RightBrace" },
+  { Semicolon, "Semicolon" },
+  { Comma, "Comma" },
+  { Connection, "Connection" },
+  { Quote, "Quote" }
+};
 
 Tokenizer::Tokenizer(std::string input_): input(input_) {
   peek = input.at(0);
@@ -73,7 +93,7 @@ template<typename CharacterClass> inline bool Tokenizer::InCharacters() {
 
 bool Tokenizer::TypeIdentifier(const std::string id) {
   auto result = std::find(std::begin(type), std::end(type), id);
-  return result != std::end(decorater);
+  return result != std::end(type);
 }
 
 bool Tokenizer::DecoraterIdentifier(const std::string id) {
@@ -93,7 +113,9 @@ const Token& Tokenizer::Previous() {
 void Tokenizer::Printf(const Token* token) {
   message.SetLine(token->start_line);
   message.SetColumn(token->column_start);
+  message.Debug("-------------------------------------------");
   message.Debug("token.type: " + std::to_string(token->type));
+  message.Debug("token.name: " + TokenTypeNameMap.at(token->type));
   message.Debug("token.text: " + token->text);
 }
 
@@ -148,21 +170,19 @@ bool Tokenizer::Next() {
       break;
 
     case Quote:
-      current.type = Quote;
+      current.type = Letter;
       NextChar();
       TryConsumeCharacters<CharQuote>();
       NextChar();
       current.text = input.substr(start_pos -1, pos - start_pos);
       break;
 
-    case Digit:
-      current.type = Digit;
-      ConsumeCharacters<CharDigit>();
-      current.text = input.substr(start_pos - 1, pos - start_pos);
-      break;
-
     default:
-      if (InCharacters<Identifier>()) {
+      if (InCharacters<CharDigit>()) {
+        current.type = Digit;
+        ConsumeCharacters<CharDigit>();
+        current.text = input.substr(start_pos - 1, pos - start_pos);
+      } else if (InCharacters<Identifier>()) {
         ConsumeCharacters<Identifier>();
         current.text = input.substr(start_pos - 1, pos - start_pos);
 

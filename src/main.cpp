@@ -8,29 +8,32 @@
 #include <fstream>
 
 #include "tokenizer.h"
+#include "message.h"
 
 using namespace reviser::compiler;
 
 int main(int args, char** argv) {
-  std::cout << "args::" << args;
+
+  reviser::message::Message logger("main");
+  logger.Info("args: " + std::to_string(args));
+
   for (int i = 0; i < args; ++i) {
-    std::cout << "args::[" << i << "] = " << argv[i] << std::endl;
+    logger.Info("args::[" +  std::to_string(i) + "] = " + argv[i]);
   }
 
   if (args == 1) {
     return 1;
   }
 
-  char* filename = argv[1];
+  std::string filename = argv[1];
 
-  std::cout << "open file: " << filename << std::endl;
+  logger.Info("open file: " + filename);
 
   // read file
   std::ifstream is(filename, std::ifstream::binary);
 
   if (!is) {
-    std::cout << "not found file [" << filename << "]";
-    return 1;
+    logger.Runtime("not found file :" + filename);
   }
 
   is.seekg(0, is.end);
@@ -42,10 +45,7 @@ int main(int args, char** argv) {
   is.read(buffer, length);
   is.close();
 
-  std::cout << "================ [" << filename << "] ================" << std::endl;
   std::cout.write(buffer, length);
-  std::cout << "================ [" << filename << "] ================" << std::endl;
-
 
   // 转为string，传给Tokenizer
   std::string input(buffer, length);
