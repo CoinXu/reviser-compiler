@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "message.h"
+#include <message.h>
 
 namespace reviser {
 namespace message {

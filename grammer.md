@@ -1,16 +1,16 @@
 ## 0.1.0
 
-### 数据类型
+## 数据类型
 ```
 type -> "bool" | "float" | "double" | "int32" | "int64" | "uint32" | "uint64" | "string"
 ```
 
-### 限定标记
+## 字段限定标记
 ```
 decorater -> "optional" | "required"
 ```
 
-### 语句
+## 文法
 ```
 struct  -> "struct" id "{" [structp { structp }] "}"
 structp -> [decorater { " " decorater }] declare ";"
@@ -38,7 +38,8 @@ uint64  -> 0 | ... | 18446744073709551615
 string  -> "\"" [.*] "\""
 ```
 
-### Grammer
+## 程序
 ```
-program -> (struct | enum)*
+program -> { stmt }*
+stmt    -> (struct | enum)
 ```

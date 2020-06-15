@@ -7,8 +7,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "tokenizer.h"
-#include "message.h"
+#include <tokenizer.h>
+#include <message.h>
+#include <ast/node.h>
 
 using namespace reviser::compiler;
 

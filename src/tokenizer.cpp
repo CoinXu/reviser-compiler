@@ -9,8 +9,8 @@
 #include <algorithm>
 #include <map>
 
-#include "message.h"
-#include "tokenizer.h"
+#include <message.h>
+#include <tokenizer.h>
 
 namespace reviser {
 namespace compiler {
