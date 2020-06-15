@@ -1,7 +1,7 @@
 CPP = g++
 SOURCES_DIR = src
 HEAD_FILE_PATH = $(SOURCES_DIR)
-COMPILE_CMD = $(CPP) -g -I $(HEAD_FILE_PATH)
+COMPILE_CMD = $(CPP) -g -std=c++11 -I $(HEAD_FILE_PATH)
 
 
 .SUFFIXES : .o .cpp .c

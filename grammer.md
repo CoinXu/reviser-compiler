@@ -23,9 +23,9 @@ declare -> "bool" id ["=" bool]
          | "uint64" id ["=" uint64]
          | "string" id ["=" string]
 		 | id id "=" id "." id
+id      -> letter (letter | digit)*
 letter  -> a | ... | z | A | ... | Z | _
 digit   -> 0 | ... | 9
-id      -> letter (letter | digit)*
 enum    -> "enum" id "{" [enump { "," enump }] "}"
 enump   -> id ["=" int32]
 bool    -> "true" | "false"

@@ -52,7 +52,7 @@ int main(int args, char** argv) {
 
   Tokenizer* tokenizer = new Tokenizer(input);
   while(tokenizer->Next()) {
-    tokenizer->PrintfThreeAddressCode(&tokenizer->Current());
+    tokenizer->Printf(&tokenizer->Current());
   };
 
   delete[] buffer;

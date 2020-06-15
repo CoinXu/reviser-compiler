@@ -8,28 +8,28 @@
 #define REVISER_COMPILER_TOKENIZER
 
 #include <string>
+#include <array>
 
 namespace reviser {
 namespace compiler {
 
   enum TokenType {
-    CODE_START,                      // 代码开始
-    DATA_TYPES,                      // 数据类型: bool/float/double/int32...
-    DATA_STRUCT,                     // 数据结构类型: struct/enum
-    DECORATOR,                       // 修饰函数: optional/required/max/range...
-    OPERATOR,                        // 操作符: import/package/extends...
-    BLOCK_START,                     // 代码块开始: {
-    BLOCK_END,                       // 代码块结束: }
-    PARAMS_START,                    // 参数开始: (
-    PARAMS_END,                      // 参数结束: )
-    STATEMENT_SEPARATOR,             // 语句分隔符: ,
-    STATEMENT_END,                   // 表达式结束: ;
-    CONNECTOR,                       // 链接符: .
-    ASSIGN,                          // 赋值符: =
-    IDENTIFIER,                      // 标记
-    DIGIT,                           // 数字
-    LETTER,                          // 字符: 以"包裹
-    CODE_END                         // 代码结束
+    Type,
+    Decorater,
+    Struct,
+    ID,
+    Letter,
+    Digit,
+    Enum,
+    Bool,
+    CodeEnd,
+    Assign = '=',
+    LeftBrace = '{',
+    RightBrace = '}',
+    Semicolon = ';',
+    Comma = ',',
+    Connection = '.',
+    Quote = '"'
   };
 
   struct Token {
@@ -46,19 +46,28 @@ namespace compiler {
 
   class Tokenizer {
   private:
-    std::string input_;
-    Token current_;
-    Token previous_;
+    std::string input;
+    std::array<std::string, 2> types = {
+      "",
+      ""
+    };
+    Token current;
+    Token previous;
 
-    char current_char_;
-    int current_pos_;
-    int line_;
-    int column_;
+    char peek;
+    int pos;
+    int line;
+    int column;
 
-    static const int cTabWidth = 8;
+    static const int CTabWidth = 8;
 
+    // 依次对比字符，直到找到不是该字符集的字符为止
     template<typename CharacterClass> inline void ConsumeCharacters();
+
+    // 依次对比字符，直到找到该字符集的为止
     template<typename CharacterClass> inline void TryConsumeCharacters();
+
+    // 当前字符是否是某个字符集中的字符
     template<typename CharacterClass> inline bool InCharacters();
 
   public:
@@ -69,7 +78,6 @@ namespace compiler {
     const Token& Previous();
 
     void Printf(const Token* token);
-    void PrintfThreeAddressCode(const Token* token);
     void PrintPoint(const std::string mark);
     void NextChar();
     bool Next();
