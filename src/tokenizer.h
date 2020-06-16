@@ -9,6 +9,10 @@
 
 #include <string>
 #include <vector>
+#include <map>
+#include <message.h>
+
+using namespace reviser;
 
 namespace reviser {
 namespace compiler {
@@ -22,6 +26,7 @@ namespace compiler {
     Letter,
     Digit,
     Bool,
+    CodeStart,
     CodeEnd,
     Assign = '=',
     LeftBrace = '{',
@@ -30,6 +35,39 @@ namespace compiler {
     Comma = ',',
     Connection = '.',
     Quote = '"'
+  };
+
+  enum ReservedWord {
+    ReservedWordStruct,
+    ReservedWordEnum,
+
+    ReservedWordBooleanTrue,
+    ReservedWordBooleanFalse,
+
+    ReservedWordTypeBoolean,
+    ReservedWordTypeFloat,
+    ReservedWordTypeDouble,
+    ReservedWordTypeInt32,
+    ReservedWordTypeInt64,
+    ReservedWordTypeUint32,
+    ReservedWordTypeUint64,
+    ReservedWordTypeString,
+
+    ReservedWordDecoraterOptional,
+    ReservedWordDecoraterRequired
+  };
+
+  extern std::map<ReservedWord, std::string> ReservedWordMap;
+
+  enum DataValueType {
+    DataTypeBoolean,
+    DataTypeFloat,
+    DataTypeDouble,
+    DataTypeInt32,
+    DataTypeInt64,
+    DataTypeUint32,
+    DataTypeUint64,
+    DataTypeString
   };
 
   struct Token {
@@ -49,6 +87,7 @@ namespace compiler {
     std::string input;
     std::vector<std::string> type;
     std::vector<std::string> decorater;
+    message::Message message;
 
     Token current;
     Token previous;

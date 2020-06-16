@@ -12,8 +12,8 @@ decorater -> "optional" | "required"
 
 ## 文法
 ```
-struct  -> "struct" id "{" [structp { structp }] "}"
-structp -> [decorater { " " decorater }] declare ";"
+struct  -> "struct" id "{" [structp { ";", structp }] "}"
+structp -> [decorater { " ", decorater }] declare
 declare -> "bool" id ["=" bool]
          | "float" id ["=" float]
          | "double" id ["=" double]
@@ -22,11 +22,11 @@ declare -> "bool" id ["=" bool]
          | "uint32" id ["=" uint32]
          | "uint64" id ["=" uint64]
          | "string" id ["=" string]
-    		 | id id "=" id "." id
+         | id id "=" id "." id
 id      -> letter (letter | digit)*
 letter  -> a | ... | z | A | ... | Z | _
 digit   -> 0 | ... | 9
-enum    -> "enum" id "{" [enump { "," enump }] "}"
+enum    -> "enum" id "{" [enump { ",", enump }] "}"
 enump   -> id ["=" int32]
 bool    -> "true" | "false"
 float   -> -3.402823669209385e+38 | ... | +3.402823669209385e+38

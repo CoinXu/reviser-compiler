@@ -38,7 +38,7 @@ namespace message {
   }
 
   void Message::Runtime(std::string msg) {
-    throw std::runtime_error(mark("debug") + ": " + msg);
+    throw std::runtime_error(mark("runtime") + ": " + msg);
   }
 } // message
 } // reviser

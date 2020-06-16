@@ -9,25 +9,33 @@
 
 #include <string>
 #include <tokenizer.h>
+#include <message.h>
+
+using namespace reviser;
 
 namespace reviser {
 namespace compiler {
   class Parser {
   private:
-    Token token;
+    Tokenizer tokenizer;
+    message::Message message;
 
-    void Accept(TokenType token);
-    void Expect(TokenType token);
+    bool Accept(TokenType type);
+    void Expect(TokenType type);
 
     void DefStruct();
     void DefStructProperty();
+    void DefDecorater();
+    void DefDeclare();
+    void DefStructDataTypeDeclare();
+    void DefStructEnumDeclare();
     void DefEnum();
     void DefEnumProperty();
-    void DefDeclare();
-
-    void Stmt();
+    void DefStmt();
 
   public:
+    Parser(Tokenizer tokenizer);
+    ~Parser();
     void Program();
   };
 } // reviser

@@ -12,6 +12,8 @@
 #include <message.h>
 #include <tokenizer.h>
 
+using namespace reviser::message;
+
 namespace reviser {
 namespace compiler {
 
@@ -39,7 +41,6 @@ CHARACTER_CLASS(CharQuote, c == Quote);
 
 #undef CHARACTER_CLASS
 
-message::Message message("tokenizer");
 
 std::map<TokenType, std::string> TokenTypeNameMap = {
   { DataType, "DataType" },
@@ -60,23 +61,53 @@ std::map<TokenType, std::string> TokenTypeNameMap = {
   { Quote, "Quote" }
 };
 
-Tokenizer::Tokenizer(std::string input_): input(input_) {
+std::map<ReservedWord, std::string> ReservedWordMap = {
+  { ReservedWordStruct, "struct" },
+  { ReservedWordEnum, "enum" },
+
+  { ReservedWordBooleanTrue, "true" },
+  { ReservedWordBooleanFalse, "false" },
+
+  { ReservedWordTypeBoolean, "bool" },
+  { ReservedWordTypeFloat, "float" },
+  { ReservedWordTypeDouble, "double" },
+  { ReservedWordTypeInt32, "int32" },
+  { ReservedWordTypeInt64, "int64" },
+  { ReservedWordTypeUint32, "uint32" },
+  { ReservedWordTypeUint64, "uint64" },
+  { ReservedWordTypeString, "string" },
+
+  { ReservedWordDecoraterOptional, "optional" },
+  { ReservedWordDecoraterRequired, "required" }
+};
+
+
+Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
   peek = input.at(0);
   pos = 0;
   line = 1;
   column = 0;
 
-  type.push_back("bool");
-  type.push_back("float");
-  type.push_back("double");
-  type.push_back("int32");
-  type.push_back("int64");
-  type.push_back("uint32");
-  type.push_back("uint64");
-  type.push_back("string");
+  current.type = CodeStart;
+  current.text = "";
+  current.start_line = line;
+  current.end_line = line;
+  current.column_start = column;
+  current.column_end = column;
+  current.pos_start = 0;
+  current.pos_end = 0;
 
-  decorater.push_back("optional");
-  decorater.push_back("required");
+  type.push_back(ReservedWordMap[ReservedWordTypeBoolean]);
+  type.push_back(ReservedWordMap[ReservedWordTypeFloat]);
+  type.push_back(ReservedWordMap[ReservedWordTypeDouble]);
+  type.push_back(ReservedWordMap[ReservedWordTypeInt32]);
+  type.push_back(ReservedWordMap[ReservedWordTypeInt64]);
+  type.push_back(ReservedWordMap[ReservedWordTypeUint32]);
+  type.push_back(ReservedWordMap[ReservedWordTypeUint64]);
+  type.push_back(ReservedWordMap[ReservedWordTypeString]);
+
+  decorater.push_back(ReservedWordMap[ReservedWordDecoraterOptional]);
+  decorater.push_back(ReservedWordMap[ReservedWordDecoraterRequired]);
 
   NextChar();
 }
@@ -199,9 +230,9 @@ bool Tokenizer::Next() {
           current.type = DataType;
         } else if (DecoraterIdentifier(current.text)) {
           current.type = Decorater;
-        } else if (current.text == "struct") {
+        } else if (current.text == ReservedWordMap[ReservedWordStruct]) {
           current.type = Struct;
-        } else if (current.text == "enum") {
+        } else if (current.text == ReservedWordMap[ReservedWordEnum]) {
           current.type = Enum;
         } else {
           current.type = ID;

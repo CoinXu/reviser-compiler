@@ -1,4 +1,3 @@
-
 /**
  * @date 2020-06-15
  * @author duanxian0605@163.com
@@ -53,7 +52,8 @@ namespace ast {
     }
 
     return word + " " + id + "{\n"
-      + "  " + p;
+      + "  " + p
+      + "\n"
       + "}";
   }
 

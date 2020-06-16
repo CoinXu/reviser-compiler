@@ -7,9 +7,8 @@
 #include <iostream>
 #include <fstream>
 
-#include <tokenizer.h>
 #include <message.h>
-#include <ast/node.h>
+#include <parser.h>
 
 using namespace reviser::compiler;
 
@@ -51,10 +50,10 @@ int main(int args, char** argv) {
   // 转为string，传给Tokenizer
   std::string input(buffer, length);
 
-  Tokenizer* tokenizer = new Tokenizer(input);
-  while(tokenizer->Next()) {
-    tokenizer->Printf(&tokenizer->Current());
-  };
+  Tokenizer tokenizer(input);
+  Parser parser(tokenizer);
+
+  parser.Program();
 
   delete[] buffer;
 
