@@ -10,6 +10,7 @@
 #include <string>
 #include <tokenizer.h>
 #include <message.h>
+#include <ast/stmt.h>
 
 using namespace reviser;
 
@@ -19,9 +20,15 @@ namespace compiler {
   private:
     Tokenizer tokenizer;
     message::Message message;
+    ast::Stmt stmt;
+    ast::Stmt current;
 
     bool Accept(TokenType type);
     void Expect(TokenType type);
+
+    bool LookAt(std::string expect);
+    TokenType Type();
+    std::string Text();
 
     void DefStruct();
     void DefStructProperty();

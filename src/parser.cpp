@@ -6,13 +6,16 @@
 
 #include <parser.h>
 #include <message.h>
+#include <ast/stmt.h>
 
 using namespace reviser::message;
+using namespace std;
 
 namespace reviser {
 namespace compiler {
 
-  Parser::Parser(Tokenizer tokenizer): tokenizer(tokenizer), message("parser") {}
+  Parser::Parser(Tokenizer tokenizer)
+    : tokenizer(tokenizer), message("parser"), stmt(), current() {}
 
   Parser::~Parser() {}
 
@@ -40,6 +43,18 @@ namespace compiler {
       message.SetColumn(tokenizer.Current().column_start);
       message.Runtime("syntax error: " + tokenizer.Current().text);
     }
+  }
+
+  bool Parser::LookAt(string expect) {
+    return tokenizer.Current().text == expect;
+  }
+
+  string Parser::Text() {
+    return tokenizer.Current().text;
+  }
+
+  TokenType Parser::Type() {
+    return tokenizer.Current().type;
   }
 
   void Parser::DefStruct() {
@@ -76,13 +91,13 @@ namespace compiler {
   }
 
   void Parser::DefStructDataTypeDeclare() {
-    std::string type = tokenizer.Previous().text;
+    string type = tokenizer.Previous().text;
 
     Expect(ID);
 
     if (Accept(Assign)) {
-      std::string value = tokenizer.Current().text;
-      TokenType token = tokenizer.Current().type;
+      string value = Text();
+      TokenType token = Type();
 
       if (type == ReservedWordMap[ReservedWordTypeBoolean]) {
         if (value != ReservedWordMap[ReservedWordBooleanFalse]

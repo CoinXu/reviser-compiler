@@ -16,38 +16,38 @@ using namespace std;
 
 namespace reviser {
 namespace ast {
-  class Declare: Expr {
+  class ExprDeclare: Expr {
   private:
     string type;
     ExprAssign assign;
 
   public:
     string generate();
-    Declare(string type, ExprAssign assign);
+    ExprDeclare(string type, ExprAssign assign);
   };
 
-  class StructProperty: Stmt {
+  class StmtStmtStructProperty: Stmt {
   private:
-    Declare declare;
+    ExprDeclare declare;
     vector<string> decorater;
 
   public:
     string generate();
-    StructProperty(Declare declare);
+    StmtStmtStructProperty(ExprDeclare declare);
     void AddDecorater(string decorater);
  };
 
-  class Struct: Stmt {
+  class StmtStruct: Stmt {
   private:
     string word;
     string id;
-    vector<StructProperty> property;
+    vector<StmtStmtStructProperty> property;
 
   public:
     string generate();
     void SetWord(string word);
     void SetID(string id);
-    void AddProperty(StructProperty property);
+    void AddProperty(StmtStmtStructProperty property);
   };
 
 }; // compiler

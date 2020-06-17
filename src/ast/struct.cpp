@@ -13,21 +13,23 @@ using namespace std;
 
 namespace reviser {
 namespace ast {
-  // Declare
-  Declare::Declare(string type, ExprAssign assign): type(type), assign(assign) {}
+  // ExprDeclare
+  ExprDeclare::ExprDeclare(string type, ExprAssign assign)
+    : type(type), assign(assign) {}
 
-  string Declare::generate() {
+  string ExprDeclare::generate() {
     return type + " " + assign.generate();
   }
 
-  // StructProperty
-  StructProperty::StructProperty(Declare declare): declare(declare) {}
+  // StmtStmtStructProperty
+  StmtStmtStructProperty::StmtStmtStructProperty(ExprDeclare declare)
+    : declare(declare) {}
 
-  void StructProperty::AddDecorater(string decorater_) {
+  void StmtStmtStructProperty::AddDecorater(string decorater_) {
     decorater.push_back(decorater_);
   }
 
-  string StructProperty::generate() {
+  string StmtStmtStructProperty::generate() {
     const char* const delim = ", ";
     ostringstream imploded;
     copy(
@@ -38,22 +40,22 @@ namespace ast {
     return imploded.str() + declare.generate() + ";";
   }
 
-  // Struct
-  void Struct::SetID(string id_) {
+  // StmtStruct
+  void StmtStruct::SetID(string id_) {
     id = id_;
   }
 
-  void Struct::SetWord(string word_) {
+  void StmtStruct::SetWord(string word_) {
     word = word_;
   }
 
-  void Struct::AddProperty(StructProperty property_) {
+  void StmtStruct::AddProperty(StmtStmtStructProperty property_) {
     property.push_back(property_);
   }
 
-  string Struct::generate() {
+  string StmtStruct::generate() {
     string p = "";
-    vector<StructProperty>::iterator it;
+    vector<StmtStmtStructProperty>::iterator it;
 
     for (it = property.begin(); it != property.end(); it++) {
       p = p + (*it).generate() + ";\n";
