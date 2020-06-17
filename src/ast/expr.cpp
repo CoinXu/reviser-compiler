@@ -55,46 +55,50 @@ namespace ast {
 
 
   string Declare::generate() {
-    string name;
+    string type_name;
 
     switch (type) {
       case DataTypeBoolean:
-        name = ReservedWordMap[ReservedWordTypeBoolean];
+        type_name = ReservedWordMap[ReservedWordTypeBoolean];
         break;
 
       case DataTypeFloat:
-        name = ReservedWordMap[ReservedWordTypeFloat];
+        type_name = ReservedWordMap[ReservedWordTypeFloat];
         break;
 
       case DataTypeDouble:
-        name = ReservedWordMap[ReservedWordTypeDouble];
+        type_name = ReservedWordMap[ReservedWordTypeDouble];
         break;
 
       case DataTypeInt32:
-        name = ReservedWordMap[ReservedWordTypeInt32];
+        type_name = ReservedWordMap[ReservedWordTypeInt32];
         break;
 
       case DataTypeInt64:
-        name = ReservedWordMap[ReservedWordTypeInt64];
+        type_name = ReservedWordMap[ReservedWordTypeInt64];
         break;
 
       case DataTypeUint32:
-        name = ReservedWordMap[ReservedWordTypeUint32];
+        type_name = ReservedWordMap[ReservedWordTypeUint32];
         break;
 
       case DataTypeUint64:
-        name = ReservedWordMap[ReservedWordTypeUint64];
+        type_name = ReservedWordMap[ReservedWordTypeUint64];
+        break;
+
+      case DataTypeString:
+        type_name = ReservedWordMap[ReservedWordTypeString];
         break;
 
       case DataTypeEnum:
-        name = eid.text;
+        type_name = eid.text;
         break;
 
       default:
-        name = "";
+        type_name = "";
     }
 
-    return name + " " + id.text + " "
+    return type_name + " " + id.text + " = "
       + (type == DataTypeEnum ?  ev.generate() : dv.generate());
   }
 

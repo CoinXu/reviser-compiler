@@ -23,19 +23,19 @@ namespace compiler {
     do {
       if (LookAtTokenType(compiler::Struct)) {
         ast::Struct s = Struct();
-        ast::Struct* sp = &s;
-        seq.AddStmt(sp);
+        message.Info(s.generate());
+        seq.AddStmt(s);
       } else if (LookAtTokenType(compiler::Enum)) {
         ast::Stmt s = Enum();
-        ast::Stmt* sp = &s;
-        seq.AddStmt(sp);
+        message.Info(s.generate());
+        seq.AddStmt(s);
       } else {
         Next();
       }
     } while (!Accept(CodeEnd));
 
-    message.Info("code generated:");
-    message.Info(seq.generate());
+    // message.Info("code generated:");
+    // message.Info(seq.generate());
   }
 
   //
@@ -69,6 +69,12 @@ namespace compiler {
     return CurrentType() == expect;
   }
 
+  Token Parser::CloneCurrentToken() {
+    Token current = tokenizer.Current();
+    Token c;
+    return c;
+  }
+
   TokenType Parser::CurrentType() {
     return tokenizer.Current().type;
   }
@@ -87,9 +93,6 @@ namespace compiler {
 
   // stmt -> struct
   ast::Struct Parser::Struct() {
-    // ast::Struct* s = new ast::Struct(token);
-    // Stmt* sp = dynamic_cast<Stmt*>(s);
-    // return *sp;
     Expect(compiler::Struct);
     Expect(ID);
     ast::Struct s(token);
@@ -140,7 +143,10 @@ namespace compiler {
   }
 
   ast::Declare Parser::DataTypeDeclare() {
-    Token t = token;
+    // Token t = tokenizer.Current();
+    // string type = PreviousText();
+
+    Token id = tokenizer.Current();
     string type = PreviousText();
 
     Expect(ID);
@@ -148,7 +154,7 @@ namespace compiler {
     // TODO
     // value optional support
     if (Accept(compiler::Assign)) {
-      Token vt = tokenizer.Current();
+      Token dvt = tokenizer.Current();
       string value = CurrentText();
 
       if (type == ReservedWordMap[ReservedWordTypeBoolean]) {
@@ -158,20 +164,46 @@ namespace compiler {
         } else {
           Next();
         }
-      } else if (type == ReservedWordMap[ReservedWordTypeFloat]
-        || type == ReservedWordMap[ReservedWordTypeDouble]
-        || type == ReservedWordMap[ReservedWordTypeInt32]
-        || type == ReservedWordMap[ReservedWordTypeInt64]
-        || type == ReservedWordMap[ReservedWordTypeUint32]
-        || type == ReservedWordMap[ReservedWordTypeUint64]) {
+
+        ast::DataValue dv(DataTypeBoolean, dvt);
+        ast::Declare declare(DataTypeBoolean, id, dv);
+        return declare;
+      } else if (type == ReservedWordMap[ReservedWordTypeFloat]) {
         Expect(Digit);
+        ast::DataValue dv(DataTypeFloat, dvt);
+        ast::Declare declare(DataTypeFloat, id, dv);
+        return declare;
+      } else if (type == ReservedWordMap[ReservedWordTypeDouble]) {
+        Expect(Digit);
+        ast::DataValue dv(DataTypeDouble, dvt);
+        ast::Declare declare(DataTypeDouble, id, dv);
+        return declare;
+      } else if (type == ReservedWordMap[ReservedWordTypeInt32]) {
+        Expect(Digit);
+        ast::DataValue dv(DataTypeInt32, dvt);
+        ast::Declare declare(DataTypeInt32, id, dv);
+        return declare;
+      } else if (type == ReservedWordMap[ReservedWordTypeInt64]) {
+        Expect(Digit);
+        ast::DataValue dv(DataTypeInt64, dvt);
+        ast::Declare declare(DataTypeInt64, id, dv);
+        return declare;
+      } else if (type == ReservedWordMap[ReservedWordTypeUint32]) {
+        Expect(Digit);
+        ast::DataValue dv(DataTypeUint32, dvt);
+        ast::Declare declare(DataTypeUint32, id, dv);
+        return declare;
+      } else if (type == ReservedWordMap[ReservedWordTypeUint64]) {
+        Expect(Digit);
+        ast::DataValue dv(DataTypeUint64, dvt);
+        ast::Declare declare(DataTypeUint64, id, dv);
+        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeString]) {
         Expect(Letter);
+        ast::DataValue dv(DataTypeString, dvt);
+        ast::Declare declare(DataTypeString, id, dv);
+        return declare;
       }
-
-      ast::DataValue v(DataTypeBoolean, vt);
-      ast::Declare declare(DataTypeBoolean, t, v);
-      return declare;
     }
   }
 
@@ -180,11 +212,11 @@ namespace compiler {
     Expect(ID);
     Token id = token;
     Expect(compiler::Assign);
+    Expect(ID);
     Token ei = token;
-    Expect(ID);
     Expect(Connection);
-    Token ep = token;
     Expect(ID);
+    Token ep = token;
 
     ast::EnumValue v(ei, ep);
     ast::Declare declare(DataTypeEnum, id, eid, v);

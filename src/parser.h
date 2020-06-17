@@ -32,6 +32,7 @@ namespace compiler {
     void Next();
     bool LookAt(string expect);
     bool LookAtTokenType(TokenType expect);
+    Token CloneCurrentToken();
 
     TokenType CurrentType();
     TokenType PreviousType();
