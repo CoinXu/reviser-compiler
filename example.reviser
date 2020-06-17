@@ -7,6 +7,6 @@ enum Color {
 struct Foo {
   required string foo = "foo";
   bool baz = true;
-  Bar bar = Color.Red;
+  Color bar = Color.Red;
   int32 age = 0;
 }

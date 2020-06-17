@@ -73,11 +73,6 @@ namespace compiler {
     } else if (Accept(ID)) {
       DefStructEnumDeclare();
     }
-    // else {
-    //   message.SetLine(tokenizer.Current().start_line);
-    //   message.SetColumn(tokenizer.Current().column_start);
-    //   message.Runtime("unknow token \n" + tokenizer.Current().text);
-    // }
   }
 
   void Parser::DefStructDataTypeDeclare() {

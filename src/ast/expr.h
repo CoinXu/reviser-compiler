@@ -10,21 +10,24 @@
 #include <string>
 #include <ast/node.h>
 
+using namespace std;
+
 namespace reviser {
 namespace ast {
   class Expr: Node {
   public:
-    std::string generate();
+    string generate();
   };
 
   class ExprAssign: Expr {
   private:
-    std::string id;
-    std::string value;
+    string id;
+    string value;
 
   public:
-    std::string generate();
-    ExprAssign(std::string id, std::string value);
+    string generate();
+    void SetId(string id);
+    void SetValue(string value);
   };
 }; // compiler
 }; // reviser

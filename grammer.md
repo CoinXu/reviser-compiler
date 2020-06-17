@@ -41,5 +41,5 @@ string  -> "\"" [.*] "\""
 ## 程序
 ```
 program -> { stmt }*
-stmt    -> (struct | enum)
+stmt    -> struct | enum
 ```

@@ -12,38 +12,41 @@
 #include <ast/expr.h>
 #include <vector>
 
+using namespace std;
+
 namespace reviser {
 namespace ast {
   class Declare: Expr {
   private:
-    std::string type;
+    string type;
     ExprAssign assign;
 
   public:
-    std::string generate();
-    Declare(std::string type, ExprAssign assign);
+    string generate();
+    Declare(string type, ExprAssign assign);
   };
 
   class StructProperty: Stmt {
   private:
     Declare declare;
-    std::vector<std::string> decorater;
+    vector<string> decorater;
 
   public:
-    std::string generate();
+    string generate();
     StructProperty(Declare declare);
-    void AddDecorater(std::string decorater);
+    void AddDecorater(string decorater);
  };
 
   class Struct: Stmt {
   private:
-    std::string word;
-    std::string id;
-    std::vector<StructProperty> property;
+    string word;
+    string id;
+    vector<StructProperty> property;
 
   public:
-    std::string generate();
-    Struct(std::string word, std::string id);
+    string generate();
+    void SetWord(string word);
+    void SetID(string id);
     void AddProperty(StructProperty property);
   };
 

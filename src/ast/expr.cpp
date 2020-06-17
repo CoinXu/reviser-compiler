@@ -13,7 +13,13 @@ namespace ast {
     return "";
   }
 
-  ExprAssign::ExprAssign(std::string id, std::string value): id(id), value(value) {}
+  void ExprAssign::SetId(std::string id_) {
+    id = id_;
+  }
+
+  void ExprAssign::SetValue(std::string value_) {
+    value = value_;
+  }
 
   std::string ExprAssign::generate() {
     return id + " = " + value;
