@@ -1,12 +1,6 @@
-enum Color {
-  Red,
-  Blue,
-  Pink	
-}
-
 struct Foo {
-  required($properties.foo) string foo "foo";
-  bool baz true;
-  Bar bar Color.Red;
-  int32 age max(16) min(0) 0;
+  required string foo = "foo";
+  bool baz = true;
+  Color bar = Color.Red;
+  int32 age = 0;
 }
