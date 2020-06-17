@@ -181,15 +181,16 @@ void Tokenizer::NextChar() {
 }
 
 bool Tokenizer::Next() {
-  if (pos == input.size()) {
+  previous = current;
+
+  if (pos >= input.size()) {
+    current.type = CodeEnd;
     return false;
   }
 
   ConsumeCharacters<Whitespace>();
 
-  previous = current;
   current.text = peek;
-
   int start_line = line;
   int start_column = column;
   int start_pos = pos;

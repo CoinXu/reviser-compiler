@@ -1,36 +1,48 @@
 /**
- * @date 2020-06-16
+ * @date 2020-06-17
  * @author duanxian0605@163.com
  * @description
  */
 
 #include <parser.h>
-#include <message.h>
-#include <ast/stmt.h>
 
-using namespace reviser::message;
 using namespace std;
+using namespace reviser;
 
 namespace reviser {
 namespace compiler {
-
+  //
+  // public
   Parser::Parser(Tokenizer tokenizer)
-    : tokenizer(tokenizer), message("parser"), stmt(), current() {}
+    : tokenizer(tokenizer), message("parser"), seq() {}
 
   Parser::~Parser() {}
 
   void Parser::Program() {
     Accept(CodeStart);
-
     do {
-      DefStmt();
+      if (LookAtTokenType(compiler::Struct)) {
+        ast::Struct s = Struct();
+        ast::Struct* sp = &s;
+        seq.AddStmt(sp);
+      } else if (LookAtTokenType(compiler::Enum)) {
+        ast::Stmt s = Enum();
+        ast::Stmt* sp = &s;
+        seq.AddStmt(sp);
+      } else {
+        Next();
+      }
     } while (!Accept(CodeEnd));
+
+    message.Info("code generated:");
+    message.Info(seq.generate());
   }
 
   //
   // private
   bool Parser::Accept(TokenType type) {
-    if (tokenizer.Current().type == type) {
+    token = tokenizer.Current();
+    if (token.type == type) {
       tokenizer.Next();
       return true;
     }
@@ -45,66 +57,106 @@ namespace compiler {
     }
   }
 
+  void Parser::Next() {
+    tokenizer.Next();
+  }
+
   bool Parser::LookAt(string expect) {
-    return tokenizer.Current().text == expect;
+    return CurrentText() == expect;
   }
 
-  string Parser::Text() {
-    return tokenizer.Current().text;
+  bool Parser::LookAtTokenType(TokenType expect) {
+    return CurrentType() == expect;
   }
 
-  TokenType Parser::Type() {
+  TokenType Parser::CurrentType() {
     return tokenizer.Current().type;
   }
 
-  void Parser::DefStruct() {
+  TokenType Parser::PreviousType() {
+    return tokenizer.Previous().type;
+  }
+
+  string Parser::CurrentText() {
+    return tokenizer.Current().text;
+  }
+
+  string Parser::PreviousText() {
+    return tokenizer.Previous().text;
+  }
+
+  // stmt -> struct
+  ast::Struct Parser::Struct() {
+    // ast::Struct* s = new ast::Struct(token);
+    // Stmt* sp = dynamic_cast<Stmt*>(s);
+    // return *sp;
+    Expect(compiler::Struct);
     Expect(ID);
+    ast::Struct s(token);
     Expect(LeftBrace);
 
     do {
-      DefStructProperty();
-    } while (Accept(Semicolon));
+      s.AddProperty(StructProperty());
+    } while (Accept(Semicolon) && !LookAtTokenType(RightBrace));
 
     Expect(RightBrace);
+    return s;
   }
 
-  void Parser::DefStructProperty() {
-    if (Accept(Decorater)) {
+  ast::StructProperty Parser::StructProperty() {
+    vector<ast::Decorater> v;
+
+    if (Accept(compiler::Decorater)) {
       do {
-        DefDecorater();
-      } while (Accept(Decorater));
+        v.push_back(Decorater());
+      } while (Accept(compiler::Decorater));
     }
 
-    DefDeclare();
+    ast::Declare declare = Declare();
+    ast::StructProperty property(declare);
+
+    for (ast::Decorater d: v) {
+      property.AddDecorater(d);
+    }
+
+    return property;
   }
 
-  void Parser::DefDecorater() {
-    // TODO
+  ast::Decorater Parser::Decorater() {
+    ast::Decorater d(token);
+    return d;
   }
 
-  void Parser::DefDeclare() {
+  // expr
+  ast::Declare Parser::Declare() {
     if (Accept(DataType)) {
-      DefStructDataTypeDeclare();
+      return DataTypeDeclare();
     } else if (Accept(ID)) {
-      DefStructEnumDeclare();
+      return EnumDeclare();
     }
+    // TODO
+    // else if
+    // runtime error
   }
 
-  void Parser::DefStructDataTypeDeclare() {
-    string type = tokenizer.Previous().text;
+  ast::Declare Parser::DataTypeDeclare() {
+    Token t = token;
+    string type = PreviousText();
 
     Expect(ID);
 
-    if (Accept(Assign)) {
-      string value = Text();
-      TokenType token = Type();
+    // TODO
+    // value optional support
+    if (Accept(compiler::Assign)) {
+      Token vt = tokenizer.Current();
+      string value = CurrentText();
 
       if (type == ReservedWordMap[ReservedWordTypeBoolean]) {
         if (value != ReservedWordMap[ReservedWordBooleanFalse]
           && value != ReservedWordMap[ReservedWordBooleanTrue]) {
           message.Runtime("expect true or false");
         } else {
-          tokenizer.Next();
+          Next();
         }
       } else if (type == ReservedWordMap[ReservedWordTypeFloat]
         || type == ReservedWordMap[ReservedWordTypeDouble]
@@ -116,42 +168,40 @@ namespace compiler {
       } else if (type == ReservedWordMap[ReservedWordTypeString]) {
         Expect(Letter);
       }
+
+      ast::DataValue v(DataTypeBoolean, vt);
+      ast::Declare declare(DataTypeBoolean, t, v);
+      return declare;
     }
   }
 
-  void Parser::DefStructEnumDeclare() {
+  ast::Declare Parser::EnumDeclare() {
+    Token eid = token;
     Expect(ID);
-    Expect(Assign);
+    Token id = token;
+    Expect(compiler::Assign);
+    Token ei = token;
     Expect(ID);
     Expect(Connection);
-    Expect(ID);
-  }
-
-  void Parser::DefEnum() {
-    Expect(ID);
-    Expect(LeftBrace);
-
-    do {
-      DefEnumProperty();
-    } while (Accept(Comma));
-
-    Expect(RightBrace);
-  }
-
-  void Parser::DefEnumProperty() {
+    Token ep = token;
     Expect(ID);
 
-    if (Accept(Assign)) {
-      Expect(Digit);
-    }
+    ast::EnumValue v(ei, ep);
+    ast::Declare declare(DataTypeEnum, id, eid, v);
+
+    return declare;
   }
 
-  void Parser::DefStmt() {
-    if (Accept(Struct)) {
-      DefStruct();
-    } else if (Accept(Enum)) {
-      DefEnum();
-    }
+  //
+  // stmt -> enum
+  ast::Stmt Parser::EnumProperty() {
+    ast::Stmt s;
+    return s;
   }
-}; // reviser
+
+  ast::Stmt Parser::Enum () {
+    ast::Stmt s;
+    return s;
+  }
 }; // compiler
+}; // reviser

@@ -8,27 +8,77 @@
 #define REVISER_COMPILER_AST_EXPR
 
 #include <string>
+#include <tokenizer.h>
 #include <ast/node.h>
 
 using namespace std;
+using namespace reviser::compiler;
 
 namespace reviser {
 namespace ast {
-  class Expr: Node {
+  // Expr
+  class Expr: public Node {
   public:
     string generate();
   };
 
-  class ExprAssign: Expr {
+  //
+  // DataValue
+  // 0
+  // "foo"
+  class DataValue: public Expr {
   private:
-    string id;
-    string value;
+    DataValueType type;
+    Token id;
 
   public:
+    DataValue(DataValueType type, Token id);
     string generate();
-    void SetId(string id);
-    void SetValue(string value);
   };
+
+  //
+  // Foo.Bar
+  class EnumValue: public Expr {
+  private:
+    Token id;
+    Token property;
+
+  public:
+    EnumValue(Token id, Token property);
+    string generate();
+  };
+
+  //
+  // Assign
+  // foo = bar
+  class Assign: public Expr {
+  private:
+    Token id;
+    DataValue value;
+
+  public:
+    Assign(Token id, DataValue value);
+    string generate();
+  };
+
+  //
+  // Declare
+  // int32 foo = 1
+  // Color bar = Color.Red;
+  class Declare: public Expr {
+  private:
+    DataValueType type;
+    Token id;
+    Token eid;
+    DataValue dv;
+    EnumValue ev;
+
+  public:
+    Declare(DataValueType type, Token id, DataValue dv);
+    Declare(DataValueType type, Token id, Token eid, EnumValue ev);
+    string generate();
+  };
+
 }; // compiler
 }; // reviser
 

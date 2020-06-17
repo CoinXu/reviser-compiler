@@ -11,7 +11,11 @@
 #include <tokenizer.h>
 #include <message.h>
 #include <ast/stmt.h>
+#include <ast/expr.h>
+#include <ast/stmt.h>
+#include <ast/stmt_struct.h>
 
+using namespace std;
 using namespace reviser;
 
 namespace reviser {
@@ -20,15 +24,36 @@ namespace compiler {
   private:
     Tokenizer tokenizer;
     message::Message message;
-    ast::Stmt stmt;
-    ast::Stmt current;
+    ast::Seq seq;
+    Token token;
 
     bool Accept(TokenType type);
     void Expect(TokenType type);
+    void Next();
+    bool LookAt(string expect);
+    bool LookAtTokenType(TokenType expect);
 
-    bool LookAt(std::string expect);
-    TokenType Type();
-    std::string Text();
+    TokenType CurrentType();
+    TokenType PreviousType();
+    string CurrentText();
+    string PreviousText();
+
+    // stmt -> struct
+    ast::Struct Struct();
+    ast::StructProperty StructProperty();
+    ast::Decorater Decorater();
+
+    // expr
+    ast::DataValue DataValue();
+    ast::EnumValue EnumValue();
+    ast::Assign Assign();
+    ast::Declare Declare();
+    ast::Declare DataTypeDeclare();
+    ast::Declare EnumDeclare();
+
+    // stmt -> enum
+    ast::Stmt EnumProperty();
+    ast::Stmt Enum();
 
     void DefStruct();
     void DefStructProperty();

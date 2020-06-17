@@ -67,7 +67,8 @@ namespace compiler {
     DataTypeInt64,
     DataTypeUint32,
     DataTypeUint64,
-    DataTypeString
+    DataTypeString,
+    DataTypeEnum
   };
 
   struct Token {

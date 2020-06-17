@@ -6,21 +6,30 @@
  */
 
 #include <ast/stmt.h>
-#include <message.h>
+
+using namespace std;
 
 namespace reviser {
 namespace ast {
-  std::string Stmt::generate() {
-    message::Message message("code");
-    std::vector<Stmt>::iterator it;
+  //
+  //Stmt
+  string Stmt::generate() {
+    return "";
+  }
 
-    for (it = stmts.begin(); it != stmts.end(); it++) {
-      message.Info((*it).generate());
-    }
-  };
-
-  void Stmt::AddStmt(Stmt stmt) {
+  //
+  // Seq
+  void Seq::AddStmt(Stmt stmt) {
     stmts.push_back(stmt);
   }
+
+  string Seq::generate() {
+    string code;
+    for (Stmt s: stmts) {
+      code = code + s.generate();
+    }
+    return code;
+  }
+
 }; // reviser
 }; // ast

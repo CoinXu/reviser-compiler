@@ -1,9 +1,3 @@
-enum Color {
-  Red,
-  Blue,
-  Pink = 16
-}
-
 struct Foo {
   required string foo = "foo";
   bool baz = true;
