@@ -20,7 +20,6 @@ namespace compiler {
 
   void Parser::Program() {
     Accept(CodeStart);
-
     do {
       if (LookAtTokenType(compiler::Struct)) {
         ast::Struct s = Struct();
@@ -157,54 +156,44 @@ namespace compiler {
     if (Accept(compiler::Assign)) {
       Token dvt = tokenizer.Current();
       string value = CurrentText();
+      DataValueType data_type;
 
       if (type == ReservedWordMap[ReservedWordTypeBoolean]) {
+        data_type = DataTypeBoolean;
         if (value != ReservedWordMap[ReservedWordBooleanFalse]
           && value != ReservedWordMap[ReservedWordBooleanTrue]) {
           message.Runtime("expect true or false");
         } else {
           Next();
         }
-
-        ast::DataValue dv(DataTypeBoolean, dvt);
-        ast::Declare declare(DataTypeBoolean, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeFloat]) {
+        data_type = DataTypeFloat;
         Expect(Digit);
-        ast::DataValue dv(DataTypeFloat, dvt);
-        ast::Declare declare(DataTypeFloat, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeDouble]) {
+        data_type = DataTypeDouble;
         Expect(Digit);
-        ast::DataValue dv(DataTypeDouble, dvt);
-        ast::Declare declare(DataTypeDouble, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeInt32]) {
+        data_type = DataTypeInt32;
         Expect(Digit);
-        ast::DataValue dv(DataTypeInt32, dvt);
-        ast::Declare declare(DataTypeInt32, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeInt64]) {
+        data_type = DataTypeInt64;
         Expect(Digit);
-        ast::DataValue dv(DataTypeInt64, dvt);
-        ast::Declare declare(DataTypeInt64, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeUint32]) {
+        data_type = DataTypeUint32;
         Expect(Digit);
-        ast::DataValue dv(DataTypeUint32, dvt);
-        ast::Declare declare(DataTypeUint32, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeUint64]) {
+        data_type = DataTypeUint64;
         Expect(Digit);
-        ast::DataValue dv(DataTypeUint64, dvt);
-        ast::Declare declare(DataTypeUint64, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeString]) {
+        data_type = DataTypeString;
         Expect(Letter);
-        ast::DataValue dv(DataTypeString, dvt);
-        ast::Declare declare(DataTypeString, id, dv);
-        return declare;
       }
+
+      ast::DataValue dv(data_type, dvt);
+      ast::Declare declare(data_type, id, dv);
+      return declare;
+    } else {
+      message.Runtime("expect Assign token");
     }
   }
 
