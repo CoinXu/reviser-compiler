@@ -39,17 +39,57 @@ namespace ast {
 
   //
   // Struct
-  Struct::Struct(Token id): id(id) {}
+  Struct::Struct(Token id, int level): id(id), level(level) {}
 
   void Struct::AddProperty(StructProperty property) {
+    contents.push_back({ DeclareProperty, properties.size() });
     properties.push_back(property);
   }
 
+  void Struct::AddStruct(Struct st) {
+    contents.push_back({ DeclareStruct, structs.size() });
+    structs.push_back(st);
+  }
+
+  void Struct::AddEnum(ast::Enum en) {
+    contents.push_back({ DeclareEnum, enums.size() });
+    enums.push_back(en);
+  }
+
   string Struct::generate() {
+    // string code = "struct " + id.text + " {\n";
+    // for (StructProperty p: properties) {
+    //   code = code + "  " + p.generate() + ";\n";
+    // }
+    // return code + "}";
+
     string code = "struct " + id.text + " {\n";
-    for (StructProperty p: properties) {
-      code = code + "  " + p.generate() + ";\n";
+
+    for (ContentStore p: contents) {
+      switch (p.type) {
+        case DeclareProperty: {
+          StructProperty s = properties.at(p.index);
+          code = code + " " + s.generate() + ";\n";
+          break;
+        }
+
+        case DeclareStruct: {
+          ast::Struct s = structs.at(p.index);
+          code = code + " " + s.generate() + "\n";
+          break;
+        }
+
+        case DeclareEnum: {
+          ast::Enum s = enums.at(p.index);
+          code = code + " " + s.generate() + "\n";
+          break;
+        }
+
+        default:
+          break;
+      }
     }
+
     return code + "}";
   }
 }; // reviser

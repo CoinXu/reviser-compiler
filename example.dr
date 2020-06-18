@@ -1,12 +1,19 @@
 enum Color {
-  Red = 1,
-  Blue,
-  Yellow
+  Red,
+  Pink = 100,
+  Blue = 200
 }
 
 struct Foo {
+  enum Type {
+    foo,
+    bar,
+    baz = 10
+  }
+
   required string foo = "foo";
   bool baz = true;
   Color bar = Color.Red;
+  Type type = Type.foo;
   int32 age = 0;
 }

@@ -1,6 +1,0 @@
-struct Foo {
-  required string foo = "foo";
-  bool baz = true;
-  Color bar = Color.Red;
-  int32 age = 0;
-}
