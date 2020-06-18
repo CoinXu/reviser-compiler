@@ -4,7 +4,6 @@
  * @description
  */
 
-#include <algorithm>
 #include <iterator>
 #include <sstream>
 #include <ast/stmt_struct.h>
@@ -49,7 +48,7 @@ namespace ast {
   string Struct::generate() {
     string code = "struct " + id.text + " {\n";
     for (StructProperty p: properties) {
-      code = code + p.generate() + ";\n";
+      code = code + "  " + p.generate() + ";\n";
     }
     return code + "}";
   }

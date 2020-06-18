@@ -14,6 +14,7 @@
 #include <ast/expr.h>
 #include <ast/stmt.h>
 #include <ast/stmt_struct.h>
+#include <ast/stmt_enum.h>
 
 using namespace std;
 using namespace reviser;
@@ -53,8 +54,8 @@ namespace compiler {
     ast::Declare EnumDeclare();
 
     // stmt -> enum
-    ast::Stmt EnumProperty();
-    ast::Stmt Enum();
+    ast::EnumProperty EnumProperty();
+    ast::Enum Enum();
 
     void DefStruct();
     void DefStructProperty();

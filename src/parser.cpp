@@ -20,13 +20,14 @@ namespace compiler {
 
   void Parser::Program() {
     Accept(CodeStart);
+
     do {
       if (LookAtTokenType(compiler::Struct)) {
         ast::Struct s = Struct();
         message.Info(s.generate());
         seq.AddStmt(s);
       } else if (LookAtTokenType(compiler::Enum)) {
-        ast::Stmt s = Enum();
+        ast::Enum s = Enum();
         message.Info(s.generate());
         seq.AddStmt(s);
       } else {
@@ -34,8 +35,8 @@ namespace compiler {
       }
     } while (!Accept(CodeEnd));
 
-    // message.Info("code generated:");
-    // message.Info(seq.generate());
+    message.Info("code generated:");
+    message.Info(seq.generate());
   }
 
   //
@@ -226,14 +227,34 @@ namespace compiler {
 
   //
   // stmt -> enum
-  ast::Stmt Parser::EnumProperty() {
-    ast::Stmt s;
-    return s;
+  ast::EnumProperty Parser::EnumProperty() {
+    Expect(ID);
+    Token id = token;
+
+    if (Accept(compiler::Assign)) {
+      Expect(Digit);
+      ast::DataValue value(DataTypeInt32, token);
+      ast::EnumProperty property(id, value);
+      return property;
+    }
+
+    ast::EnumProperty property(id);
+    return property;
   }
 
-  ast::Stmt Parser::Enum () {
-    ast::Stmt s;
-    return s;
+  ast::Enum Parser::Enum () {
+    Expect(compiler::Enum);
+    Expect(ID);
+    Token id = token;
+    Expect(LeftBrace);
+
+    ast::Enum e(id);
+
+    do {
+      e.AddProperty(EnumProperty());
+    } while (Accept(Comma));
+
+    return e;
   }
 }; // compiler
 }; // reviser
