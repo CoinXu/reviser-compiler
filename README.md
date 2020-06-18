@@ -35,7 +35,8 @@ make uninstall
 + [ ] compile to typescript.
 + [ ] `decorator` allow parameters.
 + [ ] check data type.
-+ [ ] support nested statement & scope.
++ [x] support nested statement
++ [ ] support scope.
 + [ ] support package & import.
 + [ ] syntax highligth for editor.
 
