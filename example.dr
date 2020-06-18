@@ -11,6 +11,15 @@ struct Foo {
     baz = 10
   }
 
+  struct Bar {
+    enum BarType {
+      Foo
+    }
+
+    bool bar = true;
+    optional int32 age = 1;
+  }
+
   required string foo = "foo";
   bool baz = true;
   Color bar = Color.Red;
