@@ -68,7 +68,8 @@ namespace compiler {
     DataTypeUint32,
     DataTypeUint64,
     DataTypeString,
-    DataTypeEnum
+    DataTypeEnum,
+    DataTypeNull
   };
 
   struct Token {
@@ -81,6 +82,17 @@ namespace compiler {
     int column_end;      // 列结束位置
     int pos_start;       // 全部字符中开始位置
     int pos_end;         // 全部字符中结束位置
+  };
+
+  static const struct Token EmptyToken = {
+    ID,
+    "",
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
   };
 
   class Tokenizer {

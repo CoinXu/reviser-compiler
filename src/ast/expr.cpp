@@ -21,6 +21,10 @@ namespace ast {
   DataValue::DataValue(DataValueType type, Token id)
     : type(type), id(id) {}
 
+  DataValueType DataValue::DataType() {
+    return type;
+  }
+
   string DataValue::generate() {
     return id.text;
   }
@@ -43,15 +47,11 @@ namespace ast {
   }
 
   // Declare
-  Token DefaultToken;
-  EnumValue DefaultEnumValue(DefaultToken, DefaultToken);
-  DataValue DefaultDataValue(DataTypeBoolean, DefaultToken);
-
   Declare::Declare(DataValueType type, Token id, DataValue dv)
-    : type(type), id(id), eid(DefaultToken), dv(dv), ev(DefaultEnumValue) {}
+    : type(type), id(id), eid(EmptyToken), dv(dv) {}
 
   Declare::Declare(DataValueType type, Token id, Token eid, EnumValue ev)
-    : type(type), id(id), eid(eid), dv(DefaultDataValue), ev(ev) {}
+    : type(type), id(id), eid(eid), ev(ev) {}
 
 
   string Declare::generate() {

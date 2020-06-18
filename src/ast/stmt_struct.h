@@ -20,6 +20,7 @@ namespace reviser {
 namespace ast {
   //
   // Decorater
+  // required | optional
   class Decorater: public Stmt {
   private:
     Token id;

@@ -26,7 +26,7 @@ namespace compiler {
         message.Info(s.generate());
         seq.AddStmt(s);
       } else if (LookAtTokenType(compiler::Enum)) {
-        ast::Stmt s = Enum();
+        ast::Enum s = Enum();
         message.Info(s.generate());
         seq.AddStmt(s);
       } else {
@@ -34,8 +34,8 @@ namespace compiler {
       }
     } while (!Accept(CodeEnd));
 
-    // message.Info("code generated:");
-    // message.Info(seq.generate());
+    message.Info("code generated:");
+    message.Info(seq.generate());
   }
 
   //
@@ -156,54 +156,44 @@ namespace compiler {
     if (Accept(compiler::Assign)) {
       Token dvt = tokenizer.Current();
       string value = CurrentText();
+      DataValueType data_type;
 
       if (type == ReservedWordMap[ReservedWordTypeBoolean]) {
+        data_type = DataTypeBoolean;
         if (value != ReservedWordMap[ReservedWordBooleanFalse]
           && value != ReservedWordMap[ReservedWordBooleanTrue]) {
           message.Runtime("expect true or false");
         } else {
           Next();
         }
-
-        ast::DataValue dv(DataTypeBoolean, dvt);
-        ast::Declare declare(DataTypeBoolean, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeFloat]) {
+        data_type = DataTypeFloat;
         Expect(Digit);
-        ast::DataValue dv(DataTypeFloat, dvt);
-        ast::Declare declare(DataTypeFloat, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeDouble]) {
+        data_type = DataTypeDouble;
         Expect(Digit);
-        ast::DataValue dv(DataTypeDouble, dvt);
-        ast::Declare declare(DataTypeDouble, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeInt32]) {
+        data_type = DataTypeInt32;
         Expect(Digit);
-        ast::DataValue dv(DataTypeInt32, dvt);
-        ast::Declare declare(DataTypeInt32, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeInt64]) {
+        data_type = DataTypeInt64;
         Expect(Digit);
-        ast::DataValue dv(DataTypeInt64, dvt);
-        ast::Declare declare(DataTypeInt64, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeUint32]) {
+        data_type = DataTypeUint32;
         Expect(Digit);
-        ast::DataValue dv(DataTypeUint32, dvt);
-        ast::Declare declare(DataTypeUint32, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeUint64]) {
+        data_type = DataTypeUint64;
         Expect(Digit);
-        ast::DataValue dv(DataTypeUint64, dvt);
-        ast::Declare declare(DataTypeUint64, id, dv);
-        return declare;
       } else if (type == ReservedWordMap[ReservedWordTypeString]) {
+        data_type = DataTypeString;
         Expect(Letter);
-        ast::DataValue dv(DataTypeString, dvt);
-        ast::Declare declare(DataTypeString, id, dv);
-        return declare;
       }
+
+      ast::DataValue dv(data_type, dvt);
+      ast::Declare declare(data_type, id, dv);
+      return declare;
+    } else {
+      message.Runtime("expect Assign token");
     }
   }
 
@@ -226,14 +216,34 @@ namespace compiler {
 
   //
   // stmt -> enum
-  ast::Stmt Parser::EnumProperty() {
-    ast::Stmt s;
-    return s;
+  ast::EnumProperty Parser::EnumProperty() {
+    Expect(ID);
+    Token id = token;
+
+    if (Accept(compiler::Assign)) {
+      Expect(Digit);
+      ast::DataValue value(DataTypeInt32, token);
+      ast::EnumProperty property(id, value);
+      return property;
+    }
+
+    ast::EnumProperty property(id);
+    return property;
   }
 
-  ast::Stmt Parser::Enum () {
-    ast::Stmt s;
-    return s;
+  ast::Enum Parser::Enum () {
+    Expect(compiler::Enum);
+    Expect(ID);
+    Token id = token;
+    Expect(LeftBrace);
+
+    ast::Enum e(id);
+
+    do {
+      e.AddProperty(EnumProperty());
+    } while (Accept(Comma));
+
+    return e;
   }
 }; // compiler
 }; // reviser

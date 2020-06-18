@@ -33,8 +33,11 @@ namespace ast {
 
   public:
     DataValue(DataValueType type, Token id);
+    DataValueType DataType();
     string generate();
   };
+
+  static const DataValue EmpytDataValue(DataTypeNull, EmptyToken);
 
   //
   // Foo.Bar
@@ -47,6 +50,8 @@ namespace ast {
     EnumValue(Token id, Token property);
     string generate();
   };
+
+  static const EnumValue EmptyEnumValue(EmptyToken, EmptyToken);
 
   //
   // Assign
@@ -70,8 +75,8 @@ namespace ast {
     DataValueType type;
     Token id;
     Token eid;
-    DataValue dv;
-    EnumValue ev;
+    DataValue dv = EmpytDataValue;
+    EnumValue ev = EmptyEnumValue;
 
   public:
     Declare(DataValueType type, Token id, DataValue dv);

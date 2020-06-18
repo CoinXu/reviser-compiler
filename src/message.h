@@ -13,8 +13,8 @@ namespace reviser {
 namespace message {
   class Message {
   private:
-    int line;
-    int column;
+    int line = 0;
+    int column = 0;
     std::string name;
 
     std::string mark(std::string level);

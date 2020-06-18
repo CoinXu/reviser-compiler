@@ -1,0 +1,12 @@
+enum Color {
+  Red = 1,
+  Blue,
+  Yellow
+}
+
+struct Foo {
+  required string foo = "foo";
+  bool baz = true;
+  Color bar = Color.Red;
+  int32 age = 0;
+}
