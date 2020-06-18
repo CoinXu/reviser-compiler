@@ -1,5 +1,5 @@
 # data-reviser compiler
-compile [data-reviser](https://github.com/CoinXu/data-reviser) code to javascript or typescript
+compile [data-reviser](https://github.com/CoinXu/data-reviser) code to javascript or typescript.
 
 # Install
 ```bash
@@ -27,4 +27,16 @@ make uninstall
      int32 age = 0;
    }
    ```
-2. execute `reviserc example.dr` will output code to the terminal
+2. execute `reviserc example.dr` will output code to the terminal.
+
+# TODO
++ [ ] compile to javascript.
++ [ ] compile to typescript.
++ [ ] `decorator` allow parameters.
++ [ ] check data type.
++ [ ] support nested statement & scope.
++ [ ] support package & import.
++ [ ] syntax highligth for editor.
+
+# Licence
+MIT
