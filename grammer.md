@@ -13,7 +13,7 @@ decorater -> "optional" | "required"
 ## 文法
 ```
 struct  -> "struct" id "{" [structp { ";", structp }] "}"
-structp -> [decorater { " ", decorater }] declare
+structp -> [decorater { " ", decorater }] declare | struct | enum
 declare -> "bool" id ["=" bool]
          | "float" id ["=" float]
          | "double" id ["=" double]

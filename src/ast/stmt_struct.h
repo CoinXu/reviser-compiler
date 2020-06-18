@@ -10,8 +10,9 @@
 #include <string>
 #include <vector>
 #include <tokenizer.h>
-#include <ast/stmt.h>
 #include <ast/expr.h>
+#include <ast/stmt.h>
+#include <ast/stmt_enum.h>
 
 using namespace std;
 using namespace reviser::compiler;
@@ -43,17 +44,33 @@ namespace ast {
     void AddDecorater(Decorater decorater);
   };
 
+  enum StructContentType {
+    DeclareProperty,
+    DeclareStruct,
+    DeclareEnum
+  };
+
   //
   // Struct
   class Struct: public Stmt {
   private:
+    struct ContentStore {
+      StructContentType type;
+      size_t index;
+    };
     Token id;
     vector<StructProperty> properties;
+    vector<Struct> structs;
+    vector<Enum> enums;
+    vector<ContentStore> contents;
+    int level;
 
   public:
     string generate();
-    Struct(Token id);
+    Struct(Token id, int level = 0);
     void AddProperty(StructProperty property);
+    void AddStruct(Struct st);
+    void AddEnum(ast::Enum en);
   };
 
 }; // compiler

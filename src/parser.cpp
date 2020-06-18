@@ -20,6 +20,7 @@ namespace compiler {
 
   void Parser::Program() {
     Accept(CodeStart);
+
     do {
       if (LookAtTokenType(compiler::Struct)) {
         ast::Struct s = Struct();
@@ -33,9 +34,6 @@ namespace compiler {
         Next();
       }
     } while (!Accept(CodeEnd));
-
-    message.Info("code generated:");
-    message.Info(seq.generate());
   }
 
   //
@@ -99,10 +97,15 @@ namespace compiler {
     Expect(LeftBrace);
 
     do {
-      s.AddProperty(StructProperty());
-    } while (Accept(Semicolon) && !LookAtTokenType(RightBrace));
+      if (LookAtTokenType(compiler::Struct)) {
+        s.AddStruct(Struct());
+      } else if (LookAtTokenType(compiler::Enum)) {
+        s.AddEnum(Enum());
+      } else {
+        s.AddProperty(StructProperty());
+      }
+    } while (!Accept(RightBrace));
 
-    Expect(RightBrace);
     return s;
   }
 
@@ -115,8 +118,11 @@ namespace compiler {
       } while (Accept(compiler::Decorater));
     }
 
+
     ast::Declare declare = Declare();
     ast::StructProperty property(declare);
+
+    Expect(Semicolon);
 
     for (ast::Decorater d: v) {
       property.AddDecorater(d);
@@ -243,6 +249,7 @@ namespace compiler {
       e.AddProperty(EnumProperty());
     } while (Accept(Comma));
 
+    Expect(RightBrace);
     return e;
   }
 }; // compiler
