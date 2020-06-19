@@ -24,11 +24,11 @@ namespace compiler {
     do {
       if (LookAtTokenType(TOKEN_STRUCT)) {
         Struct s = ConsumeStruct();
-        message.Info(s.generate());
+        message.Info(s.Generate());
         seq.AddStmt(s);
       } else if (LookAtTokenType(TOKEN_ENUM)) {
         Enum s = ConsumeEnum();
-        message.Info(s.generate());
+        message.Info(s.Generate());
         seq.AddStmt(s);
       } else {
         Next();

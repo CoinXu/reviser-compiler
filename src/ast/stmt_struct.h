@@ -27,7 +27,7 @@ namespace ast {
     Token id;
 
   public:
-    string generate();
+    string Generate();
     Decorater(Token id);
   };
 
@@ -39,7 +39,7 @@ namespace ast {
     Declare declare;
 
   public:
-    string generate();
+    string Generate();
     StructProperty(Declare declare);
     void AddDecorater(Decorater decorater);
   };
@@ -66,7 +66,7 @@ namespace ast {
     int level;
 
   public:
-    string generate();
+    string Generate();
     Struct(Token id, int level = 0);
     void AddProperty(StructProperty property);
     void AddStruct(Struct st);

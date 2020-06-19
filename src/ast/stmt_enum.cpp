@@ -18,9 +18,9 @@ namespace ast {
 
   EnumProperty::EnumProperty(Token id): id(id) {}
 
-  string EnumProperty::generate() {
-    return id.text + (value.TOKEN_DATA_TYPE() != TYPE_NULL
-      ? (" = " + value.generate())
+  string EnumProperty::Generate() {
+    return id.text + (value.Type() != TYPE_NULL
+      ? (" = " + value.Generate())
       : "");
   }
 
@@ -32,13 +32,13 @@ namespace ast {
     properties.push_back(property);
   }
 
-  string Enum::generate() {
+  string Enum::Generate() {
     string code = "enum " + id.text + " {\n";
     size_t total = properties.size();
     size_t counter = 1;
 
     for (EnumProperty p: properties) {
-      code = code + "  " + p.generate() + (counter++ >= total ? "" : ",\n");
+      code = code + "  " + p.Generate() + (counter++ >= total ? "" : ",\n");
     }
     return code + "\n}";
   }

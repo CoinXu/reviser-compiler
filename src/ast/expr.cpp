@@ -13,7 +13,7 @@ using namespace std;
 namespace reviser {
 namespace ast {
   // Expr
-  string Expr::generate() {
+  string Expr::Generate() {
     return "";
   }
 
@@ -21,11 +21,11 @@ namespace ast {
   RightValue::RightValue(DataType type, Token id)
     : type(type), id(id) {}
 
-  DataType RightValue::TOKEN_DATA_TYPE() {
+  DataType RightValue::Type() {
     return type;
   }
 
-  string RightValue::generate() {
+  string RightValue::Generate() {
     return id.text;
   }
 
@@ -34,16 +34,16 @@ namespace ast {
   EnumValue::EnumValue(Token id, Token property)
     : id(id), property(property) {}
 
-  string EnumValue::generate() {
+  string EnumValue::Generate() {
     return id.text + "." + property.text;
   }
 
   // Assign
   Assign::Assign(Token id, RightValue value): id(id), value(value) {}
 
-  string Assign::generate() {
+  string Assign::Generate() {
     // TODO check value by data type
-    return id.text + " = " + value.generate();
+    return id.text + " = " + value.Generate();
   }
 
   // Declare
@@ -54,7 +54,7 @@ namespace ast {
     : type(type), id(id), eid(eid), ev(ev) {}
 
 
-  string Declare::generate() {
+  string Declare::Generate() {
     string type_name;
 
     switch (type) {
@@ -99,7 +99,7 @@ namespace ast {
     }
 
     return type_name + " " + id.text + " = "
-      + (type == TYPE_ENUM ?  ev.generate() : dv.generate());
+      + (type == TYPE_ENUM ?  ev.Generate() : dv.Generate());
   }
 
 }; // reviser

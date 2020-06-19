@@ -19,7 +19,7 @@ namespace ast {
   // Expr
   class Expr: public Node {
   public:
-    string generate();
+    string Generate();
   };
 
   //
@@ -33,8 +33,8 @@ namespace ast {
 
   public:
     RightValue(DataType type, Token id);
-    DataType TOKEN_DATA_TYPE();
-    string generate();
+    DataType Type();
+    string Generate();
   };
 
   static const RightValue EmpytDataValue(TYPE_NULL, EmptyToken);
@@ -48,7 +48,7 @@ namespace ast {
 
   public:
     EnumValue(Token id, Token property);
-    string generate();
+    string Generate();
   };
 
   static const EnumValue EmptyEnumValue(EmptyToken, EmptyToken);
@@ -63,7 +63,7 @@ namespace ast {
 
   public:
     Assign(Token id, RightValue value);
-    string generate();
+    string Generate();
   };
 
   //
@@ -81,7 +81,7 @@ namespace ast {
   public:
     Declare(DataType type, Token id, RightValue dv);
     Declare(DataType type, Token id, Token eid, EnumValue ev);
-    string generate();
+    string Generate();
   };
 
 }; // compiler

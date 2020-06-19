@@ -25,7 +25,7 @@ namespace ast {
     RightValue value = EmpytDataValue;
 
   public:
-    string generate();
+    string Generate();
     EnumProperty(Token id, RightValue value);
     EnumProperty(Token id);
   };
@@ -38,7 +38,7 @@ namespace ast {
     vector<EnumProperty> properties;
 
   public:
-    string generate();
+    string Generate();
     Enum(Token id);
     void AddProperty(EnumProperty property);
   };

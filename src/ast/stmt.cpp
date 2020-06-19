@@ -13,7 +13,7 @@ namespace reviser {
 namespace ast {
   //
   //Stmt
-  string Stmt::generate() {
+  string Stmt::Generate() {
     return "";
   }
 
@@ -23,10 +23,10 @@ namespace ast {
     stmts.push_back(stmt);
   }
 
-  string Seq::generate() {
+  string Seq::Generate() {
     string code;
     for (Stmt s: stmts) {
-      code = code + s.generate();
+      code = code + s.Generate();
     }
     return code;
   }
