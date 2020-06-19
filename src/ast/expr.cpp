@@ -12,49 +12,49 @@ using namespace std;
 
 namespace reviser {
 namespace ast {
-  // Expr
-  string Expr::generate() {
+  // AstExpr
+  string AstExpr::generate() {
     return "";
   }
 
-  // DataValue
-  DataValue::DataValue(DataValueType type, Token id)
+  // AstRightValue
+  AstRightValue::AstRightValue(DataValueType type, Token id)
     : type(type), id(id) {}
 
-  DataValueType DataValue::DataType() {
+  DataValueType AstRightValue::DataType() {
     return type;
   }
 
-  string DataValue::generate() {
+  string AstRightValue::generate() {
     return id.text;
   }
 
   //
-  // EnumValue
-  EnumValue::EnumValue(Token id, Token property)
+  // AstEnumValue
+  AstEnumValue::AstEnumValue(Token id, Token property)
     : id(id), property(property) {}
 
-  string EnumValue::generate() {
+  string AstEnumValue::generate() {
     return id.text + "." + property.text;
   }
 
-  // Assign
-  Assign::Assign(Token id, DataValue value): id(id), value(value) {}
+  // AstAssign
+  AstAssign::AstAssign(Token id, AstRightValue value): id(id), value(value) {}
 
-  string Assign::generate() {
+  string AstAssign::generate() {
     // TODO check value by data type
     return id.text + " = " + value.generate();
   }
 
-  // Declare
-  Declare::Declare(DataValueType type, Token id, DataValue dv)
+  // AstDeclare
+  AstDeclare::AstDeclare(DataValueType type, Token id, AstRightValue dv)
     : type(type), id(id), eid(EmptyToken), dv(dv) {}
 
-  Declare::Declare(DataValueType type, Token id, Token eid, EnumValue ev)
+  AstDeclare::AstDeclare(DataValueType type, Token id, Token eid, AstEnumValue ev)
     : type(type), id(id), eid(eid), ev(ev) {}
 
 
-  string Declare::generate() {
+  string AstDeclare::generate() {
     string type_name;
 
     switch (type) {

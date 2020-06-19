@@ -22,12 +22,12 @@ namespace compiler {
     Accept(CodeStart);
 
     do {
-      if (LookAtTokenType(compiler::Struct)) {
-        ast::Struct s = Struct();
+      if (LookAtTokenType(compiler::AstStruct)) {
+        ast::AstStruct s = AstStruct();
         message.Info(s.generate());
         seq.AddStmt(s);
-      } else if (LookAtTokenType(compiler::Enum)) {
-        ast::Enum s = Enum();
+      } else if (LookAtTokenType(compiler::AstEnum)) {
+        ast::AstEnum s = AstEnum();
         message.Info(s.generate());
         seq.AddStmt(s);
       } else {
@@ -90,54 +90,54 @@ namespace compiler {
   }
 
   // stmt -> struct
-  ast::Struct Parser::Struct() {
-    Expect(compiler::Struct);
+  ast::AstStruct Parser::AstStruct() {
+    Expect(compiler::AstStruct);
     Expect(ID);
-    ast::Struct s(token);
+    ast::AstStruct s(token);
     Expect(LeftBrace);
 
     do {
-      if (LookAtTokenType(compiler::Struct)) {
-        s.AddStruct(Struct());
-      } else if (LookAtTokenType(compiler::Enum)) {
-        s.AddEnum(Enum());
+      if (LookAtTokenType(compiler::AstStruct)) {
+        s.AddStruct(AstStruct());
+      } else if (LookAtTokenType(compiler::AstEnum)) {
+        s.AddEnum(AstEnum());
       } else {
-        s.AddProperty(StructProperty());
+        s.AddProperty(AstStructProperty());
       }
     } while (!Accept(RightBrace));
 
     return s;
   }
 
-  ast::StructProperty Parser::StructProperty() {
-    vector<ast::Decorater> v;
+  ast::AstStructProperty Parser::AstStructProperty() {
+    vector<ast::AstDecorater> v;
 
-    if (Accept(compiler::Decorater)) {
+    if (Accept(compiler::AstDecorater)) {
       do {
-        v.push_back(Decorater());
-      } while (Accept(compiler::Decorater));
+        v.push_back(AstDecorater());
+      } while (Accept(compiler::AstDecorater));
     }
 
 
-    ast::Declare declare = Declare();
-    ast::StructProperty property(declare);
+    ast::AstDeclare declare = AstDeclare();
+    ast::AstStructProperty property(declare);
 
     Expect(Semicolon);
 
-    for (ast::Decorater d: v) {
+    for (ast::AstDecorater d: v) {
       property.AddDecorater(d);
     }
 
     return property;
   }
 
-  ast::Decorater Parser::Decorater() {
-    ast::Decorater d(token);
+  ast::AstDecorater Parser::AstDecorater() {
+    ast::AstDecorater d(token);
     return d;
   }
 
   // expr
-  ast::Declare Parser::Declare() {
+  ast::AstDeclare Parser::AstDeclare() {
     if (Accept(DataType)) {
       return DataTypeDeclare();
     } else if (Accept(ID)) {
@@ -148,7 +148,7 @@ namespace compiler {
     // runtime error
   }
 
-  ast::Declare Parser::DataTypeDeclare() {
+  ast::AstDeclare Parser::DataTypeDeclare() {
     // Token t = tokenizer.Current();
     // string type = PreviousText();
 
@@ -159,7 +159,7 @@ namespace compiler {
 
     // TODO
     // value optional support
-    if (Accept(compiler::Assign)) {
+    if (Accept(compiler::AstAssign)) {
       Token dvt = tokenizer.Current();
       string value = CurrentText();
       DataValueType data_type;
@@ -195,58 +195,58 @@ namespace compiler {
         Expect(Letter);
       }
 
-      ast::DataValue dv(data_type, dvt);
-      ast::Declare declare(data_type, id, dv);
+      ast::AstRightValue dv(data_type, dvt);
+      ast::AstDeclare declare(data_type, id, dv);
       return declare;
     } else {
-      message.Runtime("expect Assign token");
+      message.Runtime("expect AstAssign token");
     }
   }
 
-  ast::Declare Parser::EnumDeclare() {
+  ast::AstDeclare Parser::EnumDeclare() {
     Token eid = token;
     Expect(ID);
     Token id = token;
-    Expect(compiler::Assign);
+    Expect(compiler::AstAssign);
     Expect(ID);
     Token ei = token;
     Expect(Connection);
     Expect(ID);
     Token ep = token;
 
-    ast::EnumValue v(ei, ep);
-    ast::Declare declare(DataTypeEnum, id, eid, v);
+    ast::AstEnumValue v(ei, ep);
+    ast::AstDeclare declare(DataTypeEnum, id, eid, v);
 
     return declare;
   }
 
   //
   // stmt -> enum
-  ast::EnumProperty Parser::EnumProperty() {
+  ast::AstEnumProperty Parser::AstEnumProperty() {
     Expect(ID);
     Token id = token;
 
-    if (Accept(compiler::Assign)) {
+    if (Accept(compiler::AstAssign)) {
       Expect(Digit);
-      ast::DataValue value(DataTypeInt32, token);
-      ast::EnumProperty property(id, value);
+      ast::AstRightValue value(DataTypeInt32, token);
+      ast::AstEnumProperty property(id, value);
       return property;
     }
 
-    ast::EnumProperty property(id);
+    ast::AstEnumProperty property(id);
     return property;
   }
 
-  ast::Enum Parser::Enum () {
-    Expect(compiler::Enum);
+  ast::AstEnum Parser::AstEnum () {
+    Expect(compiler::AstEnum);
     Expect(ID);
     Token id = token;
     Expect(LeftBrace);
 
-    ast::Enum e(id);
+    ast::AstEnum e(id);
 
     do {
-      e.AddProperty(EnumProperty());
+      e.AddProperty(AstEnumProperty());
     } while (Accept(Comma));
 
     Expect(RightBrace);

@@ -69,10 +69,10 @@ namespace compiler {
   }
 
   void Parser::DefStructProperty() {
-    if (Accept(Decorater)) {
+    if (Accept(AstDecorater)) {
       do {
         DefDecorater();
-      } while (Accept(Decorater));
+      } while (Accept(AstDecorater));
     }
 
     DefDeclare();
@@ -95,7 +95,7 @@ namespace compiler {
 
     Expect(ID);
 
-    if (Accept(Assign)) {
+    if (Accept(AstAssign)) {
       string value = Text();
       TokenType token = Type();
 
@@ -121,7 +121,7 @@ namespace compiler {
 
   void Parser::DefStructEnumDeclare() {
     Expect(ID);
-    Expect(Assign);
+    Expect(AstAssign);
     Expect(ID);
     Expect(Connection);
     Expect(ID);
@@ -141,15 +141,15 @@ namespace compiler {
   void Parser::DefEnumProperty() {
     Expect(ID);
 
-    if (Accept(Assign)) {
+    if (Accept(AstAssign)) {
       Expect(Digit);
     }
   }
 
   void Parser::DefStmt() {
-    if (Accept(Struct)) {
+    if (Accept(AstStruct)) {
       DefStruct();
-    } else if (Accept(Enum)) {
+    } else if (Accept(AstEnum)) {
       DefEnum();
     }
   }

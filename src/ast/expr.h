@@ -16,71 +16,71 @@ using namespace reviser::compiler;
 
 namespace reviser {
 namespace ast {
-  // Expr
-  class Expr: public Node {
+  // AstExpr
+  class AstExpr: public AstNode {
   public:
     string generate();
   };
 
   //
-  // DataValue
+  // AstRightValue
   // 0
   // "foo"
-  class DataValue: public Expr {
+  class AstRightValue: public AstExpr {
   private:
     DataValueType type;
     Token id;
 
   public:
-    DataValue(DataValueType type, Token id);
+    AstRightValue(DataValueType type, Token id);
     DataValueType DataType();
     string generate();
   };
 
-  static const DataValue EmpytDataValue(DataTypeNull, EmptyToken);
+  static const AstRightValue EmpytDataValue(DataTypeNull, EmptyToken);
 
   //
   // Foo.Bar
-  class EnumValue: public Expr {
+  class AstEnumValue: public AstExpr {
   private:
     Token id;
     Token property;
 
   public:
-    EnumValue(Token id, Token property);
+    AstEnumValue(Token id, Token property);
     string generate();
   };
 
-  static const EnumValue EmptyEnumValue(EmptyToken, EmptyToken);
+  static const AstEnumValue EmptyEnumValue(EmptyToken, EmptyToken);
 
   //
-  // Assign
+  // AstAssign
   // foo = bar
-  class Assign: public Expr {
+  class AstAssign: public AstExpr {
   private:
     Token id;
-    DataValue value;
+    AstRightValue value;
 
   public:
-    Assign(Token id, DataValue value);
+    AstAssign(Token id, AstRightValue value);
     string generate();
   };
 
   //
-  // Declare
+  // AstDeclare
   // int32 foo = 1
   // Color bar = Color.Red;
-  class Declare: public Expr {
+  class AstDeclare: public AstExpr {
   private:
     DataValueType type;
     Token id;
     Token eid;
-    DataValue dv = EmpytDataValue;
-    EnumValue ev = EmptyEnumValue;
+    AstRightValue dv = EmpytDataValue;
+    AstEnumValue ev = EmptyEnumValue;
 
   public:
-    Declare(DataValueType type, Token id, DataValue dv);
-    Declare(DataValueType type, Token id, Token eid, EnumValue ev);
+    AstDeclare(DataValueType type, Token id, AstRightValue dv);
+    AstDeclare(DataValueType type, Token id, Token eid, AstEnumValue ev);
     string generate();
   };
 

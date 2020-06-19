@@ -31,7 +31,7 @@ CHARACTER_CLASS(NewLine, c == '\n');
 CHARACTER_CLASS(CharDigit, '0' <= c && c <= '9');
 CHARACTER_CLASS(Identifier, ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
                           ('0' <= c && c <= '9') || (c == '_'));
-CHARACTER_CLASS(CharAssign, c == Assign);
+CHARACTER_CLASS(CharAssign, c == AstAssign);
 CHARACTER_CLASS(CharLeftBrace, c == LeftBrace);
 CHARACTER_CLASS(CharRightBrance, c == RightBrace);
 CHARACTER_CLASS(CharSemicolon, c == Semicolon);
@@ -44,15 +44,15 @@ CHARACTER_CLASS(CharQuote, c == Quote);
 
 std::map<TokenType, std::string> TokenTypeNameMap = {
   { DataType, "DataType" },
-  { Decorater, "Decorater" },
-  { Struct, "Struct" },
-  { Enum, "Enum" },
+  { AstDecorater, "AstDecorater" },
+  { AstStruct, "AstStruct" },
+  { AstEnum, "AstEnum" },
   { ID, "ID" },
   { Letter, "Letter" },
   { Digit, "Digit" },
   { Bool, "Bool" },
   { CodeEnd, "CodeEnd" },
-  { Assign, "Assig" },
+  { AstAssign, "Assig" },
   { LeftBrace, "LeftBrace" },
   { RightBrace, "RightBrace" },
   { Semicolon, "Semicolon" },
@@ -200,7 +200,7 @@ bool Tokenizer::Next() {
       current.type = CodeEnd;
       break;
 
-    case Assign:
+    case AstAssign:
     case LeftBrace:
     case RightBrace:
     case Semicolon:
@@ -230,11 +230,11 @@ bool Tokenizer::Next() {
         if (TypeIdentifier(current.text)) {
           current.type = DataType;
         } else if (DecoraterIdentifier(current.text)) {
-          current.type = Decorater;
+          current.type = AstDecorater;
         } else if (current.text == ReservedWordMap[ReservedWordStruct]) {
-          current.type = Struct;
+          current.type = AstStruct;
         } else if (current.text == ReservedWordMap[ReservedWordEnum]) {
-          current.type = Enum;
+          current.type = AstEnum;
         } else {
           current.type = ID;
         }

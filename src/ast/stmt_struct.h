@@ -20,57 +20,57 @@ using namespace reviser::compiler;
 namespace reviser {
 namespace ast {
   //
-  // Decorater
+  // AstDecorater
   // required | optional
-  class Decorater: public Stmt {
+  class AstDecorater: public AstStmt {
   private:
     Token id;
 
   public:
     string generate();
-    Decorater(Token id);
+    AstDecorater(Token id);
   };
 
   //
   // SructPrototype
-  class StructProperty: public Stmt {
+  class AstStructProperty: public AstStmt {
   private:
-    vector<Decorater> decoraters;
-    Declare declare;
+    vector<AstDecorater> decoraters;
+    AstDeclare declare;
 
   public:
     string generate();
-    StructProperty(Declare declare);
-    void AddDecorater(Decorater decorater);
+    AstStructProperty(AstDeclare declare);
+    void AddDecorater(AstDecorater decorater);
   };
 
-  enum StructContentType {
+  enum AstStructBlockContentType {
     DeclareProperty,
     DeclareStruct,
     DeclareEnum
   };
 
   //
-  // Struct
-  class Struct: public Stmt {
+  // AstStruct
+  class AstStruct: public AstStmt {
   private:
     struct ContentStore {
-      StructContentType type;
+      AstStructBlockContentType type;
       size_t index;
     };
     Token id;
-    vector<StructProperty> properties;
-    vector<Struct> structs;
-    vector<Enum> enums;
+    vector<AstStructProperty> properties;
+    vector<AstStruct> structs;
+    vector<AstEnum> enums;
     vector<ContentStore> contents;
     int level;
 
   public:
     string generate();
-    Struct(Token id, int level = 0);
-    void AddProperty(StructProperty property);
-    void AddStruct(Struct st);
-    void AddEnum(ast::Enum en);
+    AstStruct(Token id, int level = 0);
+    void AddProperty(AstStructProperty property);
+    void AddStruct(AstStruct st);
+    void AddEnum(ast::AstEnum en);
   };
 
 }; // compiler

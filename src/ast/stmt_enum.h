@@ -18,29 +18,29 @@ using namespace reviser::compiler;
 namespace reviser {
 namespace ast {
   //
-  // EnumProperty
-  class EnumProperty: public Stmt {
+  // AstEnumProperty
+  class AstEnumProperty: public AstStmt {
   private:
     Token id;
-    DataValue value = EmpytDataValue;
+    AstRightValue value = EmpytDataValue;
 
   public:
     string generate();
-    EnumProperty(Token id, DataValue value);
-    EnumProperty(Token id);
+    AstEnumProperty(Token id, AstRightValue value);
+    AstEnumProperty(Token id);
   };
 
   //
-  // Enum
-  class Enum: public Stmt {
+  // AstEnum
+  class AstEnum: public AstStmt {
   private:
     Token id;
-    vector<EnumProperty> properties;
+    vector<AstEnumProperty> properties;
 
   public:
     string generate();
-    Enum(Token id);
-    void AddProperty(EnumProperty property);
+    AstEnum(Token id);
+    void AddProperty(AstEnumProperty property);
   };
 
 }; // reviser

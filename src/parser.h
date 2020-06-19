@@ -41,21 +41,21 @@ namespace compiler {
     string PreviousText();
 
     // stmt -> struct
-    ast::Struct Struct();
-    ast::StructProperty StructProperty();
-    ast::Decorater Decorater();
+    ast::AstStruct AstStruct();
+    ast::AstStructProperty AstStructProperty();
+    ast::AstDecorater AstDecorater();
 
     // expr
-    ast::DataValue DataValue();
-    ast::EnumValue EnumValue();
-    ast::Assign Assign();
-    ast::Declare Declare();
-    ast::Declare DataTypeDeclare();
-    ast::Declare EnumDeclare();
+    ast::AstRightValue AstRightValue();
+    ast::AstEnumValue AstEnumValue();
+    ast::AstAssign AstAssign();
+    ast::AstDeclare AstDeclare();
+    ast::AstDeclare DataTypeDeclare();
+    ast::AstDeclare EnumDeclare();
 
     // stmt -> enum
-    ast::EnumProperty EnumProperty();
-    ast::Enum Enum();
+    ast::AstEnumProperty AstEnumProperty();
+    ast::AstEnum AstEnum();
 
     void DefStruct();
     void DefStructProperty();
