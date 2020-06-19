@@ -18,17 +18,22 @@ struct Foo {
     baz = 10
   }
 
+  /**
+   *
+   */
   struct Bar {
     enum BarType {
       Foo
+      // Foo
     }
 
     bool bar = true;
     optional int32 age = 1;
+    // Bar
   }
 
   required string foo = "foo";
-  bool baz = true;
+  bool baz = true; /* Bar */
   Color bar = Color.Red;
   Type type = Type.foo;
   int32 age = 0;

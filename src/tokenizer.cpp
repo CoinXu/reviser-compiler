@@ -185,6 +185,7 @@ void Tokenizer::NextChar() {
 void Tokenizer::ConsumeComment() {
   while (InCharacters<CharDivide>()) {
     NextChar();
+
     if (InCharacters<CharDivide>()) {
       // sigle line comment
       TryConsumeCharacters<NewLine>();
@@ -202,10 +203,9 @@ void Tokenizer::ConsumeComment() {
         }
       }
     }
+
     ConsumeCharacters<Whitespace>();
   }
-
-  ConsumeCharacters<Whitespace>();
 }
 
 bool Tokenizer::Next() {
@@ -220,6 +220,7 @@ bool Tokenizer::Next() {
   ConsumeComment();
 
   current.text = peek;
+
   int start_line = line;
   int start_column = column;
   int start_pos = pos;
