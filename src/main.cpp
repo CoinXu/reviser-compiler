@@ -1,4 +1,10 @@
 /**
+ *                  _
+ *   _ __ _____   _(_)___  ___ _ __
+ *  | '__/ _ \ \ / / / __|/ _ \ '__|
+ *  | | |  __/\ V /| \__ \  __/ |
+ *  |_|  \___| \_/ |_|___/\___|_|
+ *
  * @date 2018-10-28
  * @author duanxian0605@163.com
  * @description
@@ -44,8 +50,6 @@ int main(int args, char** argv) {
 
   is.read(buffer, length);
   is.close();
-
-  std::cout.write(buffer, length);
 
   // 转为string，传给Tokenizer
   std::string input(buffer, length);

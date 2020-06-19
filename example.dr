@@ -1,7 +1,14 @@
-enum Color {
+// sigle line comment
+/*
+  block comment
+*/
+enum Color /* 11 */ {
+  // Red
   Red,
   Pink = 100,
-  Blue = 200
+  // Pink
+  Blue = 200 // blue
+  /* foo */
 }
 
 struct Foo {

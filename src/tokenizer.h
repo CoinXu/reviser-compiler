@@ -28,6 +28,8 @@ namespace compiler {
     TOKEN_BOOL,
     TOKEN_CODE_START,
     TOKEN_CODE_END,
+    TOKEN_DIVIDE = '/',
+    TOKEN_ASTERISK = '*',
     TOKEN_ASSIGN = '=',
     TOKEN_LEFT_BRACE = '{',
     TOKEN_RIGHT_BRACE = '}',
@@ -130,6 +132,7 @@ namespace compiler {
     const Token& Current();
     const Token& Previous();
 
+    void ConsumeComment();
     void Printf(const Token* token);
     void PrintPoint(const std::string mark);
     void NextChar();

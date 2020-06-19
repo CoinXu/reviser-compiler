@@ -31,6 +31,8 @@ CHARACTER_CLASS(NewLine, c == '\n');
 CHARACTER_CLASS(CharDigit, '0' <= c && c <= '9');
 CHARACTER_CLASS(Identifier, ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
                           ('0' <= c && c <= '9') || (c == '_'));
+CHARACTER_CLASS(CharDivide, c == TOKEN_DIVIDE);
+CHARACTER_CLASS(CharAsterisk, c == TOKEN_ASTERISK);
 CHARACTER_CLASS(CharAssign, c == TOKEN_ASSIGN);
 CHARACTER_CLASS(CharLeftBrace, c == TOKEN_LEFT_BRACE);
 CHARACTER_CLASS(CharRightBrance, c == TOKEN_RIGHT_BRACE);
@@ -180,6 +182,32 @@ void Tokenizer::NextChar() {
   pos++;
 }
 
+void Tokenizer::ConsumeComment() {
+  while (InCharacters<CharDivide>()) {
+    NextChar();
+    if (InCharacters<CharDivide>()) {
+      // sigle line comment
+      TryConsumeCharacters<NewLine>();
+      NextChar();
+    } else if (InCharacters<CharAsterisk>()) {
+      // block comment
+      NextChar();
+
+      while (true) {
+        TryConsumeCharacters<CharAsterisk>();
+        NextChar();
+        if (InCharacters<CharDivide>() || peek == EOF) {
+          NextChar();
+          break;
+        }
+      }
+    }
+    ConsumeCharacters<Whitespace>();
+  }
+
+  ConsumeCharacters<Whitespace>();
+}
+
 bool Tokenizer::Next() {
   previous = current;
 
@@ -189,6 +217,7 @@ bool Tokenizer::Next() {
   }
 
   ConsumeCharacters<Whitespace>();
+  ConsumeComment();
 
   current.text = peek;
   int start_line = line;
@@ -215,7 +244,7 @@ bool Tokenizer::Next() {
       NextChar();
       TryConsumeCharacters<CharQuote>();
       NextChar();
-      current.text = input.substr(start_pos -1, pos - start_pos);
+      current.text = input.substr(start_pos - 1, pos - start_pos);
       break;
 
     default:
