@@ -12,32 +12,32 @@ using namespace reviser::compiler;
 namespace reviser {
 namespace ast {
   //
-  // AstEnumProperty
-  AstEnumProperty::AstEnumProperty(Token id, AstRightValue value)
+  // EnumProperty
+  EnumProperty::EnumProperty(Token id, RightValue value)
     : id(id), value(value) {}
 
-  AstEnumProperty::AstEnumProperty(Token id): id(id) {}
+  EnumProperty::EnumProperty(Token id): id(id) {}
 
-  string AstEnumProperty::generate() {
-    return id.text + (value.DataType() != DataTypeNull
+  string EnumProperty::generate() {
+    return id.text + (value.TOKEN_DATA_TYPE() != TYPE_NULL
       ? (" = " + value.generate())
       : "");
   }
 
   //
-  // AstEnum
-  AstEnum::AstEnum(Token id): id(id) {}
+  // Enum
+  Enum::Enum(Token id): id(id) {}
 
-  void AstEnum::AddProperty(AstEnumProperty property) {
+  void Enum::AddProperty(EnumProperty property) {
     properties.push_back(property);
   }
 
-  string AstEnum::generate() {
+  string Enum::generate() {
     string code = "enum " + id.text + " {\n";
     size_t total = properties.size();
     size_t counter = 1;
 
-    for (AstEnumProperty p: properties) {
+    for (EnumProperty p: properties) {
       code = code + "  " + p.generate() + (counter++ >= total ? "" : ",\n");
     }
     return code + "\n}";

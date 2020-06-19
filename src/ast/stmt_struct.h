@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_AST_STMT_STRUCT
-#define REVISER_COMPILER_AST_STMT_STRUCT
+#ifndef REVISER_COMPILER_Ast_STMT_STRUCT
+#define REVISER_COMPILER_Ast_STMT_STRUCT
 
 #include <string>
 #include <vector>
@@ -20,57 +20,57 @@ using namespace reviser::compiler;
 namespace reviser {
 namespace ast {
   //
-  // AstDecorater
+  // Decorater
   // required | optional
-  class AstDecorater: public AstStmt {
+  class Decorater: public Stmt {
   private:
     Token id;
 
   public:
     string generate();
-    AstDecorater(Token id);
+    Decorater(Token id);
   };
 
   //
   // SructPrototype
-  class AstStructProperty: public AstStmt {
+  class StructProperty: public Stmt {
   private:
-    vector<AstDecorater> decoraters;
-    AstDeclare declare;
+    vector<Decorater> decoraters;
+    Declare declare;
 
   public:
     string generate();
-    AstStructProperty(AstDeclare declare);
-    void AddDecorater(AstDecorater decorater);
+    StructProperty(Declare declare);
+    void AddDecorater(Decorater decorater);
   };
 
-  enum AstStructBlockContentType {
+  enum StructBlockContentType {
     DeclareProperty,
     DeclareStruct,
     DeclareEnum
   };
 
   //
-  // AstStruct
-  class AstStruct: public AstStmt {
+  // Struct
+  class Struct: public Stmt {
   private:
     struct ContentStore {
-      AstStructBlockContentType type;
+      StructBlockContentType type;
       size_t index;
     };
     Token id;
-    vector<AstStructProperty> properties;
-    vector<AstStruct> structs;
-    vector<AstEnum> enums;
+    vector<StructProperty> properties;
+    vector<Struct> structs;
+    vector<Enum> enums;
     vector<ContentStore> contents;
     int level;
 
   public:
     string generate();
-    AstStruct(Token id, int level = 0);
-    void AddProperty(AstStructProperty property);
-    void AddStruct(AstStruct st);
-    void AddEnum(ast::AstEnum en);
+    Struct(Token id, int level = 0);
+    void AddProperty(StructProperty property);
+    void AddStruct(Struct st);
+    void AddEnum(Enum en);
   };
 
 }; // compiler

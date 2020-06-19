@@ -17,15 +17,16 @@
 #include <ast/stmt_enum.h>
 
 using namespace std;
-using namespace reviser;
+using namespace reviser::message;
+using namespace reviser::ast;
 
 namespace reviser {
 namespace compiler {
   class Parser {
   private:
     Tokenizer tokenizer;
-    message::Message message;
-    ast::Seq seq;
+    Message message;
+    Seq seq;
     Token token;
 
     bool Accept(TokenType type);
@@ -33,7 +34,6 @@ namespace compiler {
     void Next();
     bool LookAt(string expect);
     bool LookAtTokenType(TokenType expect);
-    Token CloneCurrentToken();
 
     TokenType CurrentType();
     TokenType PreviousType();
@@ -41,31 +41,21 @@ namespace compiler {
     string PreviousText();
 
     // stmt -> struct
-    ast::AstStruct AstStruct();
-    ast::AstStructProperty AstStructProperty();
-    ast::AstDecorater AstDecorater();
+    Struct ConsumeStruct();
+    StructProperty ConsumeStructProperty();
+    Decorater ConsumeDecorater();
 
     // expr
-    ast::AstRightValue AstRightValue();
-    ast::AstEnumValue AstEnumValue();
-    ast::AstAssign AstAssign();
-    ast::AstDeclare AstDeclare();
-    ast::AstDeclare DataTypeDeclare();
-    ast::AstDeclare EnumDeclare();
+    RightValue ConsumeRightValue();
+    EnumValue ConsumeEnumValue();
+    Assign ConsumeAssign();
+    Declare ConsumeDeclare();
+    Declare ConsumeDataTypeDeclare();
+    Declare ConsumeEnumDeclare();
 
     // stmt -> enum
-    ast::AstEnumProperty AstEnumProperty();
-    ast::AstEnum AstEnum();
-
-    void DefStruct();
-    void DefStructProperty();
-    void DefDecorater();
-    void DefDeclare();
-    void DefStructDataTypeDeclare();
-    void DefStructEnumDeclare();
-    void DefEnum();
-    void DefEnumProperty();
-    void DefStmt();
+    EnumProperty ConsumeEnumProperty();
+    Enum ConsumeEnum();
 
   public:
     Parser(Tokenizer tokenizer);

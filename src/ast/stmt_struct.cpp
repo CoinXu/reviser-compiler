@@ -13,52 +13,52 @@ using namespace std;
 namespace reviser {
 namespace ast {
   //
-  // AstDecorater
-  AstDecorater::AstDecorater(Token id): id(id) {}
+  // Decorater
+  Decorater::Decorater(Token id): id(id) {}
 
-  string AstDecorater::generate() {
+  string Decorater::generate() {
     return id.text;
   }
 
   //
   // StructPrototype
-  AstStructProperty::AstStructProperty(AstDeclare declare)
+  StructProperty::StructProperty(Declare declare)
     : declare(declare) {}
 
-  void AstStructProperty::AddDecorater(AstDecorater decorater) {
+  void StructProperty::AddDecorater(Decorater decorater) {
     decoraters.push_back(decorater);
   }
 
-  string AstStructProperty::generate() {
+  string StructProperty::generate() {
     string code;
-    for (AstDecorater d: decoraters) {
+    for (Decorater d: decoraters) {
       code = code + " " + d.generate();
     }
     return code + " " + declare.generate();
   }
 
   //
-  // AstStruct
-  AstStruct::AstStruct(Token id, int level): id(id), level(level) {}
+  // Struct
+  Struct::Struct(Token id, int level): id(id), level(level) {}
 
-  void AstStruct::AddProperty(AstStructProperty property) {
+  void Struct::AddProperty(StructProperty property) {
     contents.push_back({ DeclareProperty, properties.size() });
     properties.push_back(property);
   }
 
-  void AstStruct::AddStruct(AstStruct st) {
+  void Struct::AddStruct(Struct st) {
     contents.push_back({ DeclareStruct, structs.size() });
     structs.push_back(st);
   }
 
-  void AstStruct::AddEnum(ast::AstEnum en) {
+  void Struct::AddEnum(Enum en) {
     contents.push_back({ DeclareEnum, enums.size() });
     enums.push_back(en);
   }
 
-  string AstStruct::generate() {
+  string Struct::generate() {
     // string code = "struct " + id.text + " {\n";
-    // for (AstStructProperty p: properties) {
+    // for (StructProperty p: properties) {
     //   code = code + "  " + p.generate() + ";\n";
     // }
     // return code + "}";
@@ -68,19 +68,19 @@ namespace ast {
     for (ContentStore p: contents) {
       switch (p.type) {
         case DeclareProperty: {
-          AstStructProperty s = properties.at(p.index);
+          StructProperty s = properties.at(p.index);
           code = code + " " + s.generate() + ";\n";
           break;
         }
 
         case DeclareStruct: {
-          ast::AstStruct s = structs.at(p.index);
+          Struct s = structs.at(p.index);
           code = code + " " + s.generate() + "\n";
           break;
         }
 
         case DeclareEnum: {
-          ast::AstEnum s = enums.at(p.index);
+          Enum s = enums.at(p.index);
           code = code + " " + s.generate() + "\n";
           break;
         }

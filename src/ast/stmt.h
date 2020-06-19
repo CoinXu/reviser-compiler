@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_AST_STMT
-#define REVISER_COMPILER_AST_STMT
+#ifndef REVISER_COMPILER_Ast_STMT
+#define REVISER_COMPILER_Ast_STMT
 
 #include <string>
 #include <vector>
@@ -13,18 +13,18 @@
 
 namespace reviser {
 namespace ast {
-  class AstStmt: public AstNode {
+  class Stmt: public Node {
   public:
     std::string generate();
   };
 
-  class Seq: public AstStmt {
+  class Seq: public Stmt {
   private:
-    std::vector<AstStmt> stmts;
+    std::vector<Stmt> stmts;
 
   public:
     std::string generate();
-    void AddStmt(AstStmt stmt);
+    void AddStmt(Stmt stmt);
   };
 
 }; // compiler

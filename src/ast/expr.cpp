@@ -12,85 +12,85 @@ using namespace std;
 
 namespace reviser {
 namespace ast {
-  // AstExpr
-  string AstExpr::generate() {
+  // Expr
+  string Expr::generate() {
     return "";
   }
 
-  // AstRightValue
-  AstRightValue::AstRightValue(DataValueType type, Token id)
+  // RightValue
+  RightValue::RightValue(DataType type, Token id)
     : type(type), id(id) {}
 
-  DataValueType AstRightValue::DataType() {
+  DataType RightValue::TOKEN_DATA_TYPE() {
     return type;
   }
 
-  string AstRightValue::generate() {
+  string RightValue::generate() {
     return id.text;
   }
 
   //
-  // AstEnumValue
-  AstEnumValue::AstEnumValue(Token id, Token property)
+  // EnumValue
+  EnumValue::EnumValue(Token id, Token property)
     : id(id), property(property) {}
 
-  string AstEnumValue::generate() {
+  string EnumValue::generate() {
     return id.text + "." + property.text;
   }
 
-  // AstAssign
-  AstAssign::AstAssign(Token id, AstRightValue value): id(id), value(value) {}
+  // Assign
+  Assign::Assign(Token id, RightValue value): id(id), value(value) {}
 
-  string AstAssign::generate() {
+  string Assign::generate() {
     // TODO check value by data type
     return id.text + " = " + value.generate();
   }
 
-  // AstDeclare
-  AstDeclare::AstDeclare(DataValueType type, Token id, AstRightValue dv)
+  // Declare
+  Declare::Declare(DataType type, Token id, RightValue dv)
     : type(type), id(id), eid(EmptyToken), dv(dv) {}
 
-  AstDeclare::AstDeclare(DataValueType type, Token id, Token eid, AstEnumValue ev)
+  Declare::Declare(DataType type, Token id, Token eid, EnumValue ev)
     : type(type), id(id), eid(eid), ev(ev) {}
 
 
-  string AstDeclare::generate() {
+  string Declare::generate() {
     string type_name;
 
     switch (type) {
-      case DataTypeBoolean:
-        type_name = ReservedWordMap[ReservedWordTypeBoolean];
+      case TYPE_BOOL:
+        type_name = ReservedWordMap[RESERVED_BOOL];
         break;
 
-      case DataTypeFloat:
-        type_name = ReservedWordMap[ReservedWordTypeFloat];
+      case TYPE_FLOAT:
+        type_name = ReservedWordMap[RESERVED_FLOAT];
         break;
 
-      case DataTypeDouble:
-        type_name = ReservedWordMap[ReservedWordTypeDouble];
+      case TYPE_DOUBLE:
+        type_name = ReservedWordMap[RESERVED_DOUBLE];
         break;
 
-      case DataTypeInt32:
-        type_name = ReservedWordMap[ReservedWordTypeInt32];
+      case TYPE_INT32:
+        type_name = ReservedWordMap[RESERVED_INT32];
         break;
 
-      case DataTypeInt64:
-        type_name = ReservedWordMap[ReservedWordTypeInt64];
+      case TYPE_INT64:
+        type_name = ReservedWordMap[RESERVED_INT64];
         break;
 
-      case DataTypeUint32:
-        type_name = ReservedWordMap[ReservedWordTypeUint32];
+      case TYPE_UINT32:
+        type_name = ReservedWordMap[RESERVED_UINT32];
         break;
 
-      case DataTypeUint64:
-        type_name = ReservedWordMap[ReservedWordTypeUint64];
+      case TYPE_UINT64:
+        type_name = ReservedWordMap[RESERVED_UINT64];
         break;
 
-      case DataTypeString:
-        type_name = ReservedWordMap[ReservedWordTypeString];
+      case TYPE_STRING:
+        type_name = ReservedWordMap[RESERVED_STRING];
         break;
 
-      case DataTypeEnum:
+      case TYPE_ENUM:
         type_name = eid.text;
         break;
 
@@ -99,7 +99,7 @@ namespace ast {
     }
 
     return type_name + " " + id.text + " = "
-      + (type == DataTypeEnum ?  ev.generate() : dv.generate());
+      + (type == TYPE_ENUM ?  ev.generate() : dv.generate());
   }
 
 }; // reviser

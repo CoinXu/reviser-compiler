@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_AST_STMT_ENUM
-#define REVISER_COMPILER_AST_STMT_ENUM
+#ifndef REVISER_COMPILER_Ast_STMT_ENUM
+#define REVISER_COMPILER_Ast_STMT_ENUM
 
 #include <string>
 #include <tokenizer.h>
@@ -18,29 +18,29 @@ using namespace reviser::compiler;
 namespace reviser {
 namespace ast {
   //
-  // AstEnumProperty
-  class AstEnumProperty: public AstStmt {
+  // EnumProperty
+  class EnumProperty: public Stmt {
   private:
     Token id;
-    AstRightValue value = EmpytDataValue;
+    RightValue value = EmpytDataValue;
 
   public:
     string generate();
-    AstEnumProperty(Token id, AstRightValue value);
-    AstEnumProperty(Token id);
+    EnumProperty(Token id, RightValue value);
+    EnumProperty(Token id);
   };
 
   //
-  // AstEnum
-  class AstEnum: public AstStmt {
+  // Enum
+  class Enum: public Stmt {
   private:
     Token id;
-    vector<AstEnumProperty> properties;
+    vector<EnumProperty> properties;
 
   public:
     string generate();
-    AstEnum(Token id);
-    void AddProperty(AstEnumProperty property);
+    Enum(Token id);
+    void AddProperty(EnumProperty property);
   };
 
 }; // reviser

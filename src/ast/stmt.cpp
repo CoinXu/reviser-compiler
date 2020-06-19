@@ -12,20 +12,20 @@ using namespace std;
 namespace reviser {
 namespace ast {
   //
-  //AstStmt
-  string AstStmt::generate() {
+  //Stmt
+  string Stmt::generate() {
     return "";
   }
 
   //
   // Seq
-  void Seq::AddStmt(AstStmt stmt) {
+  void Seq::AddStmt(Stmt stmt) {
     stmts.push_back(stmt);
   }
 
   string Seq::generate() {
     string code;
-    for (AstStmt s: stmts) {
+    for (Stmt s: stmts) {
       code = code + s.generate();
     }
     return code;

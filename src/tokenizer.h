@@ -18,58 +18,57 @@ namespace reviser {
 namespace compiler {
 
   enum TokenType {
-    DataType,
-    AstDecorater,
-    AstStruct,
-    AstEnum,
-    ID,
-    Letter,
-    Digit,
-    Bool,
-    CodeStart,
-    CodeEnd,
-    AstAssign = '=',
-    LeftBrace = '{',
-    RightBrace = '}',
-    Semicolon = ';',
-    Comma = ',',
-    Connection = '.',
-    Quote = '"'
+    TOKEN_DATA_TYPE,
+    TOKEN_DECORATER,
+    TOKEN_STRUCT,
+    TOKEN_ENUM,
+    TOKEN_ID,
+    TOKEN_LETTER,
+    TOKEN_DIGIT,
+    TOKEN_BOOL,
+    TOKEN_CODE_START,
+    TOKEN_CODE_END,
+    TOKEN_ASSIGN = '=',
+    TOKEN_LEFT_BRACE = '{',
+    TOKEN_RIGHT_BRACE = '}',
+    TOKEN_SEMICOLON = ';',
+    TOKEN_COMMA = ',',
+    TOKEN_CONNECTION = '.',
+    TOKEN_QUOTE = '"'
   };
 
   enum ReservedWord {
-    ReservedWordStruct,
-    ReservedWordEnum,
+    RESERVED_STRUCT,
+    RESERVED_ENUM,
 
-    ReservedWordBooleanTrue,
-    ReservedWordBooleanFalse,
+    RESERVED_TRUE,
+    RESERVED_FALSE,
+    RESERVED_BOOL,
+    RESERVED_FLOAT,
+    RESERVED_DOUBLE,
+    RESERVED_INT32,
+    RESERVED_INT64,
+    RESERVED_UINT32,
+    RESERVED_UINT64,
+    RESERVED_STRING,
 
-    ReservedWordTypeBoolean,
-    ReservedWordTypeFloat,
-    ReservedWordTypeDouble,
-    ReservedWordTypeInt32,
-    ReservedWordTypeInt64,
-    ReservedWordTypeUint32,
-    ReservedWordTypeUint64,
-    ReservedWordTypeString,
-
-    ReservedWordDecoraterOptional,
-    ReservedWordDecoraterRequired
+    RESERVED_OPTIONAL,
+    RESERVED_REQUIRED
   };
 
   extern std::map<ReservedWord, std::string> ReservedWordMap;
 
-  enum DataValueType {
-    DataTypeBoolean,
-    DataTypeFloat,
-    DataTypeDouble,
-    DataTypeInt32,
-    DataTypeInt64,
-    DataTypeUint32,
-    DataTypeUint64,
-    DataTypeString,
-    DataTypeEnum,
-    DataTypeNull
+  enum DataType {
+    TYPE_BOOL,
+    TYPE_FLOAT,
+    TYPE_DOUBLE,
+    TYPE_INT32,
+    TYPE_INT64,
+    TYPE_UINT32,
+    TYPE_UINT64,
+    TYPE_STRING,
+    TYPE_ENUM,
+    TYPE_NULL
   };
 
   struct Token {
@@ -85,7 +84,7 @@ namespace compiler {
   };
 
   static const struct Token EmptyToken = {
-    ID,
+    TOKEN_ID,
     "",
     0,
     0,

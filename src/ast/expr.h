@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_AST_EXPR
-#define REVISER_COMPILER_AST_EXPR
+#ifndef REVISER_COMPILER_Ast_EXPR
+#define REVISER_COMPILER_Ast_EXPR
 
 #include <string>
 #include <tokenizer.h>
@@ -16,71 +16,71 @@ using namespace reviser::compiler;
 
 namespace reviser {
 namespace ast {
-  // AstExpr
-  class AstExpr: public AstNode {
+  // Expr
+  class Expr: public Node {
   public:
     string generate();
   };
 
   //
-  // AstRightValue
+  // RightValue
   // 0
   // "foo"
-  class AstRightValue: public AstExpr {
+  class RightValue: public Expr {
   private:
-    DataValueType type;
+    DataType type;
     Token id;
 
   public:
-    AstRightValue(DataValueType type, Token id);
-    DataValueType DataType();
+    RightValue(DataType type, Token id);
+    DataType TOKEN_DATA_TYPE();
     string generate();
   };
 
-  static const AstRightValue EmpytDataValue(DataTypeNull, EmptyToken);
+  static const RightValue EmpytDataValue(TYPE_NULL, EmptyToken);
 
   //
   // Foo.Bar
-  class AstEnumValue: public AstExpr {
+  class EnumValue: public Expr {
   private:
     Token id;
     Token property;
 
   public:
-    AstEnumValue(Token id, Token property);
+    EnumValue(Token id, Token property);
     string generate();
   };
 
-  static const AstEnumValue EmptyEnumValue(EmptyToken, EmptyToken);
+  static const EnumValue EmptyEnumValue(EmptyToken, EmptyToken);
 
   //
-  // AstAssign
+  // Assign
   // foo = bar
-  class AstAssign: public AstExpr {
+  class Assign: public Expr {
   private:
     Token id;
-    AstRightValue value;
+    RightValue value;
 
   public:
-    AstAssign(Token id, AstRightValue value);
+    Assign(Token id, RightValue value);
     string generate();
   };
 
   //
-  // AstDeclare
+  // Declare
   // int32 foo = 1
   // Color bar = Color.Red;
-  class AstDeclare: public AstExpr {
+  class Declare: public Expr {
   private:
-    DataValueType type;
+    DataType type;
     Token id;
     Token eid;
-    AstRightValue dv = EmpytDataValue;
-    AstEnumValue ev = EmptyEnumValue;
+    RightValue dv = EmpytDataValue;
+    EnumValue ev = EmptyEnumValue;
 
   public:
-    AstDeclare(DataValueType type, Token id, AstRightValue dv);
-    AstDeclare(DataValueType type, Token id, Token eid, AstEnumValue ev);
+    Declare(DataType type, Token id, RightValue dv);
+    Declare(DataType type, Token id, Token eid, EnumValue ev);
     string generate();
   };
 

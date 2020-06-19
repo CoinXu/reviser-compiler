@@ -4,14 +4,14 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_AST_NODE
-#define REVISER_COMPILER_AST_NODE
+#ifndef REVISER_COMPILER_Ast_NODE
+#define REVISER_COMPILER_Ast_NODE
 
 #include <string>
 
 namespace reviser {
 namespace ast {
-  class AstNode {
+  class Node {
   public:
     virtual std::string generate() = 0;
   };
