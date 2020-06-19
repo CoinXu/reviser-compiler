@@ -37,7 +37,7 @@ namespace ast {
     string Generate();
   };
 
-  static const RightValue EmpytDataValue(TYPE_NULL, EmptyToken);
+  static const RightValue EmptyRightValue(TYPE_NULL, EmptyToken);
 
   //
   // Foo.Bar
@@ -75,7 +75,7 @@ namespace ast {
     DataType type;
     Token id;
     Token eid;
-    RightValue dv = EmpytDataValue;
+    RightValue dv = EmptyRightValue;
     EnumValue ev = EmptyEnumValue;
 
   public:

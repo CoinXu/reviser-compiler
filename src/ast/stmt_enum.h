@@ -22,7 +22,7 @@ namespace ast {
   class EnumProperty: public Stmt {
   private:
     Token id;
-    RightValue value = EmpytDataValue;
+    RightValue value = EmptyRightValue;
 
   public:
     string Generate();
