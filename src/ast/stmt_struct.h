@@ -27,7 +27,7 @@ namespace ast {
     Token id;
 
   public:
-    string generate();
+    string Generate();
     Decorater(Token id);
   };
 
@@ -39,12 +39,12 @@ namespace ast {
     Declare declare;
 
   public:
-    string generate();
+    string Generate();
     StructProperty(Declare declare);
     void AddDecorater(Decorater decorater);
   };
 
-  enum StructContentType {
+  enum StructBlockContentType {
     DeclareProperty,
     DeclareStruct,
     DeclareEnum
@@ -55,7 +55,7 @@ namespace ast {
   class Struct: public Stmt {
   private:
     struct ContentStore {
-      StructContentType type;
+      StructBlockContentType type;
       size_t index;
     };
     Token id;
@@ -66,11 +66,11 @@ namespace ast {
     int level;
 
   public:
-    string generate();
+    string Generate();
     Struct(Token id, int level = 0);
     void AddProperty(StructProperty property);
     void AddStruct(Struct st);
-    void AddEnum(ast::Enum en);
+    void AddEnum(Enum en);
   };
 
 }; // compiler

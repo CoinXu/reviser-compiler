@@ -16,7 +16,7 @@ namespace ast {
   // Decorater
   Decorater::Decorater(Token id): id(id) {}
 
-  string Decorater::generate() {
+  string Decorater::Generate() {
     return id.text;
   }
 
@@ -29,12 +29,12 @@ namespace ast {
     decoraters.push_back(decorater);
   }
 
-  string StructProperty::generate() {
+  string StructProperty::Generate() {
     string code;
     for (Decorater d: decoraters) {
-      code = code + " " + d.generate();
+      code = code + " " + d.Generate();
     }
-    return code + " " + declare.generate();
+    return code + " " + declare.Generate();
   }
 
   //
@@ -51,15 +51,15 @@ namespace ast {
     structs.push_back(st);
   }
 
-  void Struct::AddEnum(ast::Enum en) {
+  void Struct::AddEnum(Enum en) {
     contents.push_back({ DeclareEnum, enums.size() });
     enums.push_back(en);
   }
 
-  string Struct::generate() {
+  string Struct::Generate() {
     // string code = "struct " + id.text + " {\n";
     // for (StructProperty p: properties) {
-    //   code = code + "  " + p.generate() + ";\n";
+    //   code = code + "  " + p.Generate() + ";\n";
     // }
     // return code + "}";
 
@@ -69,19 +69,19 @@ namespace ast {
       switch (p.type) {
         case DeclareProperty: {
           StructProperty s = properties.at(p.index);
-          code = code + " " + s.generate() + ";\n";
+          code = code + " " + s.Generate() + ";\n";
           break;
         }
 
         case DeclareStruct: {
-          ast::Struct s = structs.at(p.index);
-          code = code + " " + s.generate() + "\n";
+          Struct s = structs.at(p.index);
+          code = code + " " + s.Generate() + "\n";
           break;
         }
 
         case DeclareEnum: {
-          ast::Enum s = enums.at(p.index);
-          code = code + " " + s.generate() + "\n";
+          Enum s = enums.at(p.index);
+          code = code + " " + s.Generate() + "\n";
           break;
         }
 

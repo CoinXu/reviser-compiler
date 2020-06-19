@@ -22,11 +22,11 @@ namespace ast {
   class EnumProperty: public Stmt {
   private:
     Token id;
-    DataValue value = EmpytDataValue;
+    RightValue value = EmptyRightValue;
 
   public:
-    string generate();
-    EnumProperty(Token id, DataValue value);
+    string Generate();
+    EnumProperty(Token id, RightValue value);
     EnumProperty(Token id);
   };
 
@@ -38,7 +38,7 @@ namespace ast {
     vector<EnumProperty> properties;
 
   public:
-    string generate();
+    string Generate();
     Enum(Token id);
     void AddProperty(EnumProperty property);
   };

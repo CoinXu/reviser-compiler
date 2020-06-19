@@ -30,7 +30,7 @@ make uninstall
 2. execute `reviserc example.dr` will output code to the terminal.
 
 # TODO
-+ [ ] support comment.
++ [x] support comment.
 + [ ] compile to javascript.
 + [ ] compile to typescript.
 + [ ] `decorator` allow parameters.

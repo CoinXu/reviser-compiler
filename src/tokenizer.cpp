@@ -31,54 +31,56 @@ CHARACTER_CLASS(NewLine, c == '\n');
 CHARACTER_CLASS(CharDigit, '0' <= c && c <= '9');
 CHARACTER_CLASS(Identifier, ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
                           ('0' <= c && c <= '9') || (c == '_'));
-CHARACTER_CLASS(CharAssign, c == Assign);
-CHARACTER_CLASS(CharLeftBrace, c == LeftBrace);
-CHARACTER_CLASS(CharRightBrance, c == RightBrace);
-CHARACTER_CLASS(CharSemicolon, c == Semicolon);
-CHARACTER_CLASS(CharComma, c == Comma);
-CHARACTER_CLASS(CharConnection, c == Connection);
-CHARACTER_CLASS(CharQuote, c == Quote);
+CHARACTER_CLASS(CharDivide, c == TOKEN_DIVIDE);
+CHARACTER_CLASS(CharAsterisk, c == TOKEN_ASTERISK);
+CHARACTER_CLASS(CharAssign, c == TOKEN_ASSIGN);
+CHARACTER_CLASS(CharLeftBrace, c == TOKEN_LEFT_BRACE);
+CHARACTER_CLASS(CharRightBrance, c == TOKEN_RIGHT_BRACE);
+CHARACTER_CLASS(CharSemicolon, c == TOKEN_SEMICOLON);
+CHARACTER_CLASS(CharComma, c == TOKEN_COMMA);
+CHARACTER_CLASS(CharConnection, c == TOKEN_CONNECTION);
+CHARACTER_CLASS(CharQuote, c == TOKEN_QUOTE);
 
 #undef CHARACTER_CLASS
 
 
 std::map<TokenType, std::string> TokenTypeNameMap = {
-  { DataType, "DataType" },
-  { Decorater, "Decorater" },
-  { Struct, "Struct" },
-  { Enum, "Enum" },
-  { ID, "ID" },
-  { Letter, "Letter" },
-  { Digit, "Digit" },
-  { Bool, "Bool" },
-  { CodeEnd, "CodeEnd" },
-  { Assign, "Assig" },
-  { LeftBrace, "LeftBrace" },
-  { RightBrace, "RightBrace" },
-  { Semicolon, "Semicolon" },
-  { Comma, "Comma" },
-  { Connection, "Connection" },
-  { Quote, "Quote" }
+  { TOKEN_DATA_TYPE, "data type" },
+  { TOKEN_DECORATER, "decorater" },
+  { TOKEN_STRUCT, "struct" },
+  { TOKEN_ENUM, "enum" },
+  { TOKEN_ID, "id" },
+  { TOKEN_LETTER, "letter" },
+  { TOKEN_DIGIT, "digit" },
+  { TOKEN_BOOL, "bool" },
+  { TOKEN_CODE_END, "codeEnd" },
+  { TOKEN_ASSIGN, "assig" },
+  { TOKEN_LEFT_BRACE, "left brace" },
+  { TOKEN_RIGHT_BRACE, "right brace" },
+  { TOKEN_SEMICOLON, "semicolon" },
+  { TOKEN_COMMA, "comma" },
+  { TOKEN_CONNECTION, "connection" },
+  { TOKEN_QUOTE, "quote" }
 };
 
 std::map<ReservedWord, std::string> ReservedWordMap = {
-  { ReservedWordStruct, "struct" },
-  { ReservedWordEnum, "enum" },
+  { RESERVED_STRUCT, "struct" },
+  { RESERVED_ENUM, "enum" },
 
-  { ReservedWordBooleanTrue, "true" },
-  { ReservedWordBooleanFalse, "false" },
+  { RESERVED_TRUE, "true" },
+  { RESERVED_FALSE, "false" },
 
-  { ReservedWordTypeBoolean, "bool" },
-  { ReservedWordTypeFloat, "float" },
-  { ReservedWordTypeDouble, "double" },
-  { ReservedWordTypeInt32, "int32" },
-  { ReservedWordTypeInt64, "int64" },
-  { ReservedWordTypeUint32, "uint32" },
-  { ReservedWordTypeUint64, "uint64" },
-  { ReservedWordTypeString, "string" },
+  { RESERVED_BOOL, "bool" },
+  { RESERVED_FLOAT, "float" },
+  { RESERVED_DOUBLE, "double" },
+  { RESERVED_INT32, "int32" },
+  { RESERVED_INT64, "int64" },
+  { RESERVED_UINT32, "uint32" },
+  { RESERVED_UINT64, "uint64" },
+  { RESERVED_STRING, "string" },
 
-  { ReservedWordDecoraterOptional, "optional" },
-  { ReservedWordDecoraterRequired, "required" }
+  { RESERVED_OPTIONAL, "optional" },
+  { RESERVED_REQUIRED, "required" }
 };
 
 
@@ -88,7 +90,7 @@ Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
   line = 1;
   column = 0;
 
-  current.type = CodeStart;
+  current.type = TOKEN_CODE_START;
   current.text = "";
   current.start_line = line;
   current.end_line = line;
@@ -97,17 +99,17 @@ Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
   current.pos_start = 0;
   current.pos_end = 0;
 
-  type.push_back(ReservedWordMap[ReservedWordTypeBoolean]);
-  type.push_back(ReservedWordMap[ReservedWordTypeFloat]);
-  type.push_back(ReservedWordMap[ReservedWordTypeDouble]);
-  type.push_back(ReservedWordMap[ReservedWordTypeInt32]);
-  type.push_back(ReservedWordMap[ReservedWordTypeInt64]);
-  type.push_back(ReservedWordMap[ReservedWordTypeUint32]);
-  type.push_back(ReservedWordMap[ReservedWordTypeUint64]);
-  type.push_back(ReservedWordMap[ReservedWordTypeString]);
+  type.push_back(ReservedWordMap[RESERVED_BOOL]);
+  type.push_back(ReservedWordMap[RESERVED_FLOAT]);
+  type.push_back(ReservedWordMap[RESERVED_DOUBLE]);
+  type.push_back(ReservedWordMap[RESERVED_INT32]);
+  type.push_back(ReservedWordMap[RESERVED_INT64]);
+  type.push_back(ReservedWordMap[RESERVED_UINT32]);
+  type.push_back(ReservedWordMap[RESERVED_UINT64]);
+  type.push_back(ReservedWordMap[RESERVED_STRING]);
 
-  decorater.push_back(ReservedWordMap[ReservedWordDecoraterOptional]);
-  decorater.push_back(ReservedWordMap[ReservedWordDecoraterRequired]);
+  decorater.push_back(ReservedWordMap[RESERVED_OPTIONAL]);
+  decorater.push_back(ReservedWordMap[RESERVED_REQUIRED]);
 
   NextChar();
 }
@@ -180,47 +182,75 @@ void Tokenizer::NextChar() {
   pos++;
 }
 
+void Tokenizer::ConsumeComment() {
+  while (InCharacters<CharDivide>()) {
+    NextChar();
+
+    if (InCharacters<CharDivide>()) {
+      // sigle line comment
+      TryConsumeCharacters<NewLine>();
+      NextChar();
+    } else if (InCharacters<CharAsterisk>()) {
+      // block comment
+      NextChar();
+
+      while (true) {
+        TryConsumeCharacters<CharAsterisk>();
+        NextChar();
+        if (InCharacters<CharDivide>() || peek == EOF) {
+          NextChar();
+          break;
+        }
+      }
+    }
+
+    ConsumeCharacters<Whitespace>();
+  }
+}
+
 bool Tokenizer::Next() {
   previous = current;
 
   if (pos >= input.size()) {
-    current.type = CodeEnd;
+    current.type = TOKEN_CODE_END;
     return false;
   }
 
   ConsumeCharacters<Whitespace>();
+  ConsumeComment();
 
   current.text = peek;
+
   int start_line = line;
   int start_column = column;
   int start_pos = pos;
 
   switch (peek) {
     case EOF:
-      current.type = CodeEnd;
+      current.type = TOKEN_CODE_END;
       break;
 
-    case Assign:
-    case LeftBrace:
-    case RightBrace:
-    case Semicolon:
-    case Comma:
-    case Connection:
+    case TOKEN_ASSIGN:
+    case TOKEN_LEFT_BRACE:
+    case TOKEN_RIGHT_BRACE:
+    case TOKEN_SEMICOLON:
+    case TOKEN_COMMA:
+    case TOKEN_CONNECTION:
       current.type = (TokenType) peek;
       NextChar();
       break;
 
-    case Quote:
-      current.type = Letter;
+    case TOKEN_QUOTE:
+      current.type = TOKEN_LETTER;
       NextChar();
       TryConsumeCharacters<CharQuote>();
       NextChar();
-      current.text = input.substr(start_pos -1, pos - start_pos);
+      current.text = input.substr(start_pos - 1, pos - start_pos);
       break;
 
     default:
       if (InCharacters<CharDigit>()) {
-        current.type = Digit;
+        current.type = TOKEN_DIGIT;
         ConsumeCharacters<CharDigit>();
         current.text = input.substr(start_pos - 1, pos - start_pos);
       } else if (InCharacters<Identifier>()) {
@@ -228,15 +258,15 @@ bool Tokenizer::Next() {
         current.text = input.substr(start_pos - 1, pos - start_pos);
 
         if (TypeIdentifier(current.text)) {
-          current.type = DataType;
+          current.type = TOKEN_DATA_TYPE;
         } else if (DecoraterIdentifier(current.text)) {
-          current.type = Decorater;
-        } else if (current.text == ReservedWordMap[ReservedWordStruct]) {
-          current.type = Struct;
-        } else if (current.text == ReservedWordMap[ReservedWordEnum]) {
-          current.type = Enum;
+          current.type = TOKEN_DECORATER;
+        } else if (current.text == ReservedWordMap[RESERVED_STRUCT]) {
+          current.type = TOKEN_STRUCT;
+        } else if (current.text == ReservedWordMap[RESERVED_ENUM]) {
+          current.type = TOKEN_ENUM;
         } else {
-          current.type = ID;
+          current.type = TOKEN_ID;
         }
       } else {
         TryConsumeCharacters<NewLine>();
@@ -252,7 +282,7 @@ bool Tokenizer::Next() {
   current.pos_start = start_pos;
   current.pos_end = pos;
 
-  return current.type != CodeEnd;
+  return current.type != TOKEN_CODE_END;
 }
 } // tokenizer
 } // reviser

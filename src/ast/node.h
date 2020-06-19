@@ -13,7 +13,7 @@ namespace reviser {
 namespace ast {
   class Node {
   public:
-    virtual std::string generate() = 0;
+    virtual std::string Generate() = 0;
   };
 }; // compiler
 }; // reviser

@@ -15,7 +15,7 @@ namespace reviser {
 namespace ast {
   class Stmt: public Node {
   public:
-    std::string generate();
+    std::string Generate();
   };
 
   class Seq: public Stmt {
@@ -23,7 +23,7 @@ namespace ast {
     std::vector<Stmt> stmts;
 
   public:
-    std::string generate();
+    std::string Generate();
     void AddStmt(Stmt stmt);
   };
 

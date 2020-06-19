@@ -19,25 +19,25 @@ namespace ast {
   // Expr
   class Expr: public Node {
   public:
-    string generate();
+    string Generate();
   };
 
   //
-  // DataValue
+  // RightValue
   // 0
   // "foo"
-  class DataValue: public Expr {
+  class RightValue: public Expr {
   private:
-    DataValueType type;
+    DataType type;
     Token id;
 
   public:
-    DataValue(DataValueType type, Token id);
-    DataValueType DataType();
-    string generate();
+    RightValue(DataType type, Token id);
+    DataType Type();
+    string Generate();
   };
 
-  static const DataValue EmpytDataValue(DataTypeNull, EmptyToken);
+  static const RightValue EmptyRightValue(TYPE_NULL, EmptyToken);
 
   //
   // Foo.Bar
@@ -48,7 +48,7 @@ namespace ast {
 
   public:
     EnumValue(Token id, Token property);
-    string generate();
+    string Generate();
   };
 
   static const EnumValue EmptyEnumValue(EmptyToken, EmptyToken);
@@ -59,11 +59,11 @@ namespace ast {
   class Assign: public Expr {
   private:
     Token id;
-    DataValue value;
+    RightValue value;
 
   public:
-    Assign(Token id, DataValue value);
-    string generate();
+    Assign(Token id, RightValue value);
+    string Generate();
   };
 
   //
@@ -72,16 +72,16 @@ namespace ast {
   // Color bar = Color.Red;
   class Declare: public Expr {
   private:
-    DataValueType type;
+    DataType type;
     Token id;
     Token eid;
-    DataValue dv = EmpytDataValue;
+    RightValue dv = EmptyRightValue;
     EnumValue ev = EmptyEnumValue;
 
   public:
-    Declare(DataValueType type, Token id, DataValue dv);
-    Declare(DataValueType type, Token id, Token eid, EnumValue ev);
-    string generate();
+    Declare(DataType type, Token id, RightValue dv);
+    Declare(DataType type, Token id, Token eid, EnumValue ev);
+    string Generate();
   };
 
 }; // compiler
