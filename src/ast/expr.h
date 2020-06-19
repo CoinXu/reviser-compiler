@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_Ast_EXPR
-#define REVISER_COMPILER_Ast_EXPR
+#ifndef REVISER_COMPILER_AST_EXPR
+#define REVISER_COMPILER_AST_EXPR
 
 #include <string>
 #include <tokenizer.h>

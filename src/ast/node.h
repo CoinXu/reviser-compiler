@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_Ast_NODE
-#define REVISER_COMPILER_Ast_NODE
+#ifndef REVISER_COMPILER_AST_NODE
+#define REVISER_COMPILER_AST_NODE
 
 #include <string>
 

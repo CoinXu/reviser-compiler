@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_Ast_STMT_ENUM
-#define REVISER_COMPILER_Ast_STMT_ENUM
+#ifndef REVISER_COMPILER_AST_STMT_ENUM
+#define REVISER_COMPILER_AST_STMT_ENUM
 
 #include <string>
 #include <tokenizer.h>

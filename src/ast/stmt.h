@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_Ast_STMT
-#define REVISER_COMPILER_Ast_STMT
+#ifndef REVISER_COMPILER_AST_STMT
+#define REVISER_COMPILER_AST_STMT
 
 #include <string>
 #include <vector>
