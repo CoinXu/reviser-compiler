@@ -33,7 +33,7 @@ namespace compiler {
     void Expect(TokenType type);
     void Next();
     bool LookAt(string expect);
-    bool LookAtTokenType(TokenType expect);
+    bool LookAtType(TokenType expect);
 
     TokenType CurrentType();
     TokenType PreviousType();

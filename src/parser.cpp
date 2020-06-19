@@ -22,11 +22,11 @@ namespace compiler {
     Accept(TOKEN_CODE_START);
 
     do {
-      if (LookAtTokenType(TOKEN_STRUCT)) {
+      if (LookAtType(TOKEN_STRUCT)) {
         Struct s = ConsumeStruct();
         message.Info(s.Generate());
         seq.AddStmt(s);
-      } else if (LookAtTokenType(TOKEN_ENUM)) {
+      } else if (LookAtType(TOKEN_ENUM)) {
         Enum s = ConsumeEnum();
         message.Info(s.Generate());
         seq.AddStmt(s);
@@ -63,7 +63,7 @@ namespace compiler {
     return CurrentText() == expect;
   }
 
-  bool Parser::LookAtTokenType(TokenType expect) {
+  bool Parser::LookAtType(TokenType expect) {
     return CurrentType() == expect;
   }
 
@@ -91,9 +91,9 @@ namespace compiler {
     Expect(TOKEN_LEFT_BRACE);
 
     do {
-      if (LookAtTokenType(TOKEN_STRUCT)) {
+      if (LookAtType(TOKEN_STRUCT)) {
         s.AddStruct(ConsumeStruct());
-      } else if (LookAtTokenType(TOKEN_ENUM)) {
+      } else if (LookAtType(TOKEN_ENUM)) {
         s.AddEnum(ConsumeEnum());
       } else {
         s.AddProperty(ConsumeStructProperty());
