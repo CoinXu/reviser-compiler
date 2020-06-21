@@ -213,6 +213,7 @@ bool Tokenizer::Next() {
 
   if (pos >= input.size()) {
     current.type = TOKEN_CODE_END;
+    current.text = "";
     return false;
   }
 
@@ -226,10 +227,6 @@ bool Tokenizer::Next() {
   int start_pos = pos;
 
   switch (peek) {
-    case EOF:
-      current.type = TOKEN_CODE_END;
-      break;
-
     case TOKEN_ASSIGN:
     case TOKEN_LEFT_BRACE:
     case TOKEN_RIGHT_BRACE:

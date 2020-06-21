@@ -135,10 +135,12 @@ namespace compiler {
       return ConsumeDataTypeDeclare();
     } else if (Accept(TOKEN_ID)) {
       return ConsumeEnumDeclare();
+    } else {
+      message.Runtime("syntax error.");
+      RightValue rv(TYPE_NULL, EmptyToken);
+      Declare d(TYPE_NULL, EmptyToken, rv);
+      return d;
     }
-    // TODO
-    // else if
-    // runtime error
   }
 
   Declare Parser::ConsumeDataTypeDeclare() {
@@ -146,51 +148,48 @@ namespace compiler {
     string type = PreviousText();
 
     Expect(TOKEN_ID);
+    Expect(TOKEN_ASSIGN);
 
     // TODO
     // value optional support
-    if (Accept(TOKEN_ASSIGN)) {
-      Token dvt = tokenizer.Current();
-      string value = CurrentText();
-      DataType data_type;
+    Token dvt = tokenizer.Current();
+    string value = CurrentText();
+    DataType data_type;
 
-      if (type == ReservedWordMap[RESERVED_BOOL]) {
-        data_type = TYPE_BOOL;
-        if (value != ReservedWordMap[RESERVED_FALSE]
-          && value != ReservedWordMap[RESERVED_TRUE]) {
-          message.Runtime("expect true or false");
-        } else {
-          Next();
-        }
-      } else if (type == ReservedWordMap[RESERVED_FLOAT]) {
-        data_type = TYPE_FLOAT;
-        Expect(TOKEN_DIGIT);
-      } else if (type == ReservedWordMap[RESERVED_DOUBLE]) {
-        data_type = TYPE_DOUBLE;
-        Expect(TOKEN_DIGIT);
-      } else if (type == ReservedWordMap[RESERVED_INT32]) {
-        data_type = TYPE_INT32;
-        Expect(TOKEN_DIGIT);
-      } else if (type == ReservedWordMap[RESERVED_INT64]) {
-        data_type = TYPE_INT64;
-        Expect(TOKEN_DIGIT);
-      } else if (type == ReservedWordMap[RESERVED_UINT32]) {
-        data_type = TYPE_UINT32;
-        Expect(TOKEN_DIGIT);
-      } else if (type == ReservedWordMap[RESERVED_UINT64]) {
-        data_type = TYPE_UINT64;
-        Expect(TOKEN_DIGIT);
-      } else if (type == ReservedWordMap[RESERVED_STRING]) {
-        data_type = TYPE_STRING;
-        Expect(TOKEN_LETTER);
+    if (type == ReservedWordMap[RESERVED_BOOL]) {
+      data_type = TYPE_BOOL;
+      if (value != ReservedWordMap[RESERVED_FALSE]
+        && value != ReservedWordMap[RESERVED_TRUE]) {
+        message.Runtime("expect true or false");
+      } else {
+        Next();
       }
-
-      RightValue dv(data_type, dvt);
-      Declare declare(data_type, id, dv);
-      return declare;
-    } else {
-      message.Runtime("expect Assign token");
+    } else if (type == ReservedWordMap[RESERVED_FLOAT]) {
+      data_type = TYPE_FLOAT;
+      Expect(TOKEN_DIGIT);
+    } else if (type == ReservedWordMap[RESERVED_DOUBLE]) {
+      data_type = TYPE_DOUBLE;
+      Expect(TOKEN_DIGIT);
+    } else if (type == ReservedWordMap[RESERVED_INT32]) {
+      data_type = TYPE_INT32;
+      Expect(TOKEN_DIGIT);
+    } else if (type == ReservedWordMap[RESERVED_INT64]) {
+      data_type = TYPE_INT64;
+      Expect(TOKEN_DIGIT);
+    } else if (type == ReservedWordMap[RESERVED_UINT32]) {
+      data_type = TYPE_UINT32;
+      Expect(TOKEN_DIGIT);
+    } else if (type == ReservedWordMap[RESERVED_UINT64]) {
+      data_type = TYPE_UINT64;
+      Expect(TOKEN_DIGIT);
+    } else if (type == ReservedWordMap[RESERVED_STRING]) {
+      data_type = TYPE_STRING;
+      Expect(TOKEN_LETTER);
     }
+
+    RightValue dv(data_type, dvt);
+    Declare declare(data_type, id, dv);
+    return declare;
   }
 
   Declare Parser::ConsumeEnumDeclare() {
