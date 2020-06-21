@@ -148,10 +148,11 @@ namespace compiler {
     string type = PreviousText();
 
     Expect(TOKEN_ID);
-    Expect(TOKEN_ASSIGN);
 
     // TODO
     // value optional support
+    Expect(TOKEN_ASSIGN);
+
     Token dvt = tokenizer.Current();
     string value = CurrentText();
     DataType data_type;
