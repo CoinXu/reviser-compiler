@@ -4,7 +4,9 @@ HEAD_FILE_PATH = $(shell pwd)/$(SOURCES_DIR)
 COMPILE_CMD = $(CPP) -g -std=c++11 -I$(HEAD_FILE_PATH)
 LIB_NAME = reviserc
 
-SRC = $(wildcard $(SOURCES_DIR)/*cpp) $(wildcard $(SOURCES_DIR)/**/*.cpp)
+SRC = $(wildcard $(SOURCES_DIR)/*cpp)  \
+	$(wildcard $(SOURCES_DIR)/**/*.cpp) \
+	$(wildcard $(SOURCES_DIR)/compiler/**/*.cpp)
 
 .SUFFIXES : .o .cpp .c
 .cpp.o :

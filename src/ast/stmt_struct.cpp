@@ -16,26 +16,10 @@ namespace ast {
   // Decorater
   Decorater::Decorater(Token id): id(id) {}
 
-  string Decorater::Generate() {
-    return id.text;
-  }
-
   //
   // StructPrototype
   StructProperty::StructProperty(Declare declare)
     : declare(declare) {}
-
-  void StructProperty::AddDecorater(Decorater decorater) {
-    decoraters.push_back(decorater);
-  }
-
-  string StructProperty::Generate() {
-    string code;
-    for (Decorater d: decoraters) {
-      code = code + " " + d.Generate();
-    }
-    return code + " " + declare.Generate();
-  }
 
   //
   // Struct
@@ -54,43 +38,6 @@ namespace ast {
   void Struct::AddEnum(Enum en) {
     contents.push_back({ DeclareEnum, enums.size() });
     enums.push_back(en);
-  }
-
-  string Struct::Generate() {
-    // string code = "struct " + id.text + " {\n";
-    // for (StructProperty p: properties) {
-    //   code = code + "  " + p.Generate() + ";\n";
-    // }
-    // return code + "}";
-
-    string code = "struct " + id.text + " {\n";
-
-    for (ContentStore p: contents) {
-      switch (p.type) {
-        case DeclareProperty: {
-          StructProperty s = properties.at(p.index);
-          code = code + " " + s.Generate() + ";\n";
-          break;
-        }
-
-        case DeclareStruct: {
-          Struct s = structs.at(p.index);
-          code = code + " " + s.Generate() + "\n";
-          break;
-        }
-
-        case DeclareEnum: {
-          Enum s = enums.at(p.index);
-          code = code + " " + s.Generate() + "\n";
-          break;
-        }
-
-        default:
-          break;
-      }
-    }
-
-    return code + "}";
   }
 }; // reviser
 }; // ast

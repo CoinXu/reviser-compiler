@@ -23,25 +23,20 @@ namespace ast {
   // Decorater
   // required | optional
   class Decorater: public Stmt {
-  private:
+  public:
     Token id;
 
-  public:
-    string Generate();
     Decorater(Token id);
   };
 
   //
   // SructPrototype
   class StructProperty: public Stmt {
-  private:
+  public:
     vector<Decorater> decoraters;
     Declare declare;
 
-  public:
-    string Generate();
     StructProperty(Declare declare);
-    void AddDecorater(Decorater decorater);
   };
 
   enum StructBlockContentType {
@@ -53,11 +48,12 @@ namespace ast {
   //
   // Struct
   class Struct: public Stmt {
-  private:
+  public:
     struct ContentStore {
       StructBlockContentType type;
       size_t index;
     };
+
     Token id;
     vector<StructProperty> properties;
     vector<Struct> structs;
@@ -65,8 +61,6 @@ namespace ast {
     vector<ContentStore> contents;
     int level;
 
-  public:
-    string Generate();
     Struct(Token id, int level = 0);
     void AddProperty(StructProperty property);
     void AddStruct(Struct st);

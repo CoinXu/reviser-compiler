@@ -20,12 +20,10 @@ namespace ast {
   //
   // EnumProperty
   class EnumProperty: public Stmt {
-  private:
+  public:
     Token id;
     RightValue value = EmptyRightValue;
 
-  public:
-    string Generate();
     EnumProperty(Token id, RightValue value);
     EnumProperty(Token id);
   };
@@ -33,14 +31,11 @@ namespace ast {
   //
   // Enum
   class Enum: public Stmt {
-  private:
+  public:
     Token id;
     vector<EnumProperty> properties;
 
-  public:
-    string Generate();
     Enum(Token id);
-    void AddProperty(EnumProperty property);
   };
 
 }; // reviser
