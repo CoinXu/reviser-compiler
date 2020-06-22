@@ -15,16 +15,13 @@ namespace reviser {
 namespace ast {
   class Stmt: public Node {
   public:
-    std::string Generate();
+    int level = 0;
   };
 
   class Seq: public Stmt {
-  private:
-    std::vector<Stmt> stmts;
-
   public:
-    std::string Generate();
-    void AddStmt(Stmt stmt);
+    int level = 0;
+    std::vector<Stmt> stmts;
   };
 
 }; // compiler

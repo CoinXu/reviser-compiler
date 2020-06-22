@@ -18,8 +18,7 @@ namespace reviser {
 namespace ast {
   // Expr
   class Expr: public Node {
-  public:
-    string Generate();
+
   };
 
   //
@@ -27,14 +26,11 @@ namespace ast {
   // 0
   // "foo"
   class RightValue: public Expr {
-  private:
+  public:
     DataType type;
     Token id;
 
-  public:
     RightValue(DataType type, Token id);
-    DataType Type();
-    string Generate();
   };
 
   static const RightValue EmptyRightValue(TYPE_NULL, EmptyToken);
@@ -42,13 +38,11 @@ namespace ast {
   //
   // Foo.Bar
   class EnumValue: public Expr {
-  private:
+  public:
     Token id;
     Token property;
 
-  public:
     EnumValue(Token id, Token property);
-    string Generate();
   };
 
   static const EnumValue EmptyEnumValue(EmptyToken, EmptyToken);
@@ -57,13 +51,11 @@ namespace ast {
   // Assign
   // foo = bar
   class Assign: public Expr {
-  private:
+  public:
     Token id;
     RightValue value;
 
-  public:
     Assign(Token id, RightValue value);
-    string Generate();
   };
 
   //
@@ -71,17 +63,15 @@ namespace ast {
   // int32 foo = 1
   // Color bar = Color.Red;
   class Declare: public Expr {
-  private:
+  public:
     DataType type;
     Token id;
     Token eid;
     RightValue dv = EmptyRightValue;
     EnumValue ev = EmptyEnumValue;
 
-  public:
     Declare(DataType type, Token id, RightValue dv);
     Declare(DataType type, Token id, Token eid, EnumValue ev);
-    string Generate();
   };
 
 }; // compiler

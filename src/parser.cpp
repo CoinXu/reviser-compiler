@@ -5,6 +5,7 @@
  */
 
 #include <parser.h>
+#include <compiler/javascript/javascript_generator.h>
 
 using namespace std;
 using namespace reviser;
@@ -21,15 +22,15 @@ namespace compiler {
   void Parser::Program() {
     Accept(TOKEN_CODE_START);
 
+    JavaScriptGenerator javascript;
+
     do {
       if (LookAtType(TOKEN_STRUCT)) {
         Struct s = ConsumeStruct();
-        message.Info(s.Generate());
-        seq.AddStmt(s);
+        message.Info(javascript.StmtStruct(&s));
       } else if (LookAtType(TOKEN_ENUM)) {
         Enum s = ConsumeEnum();
-        message.Info(s.Generate());
-        seq.AddStmt(s);
+        message.Info(javascript.StmtEnum(&s));
       } else {
         Next();
       }
@@ -118,7 +119,7 @@ namespace compiler {
     Expect(TOKEN_SEMICOLON);
 
     for (Decorater d: v) {
-      property.AddDecorater(d);
+      property.decoraters.push_back(d);
     }
 
     return property;
@@ -236,7 +237,7 @@ namespace compiler {
     Enum e(id);
 
     do {
-      e.AddProperty(ConsumeEnumProperty());
+      e.properties.push_back(ConsumeEnumProperty());
     } while (Accept(TOKEN_COMMA));
 
     Expect(TOKEN_RIGHT_BRACE);
