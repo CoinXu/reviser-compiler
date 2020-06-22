@@ -8,6 +8,7 @@
 #define REVISER_COMPILER_JAVASCRIPT_ENUM
 
 #include <compiler/javascript/javascript_stmt.h>
+#include <compiler/javascript/javascript_struct.h>
 #include <ast/stmt_enum.h>
 
 using namespace reviser::ast;
@@ -17,12 +18,12 @@ namespace reviser {
 namespace compiler {
   class JavaScriptEnum : public JavaScriptStmt {
   public:
-    JavaScriptStmt* parent = NULL;
+    JavaScriptStruct* parent = NULL;
     Enum* node;
 
-    std::string Generate();
+    string Generate();
     JavaScriptEnum(Enum* node);
-    JavaScriptEnum(Enum* node, JavaScriptStmt* parent);
+    JavaScriptEnum(Enum* node, JavaScriptStruct* parent);
     ~JavaScriptEnum();
   };
 
@@ -31,7 +32,7 @@ namespace compiler {
     JavaScriptEnum* parent;
     EnumProperty* node;
 
-    std::string Generate(int index = 0);
+    string Generate(int index = 0);
     JavaScriptEnumProperty(EnumProperty* node, JavaScriptEnum* parent);
     ~JavaScriptEnumProperty();
   };

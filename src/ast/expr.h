@@ -17,7 +17,7 @@ using namespace reviser::compiler;
 namespace reviser {
 namespace ast {
   // Expr
-  class Expr: public Node {
+  class Expr : public Node {
 
   };
 
@@ -25,7 +25,7 @@ namespace ast {
   // RightValue
   // 0
   // "foo"
-  class RightValue: public Expr {
+  class RightValue : public Expr {
   public:
     DataType type;
     Token id;
@@ -37,7 +37,7 @@ namespace ast {
 
   //
   // Foo.Bar
-  class EnumValue: public Expr {
+  class EnumValue : public Expr {
   public:
     Token id;
     Token property;
@@ -50,7 +50,7 @@ namespace ast {
   //
   // Assign
   // foo = bar
-  class Assign: public Expr {
+  class Assign : public Expr {
   public:
     Token id;
     RightValue value;
@@ -62,7 +62,7 @@ namespace ast {
   // Declare
   // int32 foo = 1
   // Color bar = Color.Red;
-  class Declare: public Expr {
+  class Declare : public Expr {
   public:
     DataType type;
     Token id;

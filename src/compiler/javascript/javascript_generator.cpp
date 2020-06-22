@@ -7,6 +7,7 @@
 #include <compiler/javascript/javascript_generator.h>
 #include <compiler/javascript/javascript_common.h>
 #include <compiler/javascript/javascript_enum.h>
+#include <compiler/javascript/javascript_struct.h>
 
 namespace reviser {
 namespace compiler {
@@ -16,12 +17,13 @@ namespace compiler {
   JavaScriptGenerator::~JavaScriptGenerator() {}
 
   string JavaScriptGenerator::StmtStruct(Struct* s) {
-    return "";
+    JavaScriptStruct g(s);
+    return g.Generate();
   }
 
   string JavaScriptGenerator::StmtEnum(Enum* e) {
-    JavaScriptEnum je(e);
-    return je.Generate();
+    JavaScriptEnum g(e);
+    return g.Generate();
   }
 
 }; // javascript

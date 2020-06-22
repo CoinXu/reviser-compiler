@@ -17,12 +17,12 @@ namespace reviser {
 namespace compiler {
   class JavaScriptStruct : public JavaScriptStmt {
   public:
-    JavaScriptStmt* parent = NULL;
+    JavaScriptStruct* parent = NULL;
     Struct* node;
 
     string Generate();
     JavaScriptStruct(Struct* node);
-    JavaScriptStruct(Struct* node, JavaScriptStmt* parent);
+    JavaScriptStruct(Struct* node, JavaScriptStruct* parent);
     ~JavaScriptStruct();
   };
 
