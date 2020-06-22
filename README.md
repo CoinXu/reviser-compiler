@@ -31,7 +31,7 @@ make uninstall
 
 # TODO
 + [x] support comment.
-+ [ ] compile to javascript.
++ [x] compile to javascript.
 + [ ] compile to typescript.
 + [ ] `decorator` allow parameters.
 + [ ] check data type.
