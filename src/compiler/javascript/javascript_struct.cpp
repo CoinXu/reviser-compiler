@@ -19,8 +19,8 @@ namespace compiler {
 
   JavaScriptStruct::JavaScriptStruct(Struct* node, JavaScriptStruct* parent)
     : node(node), parent(parent) {
-    node->level = parent->node->level + 1;
-  }
+      node->level = parent->node->level + 1;
+    }
 
   JavaScriptStruct::~JavaScriptStruct() {}
 
