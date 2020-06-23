@@ -65,9 +65,7 @@ namespace compiler {
     EnumProperty ConsumeEnumProperty();
     Enum ConsumeEnum();
 
-    void program_by_generator(CodeGenerator*);
-    void program_by_generator(JavaScriptGenerator*);
-    void program_by_generator(TypeScriptGenerator*);
+    template<typename T> void ProgramByGenerator(T generator);
 
   public:
     Parser(Tokenizer*, CodeGenerator*, Descriptor*, CodeGeneratorType);

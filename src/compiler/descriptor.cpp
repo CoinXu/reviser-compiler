@@ -8,20 +8,29 @@
 
 namespace reviser {
 namespace compiler {
-  vector<string> Descriptor::decorators() {
+  vector<string> Descriptor::Decorators() {
     return decorators_;
   }
 
-  vector<string> Descriptor::global_variables() {
+  vector<string> Descriptor::GlobalVariables() {
     return global_variables_;
   }
 
-  void Descriptor::add_decorator(string decorator) {
+  vector<DataType> Descriptor::DataTypes() {
+    return data_types_;
+  }
+
+  void Descriptor::AddDecorator(string decorator) {
     decorators_.push_back(decorator);
   }
 
-  void Descriptor::add_global_variable(string variable) {
+  void Descriptor::AddGlobalVariable(string variable) {
     global_variables_.push_back(variable);
   }
+
+  void Descriptor::AddDataTypes(DataType type) {
+    data_types_.push_back(type);
+  }
+
 }; // reviser
 }; // compiler

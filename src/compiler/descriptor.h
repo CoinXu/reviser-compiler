@@ -9,6 +9,7 @@
 
 #include<vector>
 #include<string>
+#include <tokenizer.h>
 
 using namespace std;
 
@@ -18,13 +19,16 @@ namespace compiler {
   private:
     vector<string> decorators_;
     vector<string> global_variables_;
+    vector<DataType> data_types_;
 
   public:
-    vector<string> decorators();
-    vector<string> global_variables();
+    vector<string> Decorators();
+    vector<string> GlobalVariables();
+    vector<DataType> DataTypes();
 
-    void add_decorator(string decorator);
-    void add_global_variable(string variable);
+    void AddDataTypes(DataType type);
+    void AddDecorator(string decorator);
+    void AddGlobalVariable(string variable);
   };
 }; // reviser
 }; // compiler

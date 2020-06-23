@@ -27,15 +27,15 @@ namespace compiler {
   void Parser::Program() {
     switch (generator_type) {
       case JavaScript:
-        program_by_generator(static_cast<JavaScriptGenerator*>(generator));
+        ProgramByGenerator<JavaScriptGenerator*>(static_cast<JavaScriptGenerator*>(generator));
         break;
 
       case TypeScript:
-        program_by_generator(static_cast<TypeScriptGenerator*>(generator));
+        ProgramByGenerator<TypeScriptGenerator*>(static_cast<TypeScriptGenerator*>(generator));
         break;
 
       case Default:
-        program_by_generator(static_cast<CodeGenerator*>(generator));
+        ProgramByGenerator<CodeGenerator*>(static_cast<CodeGenerator*>(generator));
         break;
 
       default:
@@ -43,47 +43,19 @@ namespace compiler {
     }
   }
 
-  void Parser::program_by_generator(CodeGenerator* generator) {
+  template<typename T> void Parser::ProgramByGenerator(T generator) {
     Accept(TOKEN_CODE_START);
 
     do {
       if (LookAtType(TOKEN_STRUCT)) {
         Struct s = ConsumeStruct();
+
+        descriptor->AddGlobalVariable(s.id.text);
         message.Info(generator->StmtStruct(&s));
       } else if (LookAtType(TOKEN_ENUM)) {
         Enum s = ConsumeEnum();
-        message.Info(generator->StmtEnum(&s));
-      } else {
-        Next();
-      }
-    } while (!Accept(TOKEN_CODE_END));
-  }
 
-  void Parser::program_by_generator(JavaScriptGenerator* generator) {
-    Accept(TOKEN_CODE_START);
-
-    do {
-      if (LookAtType(TOKEN_STRUCT)) {
-        Struct s = ConsumeStruct();
-        message.Info(generator->StmtStruct(&s));
-      } else if (LookAtType(TOKEN_ENUM)) {
-        Enum s = ConsumeEnum();
-        message.Info(generator->StmtEnum(&s));
-      } else {
-        Next();
-      }
-    } while (!Accept(TOKEN_CODE_END));
-  }
-
-  void Parser::program_by_generator(TypeScriptGenerator* generator) {
-    Accept(TOKEN_CODE_START);
-
-    do {
-      if (LookAtType(TOKEN_STRUCT)) {
-        Struct s = ConsumeStruct();
-        message.Info(generator->StmtStruct(&s));
-      } else if (LookAtType(TOKEN_ENUM)) {
-        Enum s = ConsumeEnum();
+        descriptor->AddGlobalVariable(s.id.text);
         message.Info(generator->StmtEnum(&s));
       } else {
         Next();
@@ -181,6 +153,7 @@ namespace compiler {
 
   Decorater Parser::ConsumeDecorater() {
     Decorater d(token);
+    descriptor->AddDecorator(token.text);
     return d;
   }
 
@@ -218,28 +191,43 @@ namespace compiler {
         && value != ReservedWordMap[RESERVED_TRUE]) {
         message.Runtime("expect true or false");
       } else {
+        descriptor->AddDataTypes(TYPE_BOOL);
         Next();
       }
     } else if (type == ReservedWordMap[RESERVED_FLOAT]) {
       data_type = TYPE_FLOAT;
+      descriptor->AddDataTypes(TYPE_FLOAT);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_DOUBLE]) {
       data_type = TYPE_DOUBLE;
+      descriptor->AddDataTypes(TYPE_DOUBLE);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_INT32]) {
       data_type = TYPE_INT32;
+      descriptor->AddDataTypes(TYPE_INT32);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_INT64]) {
       data_type = TYPE_INT64;
+      descriptor->AddDataTypes(TYPE_INT64);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_UINT32]) {
       data_type = TYPE_UINT32;
+      descriptor->AddDataTypes(TYPE_UINT32);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_UINT64]) {
       data_type = TYPE_UINT64;
+      descriptor->AddDataTypes(TYPE_UINT64);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_STRING]) {
       data_type = TYPE_STRING;
+      descriptor->AddDataTypes(TYPE_STRING);
+
       Expect(TOKEN_LETTER);
     }
 
