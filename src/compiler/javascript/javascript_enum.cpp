@@ -16,23 +16,19 @@ namespace compiler {
   JavaScriptEnum::JavaScriptEnum(Enum* node): node(node) {
     node->level = 0;
   }
+
   JavaScriptEnum::JavaScriptEnum(Enum* node, JavaScriptStruct* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
-    }
+    node->level = parent->node->level + 1;
+  }
 
   JavaScriptEnum::~JavaScriptEnum() {}
 
   string JavaScriptEnum::Generate() {
     string code;
 
-    if (parent) {
-      code = JavaScriptCommon::Indent(node->level)
-        + "static " + node->id.text + " = {\n";
-    } else {
-      code = JavaScriptCommon::Indent(node->level)
-        + "var " + node->id.text + " = {\n";
-    }
+    code = JavaScriptCommon::Indent(node->level)
+      + "var " + node->id.text + " = {\n";
 
     size_t counter = 0;
     size_t total = node->properties.size();
@@ -50,8 +46,8 @@ namespace compiler {
   // JavaScriptEnumProperty
   JavaScriptEnumProperty::JavaScriptEnumProperty(EnumProperty* node, JavaScriptEnum* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
-    }
+    node->level = parent->node->level + 1;
+  }
 
   JavaScriptEnumProperty::~JavaScriptEnumProperty() {}
 

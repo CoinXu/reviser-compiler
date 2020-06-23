@@ -11,17 +11,19 @@
 #include <vector>
 #include <ast/node.h>
 
+using namespace std;
+
 namespace reviser {
 namespace ast {
   class Stmt: public Node {
   public:
     int level = 0;
+    string name = "";
   };
 
   class Seq: public Stmt {
   public:
-    int level = 0;
-    std::vector<Stmt> stmts;
+    vector<Stmt> stmts;
   };
 
 }; // compiler

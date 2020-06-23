@@ -18,6 +18,9 @@ struct Foo {
     baz = 10
   }
 
+  Type type = Type.foo;
+  Color bar = Color.Red;
+
   /**
    *
    */
@@ -27,14 +30,16 @@ struct Foo {
       // Foo
     }
 
-    bool bar = true;
-    optional int32 age = 1;
+    struct Baz {
+      BarType baz = BarType.Foo;
+    }
+
+    BarType bar = BarType.Foo;
     // Bar
+    bool baz = true;
   }
 
   required string foo = "foo";
   bool baz = true; /* Bar */
-  Color bar = Color.Red;
-  Type type = Type.foo;
   int32 age = 0;
 }

@@ -25,33 +25,32 @@ namespace compiler {
   JavaScriptStruct::~JavaScriptStruct() {}
 
   string JavaScriptStruct::Generate() {
-    string code;
+    string indent = JavaScriptCommon::Indent(node->level);
+    string indent_next = JavaScriptCommon::Indent(node->level + 1);
 
-    if (parent) {
-      code = JavaScriptCommon::Indent(node->level)
-        + "static class " + node->id.text + " \{\n";
-    } else {
-      code = JavaScriptCommon::Indent(node->level)
-        + "class " + node->id.text + " \{\n";
-    }
+    vector<string> properties;
+    vector<string> structures;
+    vector<string> enums;
 
-    for (Struct::ContentStore p: node->contents) {
+    for (Struct::ContentStore& p: node->contents) {
+      const string new_line = &p == &node->contents.back() ? "\n" : "\n\n";
+
       switch (p.type) {
         case DeclareProperty: {
           JavaScriptStructProperty g(&(node->properties.at(p.index)), this);
-          code = code + g.Generate() + "\n";
+          properties.push_back(g.Generate() + new_line);
           break;
         }
 
         case DeclareStruct: {
           JavaScriptStruct g(&(node->structs.at(p.index)), this);
-          code = code + g.Generate() + "\n";
+          structures.push_back(g.Generate() + new_line);
           break;
         }
 
         case DeclareEnum: {
           JavaScriptEnum g(&(node->enums.at(p.index)), this);
-          code = code + g.Generate() + "\n";
+          enums.push_back(g.Generate() + new_line);
           break;
         }
 
@@ -60,15 +59,35 @@ namespace compiler {
       }
     }
 
-    return code + "\n" + JavaScriptCommon::Indent(node->level) + "};\n";
+    string code = indent + "var " + node->id.text + " = (function() {\n";
+
+    for (string en: enums) {
+      code = code + en;
+    }
+
+    for (string s: structures) {
+      code = code + s;
+    }
+
+    code = code + indent_next + "class " + node->id.text + " {\n";
+
+    for (string p: properties) {
+      code = code + p;
+    }
+
+    code = code + indent_next + "}\n";
+
+    return code
+      + indent_next + "return " + node->id.text + ";\n"
+      + indent + "})();\n";
   }
 
   //
   // JavaScriptStructProperty
   JavaScriptStructProperty::JavaScriptStructProperty(StructProperty* node, JavaScriptStruct* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
-    }
+    node->level = parent->node->level + 1;
+  }
 
   JavaScriptStructProperty::~JavaScriptStructProperty() {}
 
@@ -81,7 +100,7 @@ namespace compiler {
     }
 
     JavaScriptDeclare declare(&node->declare);
-    return code + JavaScriptCommon::Indent(node->level)
+    return code + JavaScriptCommon::Indent(node->level + 1)
       + declare.Generate() + ";";
   }
 
@@ -89,13 +108,13 @@ namespace compiler {
   // JavaScriptDecorater
   JavaScriptDecorater::JavaScriptDecorater(Decorater* node, JavaScriptStruct* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
-    }
+    node->level = parent->node->level + 1;
+  }
 
   JavaScriptDecorater::~JavaScriptDecorater() {}
 
   string JavaScriptDecorater::Generate() {
-    return JavaScriptCommon::Indent(node->level)
+    return JavaScriptCommon::Indent(node->level + 1)
       + "@" + node->id.text + "\n";
   }
 
