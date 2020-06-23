@@ -15,11 +15,14 @@ namespace compiler {
   // JavaScriptEnum
   JavaScriptEnum::JavaScriptEnum(Enum* node): node(node) {
     node->level = 0;
+    node->name = node->id.text;
   }
+
   JavaScriptEnum::JavaScriptEnum(Enum* node, JavaScriptStruct* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
-    }
+    node->level = parent->node->level + 1;
+    node->name = node->id.text;
+  }
 
   JavaScriptEnum::~JavaScriptEnum() {}
 
@@ -50,8 +53,9 @@ namespace compiler {
   // JavaScriptEnumProperty
   JavaScriptEnumProperty::JavaScriptEnumProperty(EnumProperty* node, JavaScriptEnum* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
-    }
+    node->level = parent->node->level + 1;
+    node->name = node->id.text;
+  }
 
   JavaScriptEnumProperty::~JavaScriptEnumProperty() {}
 

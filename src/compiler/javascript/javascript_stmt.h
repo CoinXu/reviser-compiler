@@ -17,6 +17,19 @@ namespace compiler {
   class JavaScriptStmt {
   public:
     Stmt* node;
+    Stmt* parent = NULL;
+
+    bool DeclareInGlobalContext() {
+      return node->level == 0;
+    }
+
+    string AccessName() {
+      if (DeclareInGlobalContext()) {
+        return node->name;
+      }
+
+      return parent->name + "." + node->name;
+    }
   };
 };
 };

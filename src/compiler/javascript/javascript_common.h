@@ -14,9 +14,9 @@ namespace compiler {
   class JavaScriptCommon {
   public:
     const static int IndentSize = 2;
+
     const static std::string Indent(int level) {
       std::string s;
-
       for (int i = 0; i < level * IndentSize; i++) {
         s = s + " ";
       }

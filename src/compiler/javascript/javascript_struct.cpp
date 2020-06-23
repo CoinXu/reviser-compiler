@@ -15,12 +15,14 @@ namespace compiler {
   // JavaScriptStruct
   JavaScriptStruct::JavaScriptStruct(Struct* node): node(node) {
     node->level = 0;
+    node->name = node->id.text;
   }
 
   JavaScriptStruct::JavaScriptStruct(Struct* node, JavaScriptStruct* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
-    }
+    node->level = parent->node->level + 1;
+    node->name = node->id.text;
+  }
 
   JavaScriptStruct::~JavaScriptStruct() {}
 
@@ -29,10 +31,10 @@ namespace compiler {
 
     if (parent) {
       code = JavaScriptCommon::Indent(node->level)
-        + "static class " + node->id.text + " \{\n";
+        + "static " + node->id.text + " = class " + node->id.text +  " {\n";
     } else {
       code = JavaScriptCommon::Indent(node->level)
-        + "class " + node->id.text + " \{\n";
+        + "class " + node->id.text + " {\n";
     }
 
     for (Struct::ContentStore& p: node->contents) {
@@ -70,8 +72,14 @@ namespace compiler {
   // JavaScriptStructProperty
   JavaScriptStructProperty::JavaScriptStructProperty(StructProperty* node, JavaScriptStruct* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
+    node->level = parent->node->level + 1;
+
+    if (node->declare.type == TYPE_ENUM) {
+      node->name = node->declare.eid.text;
+    } else {
+      node->name = node->declare.id.text;
     }
+  }
 
   JavaScriptStructProperty::~JavaScriptStructProperty() {}
 
@@ -92,8 +100,9 @@ namespace compiler {
   // JavaScriptDecorater
   JavaScriptDecorater::JavaScriptDecorater(Decorater* node, JavaScriptStruct* parent)
     : node(node), parent(parent) {
-      node->level = parent->node->level + 1;
-    }
+    node->level = parent->node->level + 1;
+    node->name = node->id.text;
+  }
 
   JavaScriptDecorater::~JavaScriptDecorater() {}
 
