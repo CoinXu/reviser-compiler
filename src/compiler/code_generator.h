@@ -17,6 +17,12 @@ using namespace std;
 
 namespace reviser {
 namespace compiler {
+  enum CodeGeneratorType {
+    JavaScript,
+    TypeScript,
+    Default
+  };
+
   class CodeGenerator {
   public:
     string StmtStruct(Struct*);

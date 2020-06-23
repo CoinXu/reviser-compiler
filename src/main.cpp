@@ -15,6 +15,9 @@
 
 #include <message.h>
 #include <parser.h>
+#include <compiler/code_generator.h>
+#include <compiler/javascript/javascript_generator.h>
+#include <compiler/descriptor.h>
 
 using namespace reviser::compiler;
 
@@ -55,7 +58,10 @@ int main(int args, char** argv) {
   std::string input(buffer, length);
 
   Tokenizer tokenizer(input);
-  Parser parser(tokenizer);
+  JavaScriptGenerator javascript;
+  Descriptor descriptor;
+
+  Parser parser(&tokenizer, &javascript, &descriptor, JavaScript);
 
   parser.Program();
 

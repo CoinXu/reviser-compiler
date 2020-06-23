@@ -1,23 +1,23 @@
 /**
- * @date 2020-06-22
+ * @date 2020-06-23
  * @author duanxian0605@163.com
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_GENERATOR
-#define REVISER_COMPILER_JAVASCRIPT_GENERATOR
+#ifndef REVISER_COMPILER_TYPESCRIPT_GENERATOR
+#define REVISER_COMPILER_TYPESCRIPT_GENERATOR
 
 #include <compiler/code_generator.h>
 
 namespace reviser {
 namespace compiler {
-  class JavaScriptGenerator : public CodeGenerator {
+  class TypeScriptGenerator : public CodeGenerator {
   public:
     string StmtStruct(Struct*);
     string StmtEnum(Enum*);
 
-    JavaScriptGenerator();
-    ~JavaScriptGenerator();
+    TypeScriptGenerator();
+    ~TypeScriptGenerator();
   };
 }; // compiler
 }; // reviser

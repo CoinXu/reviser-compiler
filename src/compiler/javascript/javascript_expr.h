@@ -63,7 +63,7 @@ namespace compiler {
     ~JavaScriptDeclare();
   };
 
-}; // reviser
 }; // compiler
+}; // reviser
 
 #endif
