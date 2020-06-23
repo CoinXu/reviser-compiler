@@ -35,23 +35,26 @@ namespace compiler {
         + "class " + node->id.text + " \{\n";
     }
 
-    for (Struct::ContentStore p: node->contents) {
+    for (Struct::ContentStore& p: node->contents) {
+
+      const string new_line = &p == &node->contents.back() ? "\n" : "\n\n";
+
       switch (p.type) {
         case DeclareProperty: {
           JavaScriptStructProperty g(&(node->properties.at(p.index)), this);
-          code = code + g.Generate() + "\n";
+          code = code + g.Generate() + new_line;
           break;
         }
 
         case DeclareStruct: {
           JavaScriptStruct g(&(node->structs.at(p.index)), this);
-          code = code + g.Generate() + "\n";
+          code = code + g.Generate() + new_line;
           break;
         }
 
         case DeclareEnum: {
           JavaScriptEnum g(&(node->enums.at(p.index)), this);
-          code = code + g.Generate() + "\n";
+          code = code + g.Generate() + new_line;
           break;
         }
 
@@ -60,7 +63,7 @@ namespace compiler {
       }
     }
 
-    return code + "\n" + JavaScriptCommon::Indent(node->level) + "};\n";
+    return code + JavaScriptCommon::Indent(node->level) + "};\n";
   }
 
   //
