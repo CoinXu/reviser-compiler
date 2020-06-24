@@ -65,7 +65,7 @@ namespace compiler {
     EnumProperty ConsumeEnumProperty();
     Enum ConsumeEnum();
 
-    template<typename T> void ProgramByGenerator(T generator);
+    template<typename T> void ProgramByGenerator(T* generator);
 
   public:
     Parser(Tokenizer*, CodeGenerator*, Descriptor*, CodeGeneratorType);

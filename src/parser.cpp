@@ -27,15 +27,15 @@ namespace compiler {
   void Parser::Program() {
     switch (generator_type) {
       case JavaScript:
-        ProgramByGenerator<JavaScriptGenerator*>(static_cast<JavaScriptGenerator*>(generator));
+        ProgramByGenerator<JavaScriptGenerator>(static_cast<JavaScriptGenerator*>(generator));
         break;
 
       case TypeScript:
-        ProgramByGenerator<TypeScriptGenerator*>(static_cast<TypeScriptGenerator*>(generator));
+        ProgramByGenerator<TypeScriptGenerator>(static_cast<TypeScriptGenerator*>(generator));
         break;
 
       case Default:
-        ProgramByGenerator<CodeGenerator*>(static_cast<CodeGenerator*>(generator));
+        ProgramByGenerator<CodeGenerator>(static_cast<CodeGenerator*>(generator));
         break;
 
       default:
@@ -43,7 +43,10 @@ namespace compiler {
     }
   }
 
-  template<typename T> void Parser::ProgramByGenerator(T generator) {
+  template<typename T> void Parser::ProgramByGenerator(T* generator) {
+    static_assert(is_base_of<CodeGenerator, T>::value,
+      "generator must a CodeGenerator child class");
+
     Accept(TOKEN_CODE_START);
 
     do {
