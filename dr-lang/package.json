@@ -1,0 +1,26 @@
+{
+    "name": "dr-lang",
+    "displayName": "dr-lang",
+    "description": "dr lang syntax highlight",
+    "publisher": "coinxu",
+    "version": "0.0.2",
+    "engines": {
+        "vscode": "^1.46.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "dr",
+            "aliases": ["dr", "dr"],
+            "extensions": [".dr"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "dr",
+            "scopeName": "source.dr",
+            "path": "./syntaxes/dr.tmLanguage.json"
+        }]
+    }
+}
