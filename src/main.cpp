@@ -16,10 +16,12 @@
 #include <parser.h>
 
 using namespace reviser::compiler;
+using namespace reviser::message;
 
 int main(int args, char** argv) {
 
-  reviser::message::Message logger("main");
+  Message logger("main");
+
   logger.Info("args: " + to_string(args));
 
   for (int i = 0; i < args; ++i) {

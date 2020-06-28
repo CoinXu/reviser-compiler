@@ -41,7 +41,7 @@ struct Foo {
 
   required string foo = "foo";
   bool baz = true; /* Bar */
-  int32 age = 010;
-  int64 i64 = 0b11;
-  uint32 ui32  = 0x123;
+  int32 age = 10;
+  int64 i64 = 11;
+  uint32 ui32  = 123;
 }
