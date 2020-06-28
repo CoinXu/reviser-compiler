@@ -15,6 +15,10 @@
 #include <ast/stmt.h>
 #include <ast/stmt_struct.h>
 #include <ast/stmt_enum.h>
+#include <compiler/code_generator.h>
+#include <compiler/javascript/javascript_generator.h>
+#include <compiler/typescript/typescript_generator.h>
+#include <compiler/descriptor.h>
 
 using namespace std;
 using namespace reviser::message;
@@ -24,10 +28,14 @@ namespace reviser {
 namespace compiler {
   class Parser {
   private:
-    Tokenizer tokenizer;
+    Tokenizer* tokenizer;
+    CodeGenerator* generator;
+    Descriptor* descriptor;
+
     Message message;
     Seq seq;
     Token token;
+    CodeGeneratorType generator_type;
 
     bool Accept(TokenType type);
     void Expect(TokenType type);
@@ -57,8 +65,10 @@ namespace compiler {
     EnumProperty ConsumeEnumProperty();
     Enum ConsumeEnum();
 
+    template<typename T> void ProgramByGenerator(T* generator);
+
   public:
-    Parser(Tokenizer tokenizer);
+    Parser(Tokenizer*, CodeGenerator*, Descriptor*, CodeGeneratorType);
     ~Parser();
     void Program();
   };

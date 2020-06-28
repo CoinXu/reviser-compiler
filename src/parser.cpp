@@ -5,7 +5,6 @@
  */
 
 #include <parser.h>
-#include <compiler/javascript/javascript_generator.h>
 
 using namespace std;
 using namespace reviser;
@@ -14,23 +13,53 @@ namespace reviser {
 namespace compiler {
   //
   // public
-  Parser::Parser(Tokenizer tokenizer)
-    : tokenizer(tokenizer), message("parser"), seq() {}
+  Parser::Parser(Tokenizer* tokenizer, CodeGenerator* generator,
+    Descriptor* descriptor, CodeGeneratorType generator_type)
+    : tokenizer(tokenizer),
+      message("parser"),
+      seq(),
+      generator(generator),
+      descriptor(descriptor),
+      generator_type(generator_type) {}
 
   Parser::~Parser() {}
 
   void Parser::Program() {
-    Accept(TOKEN_CODE_START);
+    switch (generator_type) {
+      case JavaScript:
+        ProgramByGenerator<JavaScriptGenerator>(static_cast<JavaScriptGenerator*>(generator));
+        break;
 
-    JavaScriptGenerator javascript;
+      case TypeScript:
+        ProgramByGenerator<TypeScriptGenerator>(static_cast<TypeScriptGenerator*>(generator));
+        break;
+
+      case Default:
+        ProgramByGenerator<CodeGenerator>(static_cast<CodeGenerator*>(generator));
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  template<typename T> void Parser::ProgramByGenerator(T* generator) {
+    static_assert(is_base_of<CodeGenerator, T>::value,
+      "generator must a CodeGenerator child class");
+
+    Accept(TOKEN_CODE_START);
 
     do {
       if (LookAtType(TOKEN_STRUCT)) {
         Struct s = ConsumeStruct();
-        message.Info(javascript.StmtStruct(&s));
+
+        descriptor->AddGlobalVariable(s.id.text);
+        message.Info(generator->StmtStruct(&s));
       } else if (LookAtType(TOKEN_ENUM)) {
         Enum s = ConsumeEnum();
-        message.Info(javascript.StmtEnum(&s));
+
+        descriptor->AddGlobalVariable(s.id.text);
+        message.Info(generator->StmtEnum(&s));
       } else {
         Next();
       }
@@ -40,9 +69,9 @@ namespace compiler {
   //
   // private
   bool Parser::Accept(TokenType type) {
-    token = tokenizer.Current();
+    token = tokenizer->Current();
     if (token.type == type) {
-      tokenizer.Next();
+      tokenizer->Next();
       return true;
     }
     return false;
@@ -50,14 +79,14 @@ namespace compiler {
 
   void Parser::Expect(TokenType type) {
     if (!Accept(type)) {
-      message.SetLine(tokenizer.Current().start_line);
-      message.SetColumn(tokenizer.Current().column_start);
-      message.Runtime("syntax error: " + tokenizer.Current().text);
+      message.SetLine(tokenizer->Current().start_line);
+      message.SetColumn(tokenizer->Current().column_start);
+      message.Runtime("syntax error: " + tokenizer->Current().text);
     }
   }
 
   void Parser::Next() {
-    tokenizer.Next();
+    tokenizer->Next();
   }
 
   bool Parser::LookAt(string expect) {
@@ -69,19 +98,19 @@ namespace compiler {
   }
 
   TokenType Parser::CurrentType() {
-    return tokenizer.Current().type;
+    return tokenizer->Current().type;
   }
 
   TokenType Parser::PreviousType() {
-    return tokenizer.Previous().type;
+    return tokenizer->Previous().type;
   }
 
   string Parser::CurrentText() {
-    return tokenizer.Current().text;
+    return tokenizer->Current().text;
   }
 
   string Parser::PreviousText() {
-    return tokenizer.Previous().text;
+    return tokenizer->Previous().text;
   }
 
   // stmt -> struct
@@ -127,6 +156,7 @@ namespace compiler {
 
   Decorater Parser::ConsumeDecorater() {
     Decorater d(token);
+    descriptor->AddDecorator(token.text);
     return d;
   }
 
@@ -145,7 +175,7 @@ namespace compiler {
   }
 
   Declare Parser::ConsumeDataTypeDeclare() {
-    Token id = tokenizer.Current();
+    Token id = tokenizer->Current();
     string type = PreviousText();
 
     Expect(TOKEN_ID);
@@ -154,7 +184,7 @@ namespace compiler {
     // value optional support
     Expect(TOKEN_ASSIGN);
 
-    Token dvt = tokenizer.Current();
+    Token dvt = tokenizer->Current();
     string value = CurrentText();
     DataType data_type;
 
@@ -164,28 +194,43 @@ namespace compiler {
         && value != ReservedWordMap[RESERVED_TRUE]) {
         message.Runtime("expect true or false");
       } else {
+        descriptor->AddDataTypes(TYPE_BOOL);
         Next();
       }
     } else if (type == ReservedWordMap[RESERVED_FLOAT]) {
       data_type = TYPE_FLOAT;
+      descriptor->AddDataTypes(TYPE_FLOAT);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_DOUBLE]) {
       data_type = TYPE_DOUBLE;
+      descriptor->AddDataTypes(TYPE_DOUBLE);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_INT32]) {
       data_type = TYPE_INT32;
+      descriptor->AddDataTypes(TYPE_INT32);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_INT64]) {
       data_type = TYPE_INT64;
+      descriptor->AddDataTypes(TYPE_INT64);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_UINT32]) {
       data_type = TYPE_UINT32;
+      descriptor->AddDataTypes(TYPE_UINT32);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_UINT64]) {
       data_type = TYPE_UINT64;
+      descriptor->AddDataTypes(TYPE_UINT64);
+
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_STRING]) {
       data_type = TYPE_STRING;
+      descriptor->AddDataTypes(TYPE_STRING);
+
       Expect(TOKEN_LETTER);
     }
 

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "dr",
+  "patterns": [
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#decorator"
+    },
+    {
+      "include": "#data-type"
+    },
+    {
+      "include": "#right-value"
+    },
+    {
+      "include": "#variables"
+    },
+    {
+      "include": "#comments"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line",
+          "match": "//.*?$"
+        },
+        {
+          "name": "comment.block",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword",
+          "match": "\\b(struct|enum)\\b"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable",
+          "match": "\\b(\\w+)\\b"
+        }
+      ]
+    },
+    "decorator": {
+      "patterns": [
+        {
+          "name": "keyword.other",
+          "match": "\\b(required|optional)\\b"
+        }
+      ]
+    },
+    "data-type": {
+      "patterns": [
+        {
+          "name": "support.type",
+          "match": "\\b(bool|double|int32|int64|uint32|uint64|string)\\b"
+        }
+      ]
+    },
+    "right-value": {
+      "patterns": [
+        {
+          "name": "constant.numeric",
+          "match": "\\b(0x|0b|0)?[0-9]+(\\.[0-9]+)?\\b"
+        },
+        {
+          "name": "string.quoted",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.dr",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "constant.language",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.dr"
+}

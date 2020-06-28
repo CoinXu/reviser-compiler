@@ -13,30 +13,31 @@
 #include <iostream>
 #include <fstream>
 
-#include <message.h>
 #include <parser.h>
 
 using namespace reviser::compiler;
+using namespace reviser::message;
 
 int main(int args, char** argv) {
 
-  reviser::message::Message logger("main");
-  logger.Info("args: " + std::to_string(args));
+  Message logger("main");
+
+  logger.Info("args: " + to_string(args));
 
   for (int i = 0; i < args; ++i) {
-    logger.Info("args::[" +  std::to_string(i) + "] = " + argv[i]);
+    logger.Info("args::[" +  to_string(i) + "] = " + argv[i]);
   }
 
   if (args == 1) {
     return 1;
   }
 
-  std::string filename = argv[1];
+  string filename = argv[1];
 
   logger.Info("open file: " + filename);
 
   // read file
-  std::ifstream is(filename, std::ifstream::binary);
+  ifstream is(filename, ifstream::binary);
 
   if (!is) {
     logger.Runtime("not found file :" + filename);
@@ -52,10 +53,17 @@ int main(int args, char** argv) {
   is.close();
 
   // 转为string，传给Tokenizer
-  std::string input(buffer, length);
+  string input(buffer, length);
+
+  JavaScriptGenerator javascript;
+  TypeScriptGenerator typescript;
+  CodeGenerator generator;
 
   Tokenizer tokenizer(input);
-  Parser parser(tokenizer);
+  Descriptor descriptor;
+
+  Parser parser(&tokenizer, &javascript, &descriptor, JavaScript);
+  // Parser parser(&tokenizer, &typescript, &descriptor, TypeScript);
 
   parser.Program();
 
