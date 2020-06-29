@@ -11,6 +11,7 @@
 #include <ast/stmt.h>
 #include <ast/stmt_enum.h>
 #include <ast/stmt_struct.h>
+#include <compiler/descriptor.h>
 
 using namespace reviser::ast;
 using namespace std;
@@ -24,9 +25,30 @@ namespace compiler {
   };
 
   class CodeGenerator {
+  protected:
+    enum StmtSeqItemType {
+      STMT_TYPE_ENUM,
+      STMT_TYPE_STRUCT
+    };
+
+    struct StmtSeqItem {
+      StmtSeqItemType type;
+      size_t index;
+    };
+
+    vector<StmtSeqItem> seq;
+    vector<Struct*> structures;
+    vector<Enum*> enums;
+
   public:
+    Descriptor* descriptor;
     string StmtStruct(Struct*);
     string StmtEnum(Enum*);
+
+    void AddStmtStruct(Struct*);
+    void AddStmtEnum(Enum*);
+
+    string Generate();
 
     CodeGenerator();
     ~CodeGenerator();

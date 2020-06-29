@@ -60,9 +60,8 @@ int main(int args, char** argv) {
   CodeGenerator generator;
 
   Tokenizer tokenizer(input);
-  Descriptor descriptor;
 
-  Parser parser(&tokenizer, &javascript, &descriptor, JavaScript);
+  Parser parser(&tokenizer, &javascript, JavaScript);
   // Parser parser(&tokenizer, &typescript, &descriptor, TypeScript);
 
   parser.Program();

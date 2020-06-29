@@ -19,6 +19,8 @@ namespace ast {
   public:
     int level = 0;
     string name = "";
+
+    virtual ~Stmt();
   };
 
   class Seq: public Stmt {

@@ -15,6 +15,7 @@ namespace compiler {
   public:
     string StmtStruct(Struct*);
     string StmtEnum(Enum*);
+    string Generate();
 
     JavaScriptGenerator();
     ~JavaScriptGenerator();

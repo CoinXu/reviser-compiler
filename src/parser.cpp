@@ -14,12 +14,10 @@ namespace compiler {
   //
   // public
   Parser::Parser(Tokenizer* tokenizer, CodeGenerator* generator,
-    Descriptor* descriptor, CodeGeneratorType generator_type)
+    CodeGeneratorType generator_type)
     : tokenizer(tokenizer),
       message("parser"),
-      seq(),
       generator(generator),
-      descriptor(descriptor),
       generator_type(generator_type) {}
 
   Parser::~Parser() {}
@@ -44,26 +42,25 @@ namespace compiler {
   }
 
   template<typename T> void Parser::ProgramByGenerator(T* generator) {
-    static_assert(is_base_of<CodeGenerator, T>::value,
-      "generator must a CodeGenerator child class");
+    static_assert(is_base_of<CodeGenerator, T>::value, "generator must a CodeGenerator child class");
 
     Accept(TOKEN_CODE_START);
 
     do {
       if (LookAtType(TOKEN_STRUCT)) {
         Struct s = ConsumeStruct();
-
-        descriptor->AddGlobalVariable(s.id.text);
-        message.Info(generator->StmtStruct(&s));
+        generator->descriptor->AddGlobalVariable(s.id.text);
+        generator->AddStmtStruct(&s);
       } else if (LookAtType(TOKEN_ENUM)) {
         Enum s = ConsumeEnum();
-
-        descriptor->AddGlobalVariable(s.id.text);
-        message.Info(generator->StmtEnum(&s));
+        generator->descriptor->AddGlobalVariable(s.id.text);
+        generator->AddStmtEnum(&s);
       } else {
         Next();
       }
     } while (!Accept(TOKEN_CODE_END));
+
+    message.Info(generator->Generate());
   }
 
   //
@@ -156,7 +153,7 @@ namespace compiler {
 
   Decorater Parser::ConsumeDecorater() {
     Decorater d(token);
-    descriptor->AddDecorator(token.text);
+    generator->descriptor->AddDecorator(token.text);
     return d;
   }
 
@@ -194,42 +191,42 @@ namespace compiler {
         && value != ReservedWordMap[RESERVED_TRUE]) {
         message.Runtime("expect true or false");
       } else {
-        descriptor->AddDataTypes(TYPE_BOOL);
+        generator->descriptor->AddDataTypes(TYPE_BOOL);
         Next();
       }
     } else if (type == ReservedWordMap[RESERVED_FLOAT]) {
       data_type = TYPE_FLOAT;
-      descriptor->AddDataTypes(TYPE_FLOAT);
+      generator->descriptor->AddDataTypes(TYPE_FLOAT);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_DOUBLE]) {
       data_type = TYPE_DOUBLE;
-      descriptor->AddDataTypes(TYPE_DOUBLE);
+      generator->descriptor->AddDataTypes(TYPE_DOUBLE);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_INT32]) {
       data_type = TYPE_INT32;
-      descriptor->AddDataTypes(TYPE_INT32);
+      generator->descriptor->AddDataTypes(TYPE_INT32);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_INT64]) {
       data_type = TYPE_INT64;
-      descriptor->AddDataTypes(TYPE_INT64);
+      generator->descriptor->AddDataTypes(TYPE_INT64);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_UINT32]) {
       data_type = TYPE_UINT32;
-      descriptor->AddDataTypes(TYPE_UINT32);
+      generator->descriptor->AddDataTypes(TYPE_UINT32);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_UINT64]) {
       data_type = TYPE_UINT64;
-      descriptor->AddDataTypes(TYPE_UINT64);
+      generator->descriptor->AddDataTypes(TYPE_UINT64);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_STRING]) {
       data_type = TYPE_STRING;
-      descriptor->AddDataTypes(TYPE_STRING);
+      generator->descriptor->AddDataTypes(TYPE_STRING);
 
       Expect(TOKEN_LETTER);
     }

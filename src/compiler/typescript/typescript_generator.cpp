@@ -9,7 +9,7 @@
 namespace reviser {
 namespace compiler {
 
-  TypeScriptGenerator::TypeScriptGenerator() {}
+  TypeScriptGenerator::TypeScriptGenerator(): CodeGenerator() {}
 
   TypeScriptGenerator::~TypeScriptGenerator() {}
 

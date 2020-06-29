@@ -12,7 +12,7 @@
 namespace reviser {
 namespace compiler {
 
-  JavaScriptGenerator::JavaScriptGenerator() {}
+  JavaScriptGenerator::JavaScriptGenerator(): CodeGenerator() {}
 
   JavaScriptGenerator::~JavaScriptGenerator() {}
 
@@ -24,6 +24,27 @@ namespace compiler {
   string JavaScriptGenerator::StmtEnum(Enum* e) {
     JavaScriptEnum g(e);
     return g.Generate();
+  }
+
+  string JavaScriptGenerator::Generate() {
+    string code;
+
+    for (StmtSeqItem it: seq) {
+      switch(it.type) {
+        case STMT_TYPE_STRUCT:
+          code += StmtStruct(structures.at(it.index));
+          break;
+
+        case STMT_TYPE_ENUM:
+          code += StmtEnum(enums.at(it.index));
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    return code;
   }
 
 }; // javascript

@@ -30,10 +30,8 @@ namespace compiler {
   private:
     Tokenizer* tokenizer;
     CodeGenerator* generator;
-    Descriptor* descriptor;
 
     Message message;
-    Seq seq;
     Token token;
     CodeGeneratorType generator_type;
 
@@ -68,7 +66,7 @@ namespace compiler {
     template<typename T> void ProgramByGenerator(T* generator);
 
   public:
-    Parser(Tokenizer*, CodeGenerator*, Descriptor*, CodeGeneratorType);
+    Parser(Tokenizer*, CodeGenerator*, CodeGeneratorType);
     ~Parser();
     void Program();
   };

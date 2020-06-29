@@ -8,6 +8,19 @@
 
 namespace reviser {
 namespace compiler {
+  template<typename T> bool VectorIncludeItem(vector<T>* v, const T* item) {
+    for (auto it: *v) {
+      if (it == *item) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Descriptor::Descriptor() {}
+
+  Descriptor::~Descriptor() {}
+
   vector<string> Descriptor::Decorators() {
     return decorators_;
   }
@@ -21,15 +34,21 @@ namespace compiler {
   }
 
   void Descriptor::AddDecorator(string decorator) {
-    decorators_.push_back(decorator);
+    if (!VectorIncludeItem<string>(&decorators_, &decorator)) {
+      decorators_.push_back(decorator);
+    }
   }
 
   void Descriptor::AddGlobalVariable(string variable) {
-    global_variables_.push_back(variable);
+    if (!VectorIncludeItem<string>(&global_variables_, &variable)) {
+      global_variables_.push_back(variable);
+    }
   }
 
   void Descriptor::AddDataTypes(DataType type) {
-    data_types_.push_back(type);
+    if (!VectorIncludeItem<DataType>(&data_types_, &type)) {
+      data_types_.push_back(type);
+    }
   }
 
 }; // reviser
