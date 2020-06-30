@@ -30,9 +30,9 @@ namespace compiler {
   private:
     Tokenizer* tokenizer;
     CodeGenerator* generator;
+    Token* token;
 
     Message message;
-    Token* token;
     CodeGeneratorType generator_type;
 
     bool Accept(TokenType type);
@@ -41,7 +41,7 @@ namespace compiler {
     bool LookAt(string expect);
     bool LookAtType(TokenType expect);
 
-    Token* CloneToken();
+    Token* CloneToken(const Token* token);
     TokenType CurrentType();
     TokenType PreviousType();
     string CurrentText();
