@@ -25,7 +25,7 @@ namespace ast {
 
   class Seq: public Stmt {
   public:
-    vector<Stmt> stmts;
+    vector<Stmt*> stmts;
   };
 
 }; // compiler

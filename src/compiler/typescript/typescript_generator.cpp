@@ -14,10 +14,12 @@ namespace compiler {
   TypeScriptGenerator::~TypeScriptGenerator() {}
 
   string TypeScriptGenerator::StmtStruct(Struct* s) {
+    delete s;
     return "typescript struct";
   }
 
   string TypeScriptGenerator::StmtEnum(Enum* e) {
+    delete e;
     return "typescript enum";
   }
 

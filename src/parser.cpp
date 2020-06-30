@@ -66,11 +66,24 @@ namespace compiler {
   //
   // private
   bool Parser::Accept(TokenType type) {
-    token = tokenizer->Current();
-    if (token.type == type) {
+    Token t = tokenizer->Current();
+    Token* tp = new Token {
+      t.type,
+      t.text,
+      t.start_line,
+      t.end_line,
+      t.column_start,
+      t.column_start,
+      t.pos_end
+    };
+
+    token = tp;
+
+    if (token->type == type) {
       tokenizer->Next();
       return true;
     }
+
     return false;
   }
 
@@ -111,17 +124,17 @@ namespace compiler {
   }
 
   // stmt -> struct
-  Struct Parser::ConsumeStruct() {
+  Struct* Parser::ConsumeStruct() {
     Expect(TOKEN_STRUCT);
     Expect(TOKEN_ID);
-    Struct s(token);
+    Struct* s = new Struct(token);
     Expect(TOKEN_LEFT_BRACE);
 
     do {
       if (LookAtType(TOKEN_STRUCT)) {
-        s.AddStruct(ConsumeStruct());
+        s->AddStruct(ConsumeStruct());
       } else if (LookAtType(TOKEN_ENUM)) {
-        s.AddEnum(ConsumeEnum());
+        s->AddEnum(ConsumeEnum());
       } else {
         s.AddProperty(ConsumeStructProperty());
       }

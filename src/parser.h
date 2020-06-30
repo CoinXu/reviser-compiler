@@ -32,7 +32,7 @@ namespace compiler {
     CodeGenerator* generator;
 
     Message message;
-    Token token;
+    Token* token;
     CodeGeneratorType generator_type;
 
     bool Accept(TokenType type);
@@ -41,27 +41,28 @@ namespace compiler {
     bool LookAt(string expect);
     bool LookAtType(TokenType expect);
 
+    Token* CloneToken();
     TokenType CurrentType();
     TokenType PreviousType();
     string CurrentText();
     string PreviousText();
 
     // stmt -> struct
-    Struct ConsumeStruct();
-    StructProperty ConsumeStructProperty();
-    Decorater ConsumeDecorater();
+    Struct* ConsumeStruct();
+    StructProperty* ConsumeStructProperty();
+    Decorater* ConsumeDecorater();
 
     // expr
-    RightValue ConsumeRightValue();
-    EnumValue ConsumeEnumValue();
-    Assign ConsumeAssign();
-    Declare ConsumeDeclare();
-    Declare ConsumeDataTypeDeclare();
-    Declare ConsumeEnumDeclare();
+    RightValue* ConsumeRightValue();
+    EnumValue* ConsumeEnumValue();
+    Assign* ConsumeAssign();
+    Declare* ConsumeDeclare();
+    Declare* ConsumeDataTypeDeclare();
+    Declare* ConsumeEnumDeclare();
 
     // stmt -> enum
-    EnumProperty ConsumeEnumProperty();
-    Enum ConsumeEnum();
+    EnumProperty* ConsumeEnumProperty();
+    Enum* ConsumeEnum();
 
     template<typename T> void ProgramByGenerator(T* generator);
 

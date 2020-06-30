@@ -47,10 +47,12 @@ namespace compiler {
   }
 
   string CodeGenerator::StmtStruct(Struct* s) {
+    delete s;
     return "struct";
   }
 
   string CodeGenerator::StmtEnum(Enum* e) {
+    delete e;
     return "enum";
   }
 }; // reviser

@@ -28,34 +28,33 @@ namespace ast {
   class RightValue : public Expr {
   public:
     DataType type;
-    Token id;
+    Token* id;
 
-    RightValue(DataType type, Token id);
+    RightValue(DataType type, Token* id);
+    ~RightValue();
   };
-
-  static const RightValue EmptyRightValue(TYPE_NULL, EmptyToken);
 
   //
   // Foo.Bar
   class EnumValue : public Expr {
   public:
-    Token id;
-    Token property;
+    Token* id;
+    Token* property;
 
-    EnumValue(Token id, Token property);
+    EnumValue(Token* id, Token* property);
+    ~EnumValue();
   };
-
-  static const EnumValue EmptyEnumValue(EmptyToken, EmptyToken);
 
   //
   // Assign
   // foo = bar
   class Assign : public Expr {
   public:
-    Token id;
-    RightValue value;
+    Token* id;
+    RightValue* value;
 
-    Assign(Token id, RightValue value);
+    Assign(Token* id, RightValue* value);
+    ~Assign();
   };
 
   //
@@ -65,13 +64,14 @@ namespace ast {
   class Declare : public Expr {
   public:
     DataType type;
-    Token id;
-    Token eid;
-    RightValue dv = EmptyRightValue;
-    EnumValue ev = EmptyEnumValue;
+    Token* id;
+    Token* eid;
+    RightValue* dv;
+    EnumValue* ev;
 
-    Declare(DataType type, Token id, RightValue dv);
-    Declare(DataType type, Token id, Token eid, EnumValue ev);
+    Declare(DataType type, Token* id, RightValue* dv);
+    Declare(DataType type, Token* id, Token* eid, EnumValue* ev);
+    ~Declare();
   };
 
 }; // compiler

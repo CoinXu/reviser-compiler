@@ -21,21 +21,24 @@ namespace ast {
   // EnumProperty
   class EnumProperty: public Stmt {
   public:
-    Token id;
-    RightValue value = EmptyRightValue;
+    Token* id;
+    RightValue* value = NULL;
 
-    EnumProperty(Token id, RightValue value);
-    EnumProperty(Token id);
+    EnumProperty(Token* id, RightValue* value);
+    EnumProperty(Token* id);
+
+    ~EnumProperty();
   };
 
   //
   // Enum
   class Enum: public Stmt {
   public:
-    Token id;
-    vector<EnumProperty> properties;
+    Token* id;
+    vector<EnumProperty*> properties;
 
-    Enum(Token id);
+    Enum(Token* id);
+    ~Enum();
   };
 
 }; // reviser
