@@ -26,7 +26,6 @@ namespace ast {
     : declare(declare) {}
 
   StructProperty::~StructProperty() {
-    delete declare;
   }
 
   //
@@ -38,17 +37,17 @@ namespace ast {
 
     for (vector<StructProperty*>::iterator p = properties.begin();
       p != properties.end(); p++) {
-      delete *p;
+      // delete *p;
     }
     properties.clear();
 
     for (vector<Struct*>::iterator s = structs.begin(); s != structs.end(); s++) {
-      delete *s;
+      // delete *s;
     }
     structs.clear();
 
     for (vector<Enum*>::iterator e = enums.begin(); e != enums.end(); e++) {
-      delete *e;
+      // delete *e;
     }
     enums.clear();
   }
