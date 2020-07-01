@@ -19,7 +19,6 @@ using namespace reviser::compiler;
 using namespace reviser::message;
 
 int main(int args, char** argv) {
-
   Message logger("main");
 
   logger.Info("args: " + to_string(args));

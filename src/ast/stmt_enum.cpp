@@ -24,6 +24,7 @@ namespace ast {
       if (value) {
         delete value;
       }
+      destroyed = true;
     }
   }
 
@@ -35,9 +36,12 @@ namespace ast {
     if (!destroyed) {
       delete id;
 
-      for (EnumProperty* p : properties) {
-        delete p;
-      }
+      // for (vector<EnumProperty*>::iterator p = properties.begin();
+      //   p != properties.end(); p++) {
+      //   delete *p;
+      // }
+      properties.clear();
+      destroyed = true;
     }
   }
 

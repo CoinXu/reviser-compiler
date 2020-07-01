@@ -44,14 +44,14 @@ namespace compiler {
       }
     }
 
-    for (auto s : structures) {
-      delete s;
-    }
-    structures.clear();
+    // for (auto s : structures) {
+    //   delete s;
+    // }
+    // structures.clear();
 
-    for (auto e : enums) {
-      delete e;
-    }
+    // for (auto e : enums) {
+    //   delete e;
+    // }
     enums.clear();
 
     return code;
