@@ -45,12 +45,12 @@ namespace compiler {
     }
 
     for (auto s : structures) {
-      // delete s;
+      delete s;
     }
     structures.clear();
 
     for (auto e : enums) {
-      // delete e;
+      delete e;
     }
     enums.clear();
 

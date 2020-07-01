@@ -64,7 +64,7 @@ namespace ast {
   class Declare : public Expr {
   public:
     DataType type;
-    Token* id = NULL;
+    Token* id;
     Token* eid = NULL;
     RightValue* dv = NULL;
     EnumValue* ev = NULL;

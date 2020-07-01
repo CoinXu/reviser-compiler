@@ -13,7 +13,6 @@ namespace compiler {
   JavaScriptRightValue::JavaScriptRightValue(RightValue* node): node(node) {}
 
   JavaScriptRightValue::~JavaScriptRightValue() {
-    delete node;
   }
 
   string JavaScriptRightValue::Generate() {
@@ -25,7 +24,6 @@ namespace compiler {
   JavaScriptEnumValue::JavaScriptEnumValue(EnumValue* node): node(node) {};
 
   JavaScriptEnumValue::~JavaScriptEnumValue() {
-    delete node;
   }
 
   string JavaScriptEnumValue::Generate() {
@@ -37,7 +35,6 @@ namespace compiler {
   JavaScriptAssign::JavaScriptAssign(Assign* node): node(node) {}
 
   JavaScriptAssign::~JavaScriptAssign() {
-    delete node;
   }
 
   string JavaScriptAssign::Generate() {
@@ -50,7 +47,6 @@ namespace compiler {
   JavaScriptDeclare::JavaScriptDeclare(Declare* node): node(node) {}
 
   JavaScriptDeclare::~JavaScriptDeclare() {
-    delete node;
   }
 
   string JavaScriptDeclare::Generate() {

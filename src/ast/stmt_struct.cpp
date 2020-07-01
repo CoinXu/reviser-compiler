@@ -17,7 +17,6 @@ namespace ast {
   Decorater::Decorater(Token* id): id(id) {}
 
   Decorater::~Decorater() {
-    delete id;
   }
 
   //
@@ -37,17 +36,17 @@ namespace ast {
 
     for (vector<StructProperty*>::iterator p = properties.begin();
       p != properties.end(); p++) {
-      // delete *p;
+      delete *p;
     }
     properties.clear();
 
     for (vector<Struct*>::iterator s = structs.begin(); s != structs.end(); s++) {
-      // delete *s;
+      delete *s;
     }
     structs.clear();
 
     for (vector<Enum*>::iterator e = enums.begin(); e != enums.end(); e++) {
-      // delete *e;
+      delete *e;
     }
     enums.clear();
   }

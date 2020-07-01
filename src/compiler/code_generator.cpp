@@ -12,7 +12,6 @@ namespace compiler {
   CodeGenerator::CodeGenerator(): descriptor(new Descriptor()) {}
 
   CodeGenerator::~CodeGenerator() {
-    delete descriptor;
   }
 
   void CodeGenerator::AddStmtEnum(Enum* stmt) {

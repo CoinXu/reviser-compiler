@@ -23,7 +23,6 @@ namespace compiler {
   }
 
   JavaScriptEnum::~JavaScriptEnum() {
-    delete node;
   }
 
   string JavaScriptEnum::Generate() {
@@ -52,7 +51,6 @@ namespace compiler {
   }
 
   JavaScriptEnumProperty::~JavaScriptEnumProperty() {
-    delete node;
   }
 
   string JavaScriptEnumProperty::Generate(int index) {
