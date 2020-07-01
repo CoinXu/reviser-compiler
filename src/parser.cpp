@@ -21,9 +21,9 @@ namespace compiler {
       generator_type(generator_type) {}
 
   Parser::~Parser() {
-    delete tokenizer;
-    delete generator;
-    delete token;
+    // delete tokenizer;
+    // delete generator;
+    // delete token;
   }
 
   void Parser::Program() {
@@ -190,7 +190,7 @@ namespace compiler {
   }
 
   Declare* Parser::ConsumeDataTypeDeclare() {
-    Token* id = token;
+    Token* id = CloneToken(&tokenizer->Current());
     string type = PreviousText();
 
     Expect(TOKEN_ID);
@@ -199,7 +199,7 @@ namespace compiler {
     // value optional support
     Expect(TOKEN_ASSIGN);
 
-    Token* dvt = token;
+    Token* dvt = CloneToken(&tokenizer->Current());
     string value = CurrentText();
     DataType data_type;
 

@@ -23,8 +23,8 @@ namespace compiler {
   }
 
   JavaScriptEnum::~JavaScriptEnum() {
-    delete node;
-    delete parent;
+    // delete node;
+    // delete parent;
   }
 
   string JavaScriptEnum::Generate() {
@@ -53,14 +53,15 @@ namespace compiler {
   }
 
   JavaScriptEnumProperty::~JavaScriptEnumProperty() {
-    delete node;
-    delete parent;
+    // delete node;
+    // delete parent;
   }
 
   string JavaScriptEnumProperty::Generate(int index) {
-    return JavaScriptCommon::Indent(node->level)
-      + node->id->text + ": "
-      + (node->value->type == TYPE_NULL ? to_string(index) : node->value->id->text);
+    string indent = JavaScriptCommon::Indent(node->level);
+    string value = !node->value ? to_string(index) : node->value->id->text;
+
+    return indent + node->id->text + ": " + value;
   }
 
 };

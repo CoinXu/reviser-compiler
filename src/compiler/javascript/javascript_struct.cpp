@@ -23,8 +23,8 @@ namespace compiler {
     }
 
   JavaScriptStruct::~JavaScriptStruct() {
-    delete node;
-    delete parent;
+    // delete node;
+    // delete parent;
   }
 
   string JavaScriptStruct::Generate() {
@@ -93,8 +93,8 @@ namespace compiler {
   }
 
   JavaScriptStructProperty::~JavaScriptStructProperty() {
-    delete node;
-    delete parent;
+    // delete node;
+    // delete parent;
   }
 
   string JavaScriptStructProperty::Generate() {
@@ -118,8 +118,8 @@ namespace compiler {
   }
 
   JavaScriptDecorater::~JavaScriptDecorater() {
-    delete node;
-    delete parent;
+    // delete node;
+    // delete parent;
   }
 
   string JavaScriptDecorater::Generate() {

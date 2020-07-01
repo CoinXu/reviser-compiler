@@ -12,7 +12,7 @@ namespace compiler {
   CodeGenerator::CodeGenerator(): descriptor(new Descriptor()) {}
 
   CodeGenerator::~CodeGenerator() {
-    delete descriptor;
+    // delete descriptor;
   }
 
   void CodeGenerator::AddStmtEnum(Enum* stmt) {
@@ -47,12 +47,12 @@ namespace compiler {
   }
 
   string CodeGenerator::StmtStruct(Struct* s) {
-    delete s;
+    // delete s;
     return "struct";
   }
 
   string CodeGenerator::StmtEnum(Enum* e) {
-    delete e;
+    // delete e;
     return "enum";
   }
 }; // reviser
