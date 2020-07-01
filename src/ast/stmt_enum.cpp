@@ -19,6 +19,12 @@ namespace ast {
   EnumProperty::EnumProperty(Token* id): id(id) {}
 
   EnumProperty::~EnumProperty() {
+    if (!destroyed) {
+      delete id;
+      if (value) {
+        delete value;
+      }
+    }
   }
 
   //
@@ -26,6 +32,13 @@ namespace ast {
   Enum::Enum(Token* id): id(id) {}
 
   Enum::~Enum() {
+    if (!destroyed) {
+      delete id;
+
+      for (EnumProperty* p : properties) {
+        delete p;
+      }
+    }
   }
 
 }; // reviser

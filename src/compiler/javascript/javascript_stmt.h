@@ -17,7 +17,8 @@ namespace compiler {
   class JavaScriptStmt {
   public:
     Stmt* node;
-    Stmt* parent = NULL;
+    Stmt* parent = nullptr;
+    bool destroyed = false;
 
     bool DeclareInGlobalContext() {
       return node->level == 0;

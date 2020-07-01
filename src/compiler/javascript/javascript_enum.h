@@ -18,7 +18,7 @@ namespace reviser {
 namespace compiler {
   class JavaScriptEnum : public JavaScriptStmt {
   public:
-    JavaScriptStruct* parent = NULL;
+    JavaScriptStruct* parent = nullptr;
     Enum* node;
 
     string Generate();

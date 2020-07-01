@@ -65,9 +65,9 @@ namespace ast {
   public:
     DataType type;
     Token* id;
-    Token* eid = NULL;
-    RightValue* dv = NULL;
-    EnumValue* ev = NULL;
+    Token* eid = nullptr;
+    RightValue* dv = nullptr;
+    EnumValue* ev = nullptr;
 
     Declare(DataType type, Token* id, RightValue* dv);
     Declare(DataType type, Token* id, Token* eid, EnumValue* ev);

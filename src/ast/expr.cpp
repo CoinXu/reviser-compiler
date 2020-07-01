@@ -34,10 +34,10 @@ namespace ast {
 
   // Declare
   Declare::Declare(DataType type, Token* id, RightValue* dv)
-    : type(type), id(id), eid(NULL), dv(dv), ev(NULL) {}
+    : type(type), id(id), eid(nullptr), dv(dv), ev(nullptr) {}
 
   Declare::Declare(DataType type, Token* id, Token* eid, EnumValue* ev)
-    : type(type), id(id), eid(eid), dv(NULL), ev(ev) {}
+    : type(type), id(id), eid(eid), dv(nullptr), ev(ev) {}
 
   Declare::~Declare() {
   }

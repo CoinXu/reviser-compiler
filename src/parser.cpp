@@ -18,7 +18,7 @@ namespace compiler {
     : tokenizer(tokenizer),
       message("parser"),
       generator(generator),
-      token(NULL),
+      token(nullptr),
       generator_type(generator_type) {}
 
   Parser::~Parser() {}
@@ -187,8 +187,8 @@ namespace compiler {
       return ConsumeEnumDeclare();
     } else {
       message.Runtime("syntax error.");
-      RightValue* rv = new RightValue(TYPE_NULL, NULL);
-      Declare* d = new Declare(TYPE_NULL, NULL, rv);
+      RightValue* rv = new RightValue(TYPE_nullptr, nullptr);
+      Declare* d = new Declare(TYPE_nullptr, nullptr, rv);
       return d;
     }
   }

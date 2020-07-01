@@ -17,7 +17,7 @@ namespace reviser {
 namespace compiler {
   class JavaScriptStruct : public JavaScriptStmt {
   public:
-    JavaScriptStruct* parent = NULL;
+    JavaScriptStruct* parent = nullptr;
     Struct* node;
 
     string Generate();
@@ -28,7 +28,7 @@ namespace compiler {
 
   class JavaScriptStructProperty : public JavaScriptStmt {
   public:
-    JavaScriptStruct* parent = NULL;
+    JavaScriptStruct* parent = nullptr;
     StructProperty* node;
 
     string Generate();
@@ -38,7 +38,7 @@ namespace compiler {
 
   class JavaScriptDecorater : public JavaScriptStmt {
   public:
-    JavaScriptStruct* parent = NULL;
+    JavaScriptStruct* parent = nullptr;
     Decorater* node;
 
     string Generate();

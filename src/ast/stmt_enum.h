@@ -22,7 +22,7 @@ namespace ast {
   class EnumProperty: public Stmt {
   public:
     Token* id;
-    RightValue* value = NULL;
+    RightValue* value = nullptr;
 
     EnumProperty(Token* id, RightValue* value);
     EnumProperty(Token* id);
