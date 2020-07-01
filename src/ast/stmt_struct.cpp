@@ -17,7 +17,7 @@ namespace ast {
   Decorater::Decorater(Token* id): id(id) {}
 
   Decorater::~Decorater() {
-    // delete id;
+    delete id;
   }
 
   //
@@ -26,7 +26,7 @@ namespace ast {
     : declare(declare) {}
 
   StructProperty::~StructProperty() {
-    // delete declare;
+    delete declare;
   }
 
   //
@@ -34,19 +34,23 @@ namespace ast {
   Struct::Struct(Token* id, int level): id(id), level(level) {}
 
   Struct::~Struct() {
-    // delete id;
+    delete id;
 
-    // for (StructProperty* p : properties) {
-    //   delete p;
-    // }
+    for (vector<StructProperty*>::iterator p = properties.begin();
+      p != properties.end(); p++) {
+      delete *p;
+    }
+    properties.clear();
 
-    // for (Struct* s : structs) {
-    //   delete s;
-    // }
+    for (vector<Struct*>::iterator s = structs.begin(); s != structs.end(); s++) {
+      delete *s;
+    }
+    structs.clear();
 
-    // for (Enum* e : enums) {
-    //   delete e;
-    // }
+    for (vector<Enum*>::iterator e = enums.begin(); e != enums.end(); e++) {
+      delete *e;
+    }
+    enums.clear();
   }
 
   void Struct::AddProperty(StructProperty* property) {

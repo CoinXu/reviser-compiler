@@ -17,7 +17,7 @@ namespace ast {
     : type(type), id(id) {}
 
   RightValue::~RightValue() {
-    // delete id;
+    delete id;
   }
 
   // EnumValue
@@ -25,16 +25,16 @@ namespace ast {
     : id(id), property(property) {}
 
   EnumValue::~EnumValue() {
-    // delete id;
-    // delete property;
+    delete id;
+    delete property;
   }
 
   // Assign
   Assign::Assign(Token* id, RightValue* value): id(id), value(value) {}
 
   Assign::~Assign() {
-    // delete id;
-    // delete value;
+    delete id;
+    delete value;
   }
 
   // Declare
@@ -45,10 +45,25 @@ namespace ast {
     : type(type), id(id), eid(eid), dv(NULL), ev(ev) {}
 
   Declare::~Declare() {
-    // delete id;
-    // delete eid;
-    // delete dv;
-    // delete ev;
+    if (id) {
+      delete id;
+      id = NULL;
+    }
+
+    if (eid) {
+      delete eid;
+      eid = NULL;
+    }
+
+    if (dv) {
+      delete dv;
+      dv = NULL;
+    }
+
+    if (ev) {
+      delete ev;
+      ev = NULL;
+    }
   }
 
 }; // reviser

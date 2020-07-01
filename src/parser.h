@@ -41,7 +41,7 @@ namespace compiler {
     bool LookAt(string expect);
     bool LookAtType(TokenType expect);
 
-    Token* CloneToken(const Token* token);
+    Token* CloneToken(const Token* t);
     TokenType CurrentType();
     TokenType PreviousType();
     string CurrentText();

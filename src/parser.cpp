@@ -18,13 +18,10 @@ namespace compiler {
     : tokenizer(tokenizer),
       message("parser"),
       generator(generator),
+      token(NULL),
       generator_type(generator_type) {}
 
-  Parser::~Parser() {
-    // delete tokenizer;
-    // delete generator;
-    // delete token;
-  }
+  Parser::~Parser() {}
 
   void Parser::Program() {
     switch (generator_type) {
@@ -67,22 +64,29 @@ namespace compiler {
     message.Info(generator->Generate());
   }
 
-  Token* Parser::CloneToken(const Token* token) {
+  Token* Parser::CloneToken(const Token* t) {
     return new Token {
-      token->type,
-      token->text,
-      token->start_line,
-      token->end_line,
-      token->column_start,
-      token->column_start,
-      token->pos_end
+      t->type,
+      t->text,
+      t->start_line,
+      t->end_line,
+      t->column_start,
+      t->column_start,
+      t->pos_start,
+      t->pos_end
     };
   }
 
   //
   // private
   bool Parser::Accept(TokenType type) {
-    token = CloneToken(&tokenizer->Current());
+    const Token& t = tokenizer->Current();
+
+    if (token) {
+      delete token;
+    }
+
+    token = CloneToken(&t);
 
     if (token->type == type) {
       tokenizer->Next();
@@ -132,7 +136,7 @@ namespace compiler {
   Struct* Parser::ConsumeStruct() {
     Expect(TOKEN_STRUCT);
     Expect(TOKEN_ID);
-    Struct* s = new Struct(token);
+    Struct* s = new Struct(CloneToken(token));
     Expect(TOKEN_LEFT_BRACE);
 
     do {
@@ -170,7 +174,7 @@ namespace compiler {
   }
 
   Decorater* Parser::ConsumeDecorater() {
-    Decorater* d = new Decorater(token);
+    Decorater* d = new Decorater(CloneToken(token));
     generator->descriptor->AddDecorator(token->text);
     return d;
   }
@@ -255,15 +259,15 @@ namespace compiler {
   }
 
   Declare* Parser::ConsumeEnumDeclare() {
-    Token* eid = token;
+    Token* eid = CloneToken(token);
     Expect(TOKEN_ID);
-    Token* id = token;
+    Token* id = CloneToken(token);
     Expect(TOKEN_ASSIGN);
     Expect(TOKEN_ID);
-    Token* ei = token;
+    Token* ei = CloneToken(token);
     Expect(TOKEN_CONNECTION);
     Expect(TOKEN_ID);
-    Token* ep = token;
+    Token* ep = CloneToken(token);
 
     EnumValue* v = new EnumValue(ei, ep);
     Declare* declare = new Declare(TYPE_ENUM, id, eid, v);
@@ -274,11 +278,11 @@ namespace compiler {
   // stmt -> enum
   EnumProperty* Parser::ConsumeEnumProperty() {
     Expect(TOKEN_ID);
-    Token* id = token;
+    Token* id = CloneToken(token);
 
     if (Accept(TOKEN_ASSIGN)) {
       Expect(TOKEN_DIGIT);
-      RightValue* value = new RightValue(TYPE_INT32, token);
+      RightValue* value = new RightValue(TYPE_INT32, CloneToken(token));
       EnumProperty* property = new EnumProperty(id, value);
       return property;
     }
@@ -290,7 +294,7 @@ namespace compiler {
   Enum* Parser::ConsumeEnum () {
     Expect(TOKEN_ENUM);
     Expect(TOKEN_ID);
-    Token* id = token;
+    Token* id = CloneToken(token);
     Expect(TOKEN_LEFT_BRACE);
 
     Enum* e = new Enum(id);

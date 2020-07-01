@@ -64,10 +64,10 @@ namespace ast {
   class Declare : public Expr {
   public:
     DataType type;
-    Token* id;
-    Token* eid;
-    RightValue* dv;
-    EnumValue* ev;
+    Token* id = NULL;
+    Token* eid = NULL;
+    RightValue* dv = NULL;
+    EnumValue* ev = NULL;
 
     Declare(DataType type, Token* id, RightValue* dv);
     Declare(DataType type, Token* id, Token* eid, EnumValue* ev);

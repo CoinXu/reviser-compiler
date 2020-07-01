@@ -19,8 +19,8 @@ namespace ast {
   EnumProperty::EnumProperty(Token* id): id(id) {}
 
   EnumProperty::~EnumProperty() {
-    // delete id;
-    // delete value;
+    delete id;
+    if (value) delete value;
   }
 
   //
@@ -28,7 +28,7 @@ namespace ast {
   Enum::Enum(Token* id): id(id) {}
 
   Enum::~Enum() {
-    // delete id;
+    delete id;
   }
 
 }; // reviser
