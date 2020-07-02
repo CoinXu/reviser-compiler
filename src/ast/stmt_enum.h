@@ -21,7 +21,7 @@ namespace ast {
   // EnumProperty
   class EnumProperty: public Stmt {
   public:
-    Token* id;
+    Token* id = nullptr;
     RightValue* value = nullptr;
 
     EnumProperty(Token* id, RightValue* value);
@@ -34,7 +34,7 @@ namespace ast {
   // Enum
   class Enum: public Stmt {
   public:
-    Token* id;
+    Token* id = nullptr;
     vector<EnumProperty*> properties;
 
     Enum(Token* id);

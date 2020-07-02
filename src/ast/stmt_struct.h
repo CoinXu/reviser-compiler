@@ -24,7 +24,7 @@ namespace ast {
   // required | optional
   class Decorater: public Stmt {
   public:
-    Token* id;
+    Token* id = nullptr;
 
     Decorater(Token* id);
     ~Decorater();
@@ -35,7 +35,7 @@ namespace ast {
   class StructProperty: public Stmt {
   public:
     vector<Decorater*> decoraters;
-    Declare* declare;
+    Declare* declare = nullptr;
 
     StructProperty(Declare* declare);
     ~StructProperty();
@@ -56,12 +56,12 @@ namespace ast {
       size_t index;
     };
 
-    Token* id;
+    Token* id = nullptr;
     vector<StructProperty*> properties;
     vector<Struct*> structs;
     vector<Enum*> enums;
     vector<ContentStore> contents;
-    int level;
+    int level = 0;
 
     Struct(Token* id, int level = 0);
     ~Struct();

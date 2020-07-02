@@ -19,7 +19,7 @@ namespace compiler {
   class JavaScriptEnum : public JavaScriptStmt {
   public:
     JavaScriptStruct* parent = nullptr;
-    Enum* node;
+    Enum* node = nullptr;
 
     string Generate();
     JavaScriptEnum(Enum* node);
@@ -29,8 +29,8 @@ namespace compiler {
 
   class JavaScriptEnumProperty : public JavaScriptStmt {
   public:
-    JavaScriptEnum* parent;
-    EnumProperty* node;
+    JavaScriptEnum* parent = nullptr;
+    EnumProperty* node = nullptr;
 
     string Generate(int index = 0);
     JavaScriptEnumProperty(EnumProperty* node, JavaScriptEnum* parent);

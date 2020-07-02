@@ -32,23 +32,26 @@ namespace ast {
   Struct::Struct(Token* id, int level): id(id), level(level) {}
 
   Struct::~Struct() {
-    delete id;
+    if (!destroyed) {
+      // delete id;
 
-    for (vector<StructProperty*>::iterator p = properties.begin();
-      p != properties.end(); p++) {
-      delete *p;
-    }
-    properties.clear();
+      // for (vector<StructProperty*>::iterator p = properties.begin();
+      //   p != properties.end(); p++) {
+      //   delete *p;
+      // }
+      // properties.clear();
 
-    for (vector<Struct*>::iterator s = structs.begin(); s != structs.end(); s++) {
-      delete *s;
-    }
-    structs.clear();
+      // for (vector<Struct*>::iterator s = structs.begin(); s != structs.end(); s++) {
+      //   delete *s;
+      // }
+      // structs.clear();
 
-    for (vector<Enum*>::iterator e = enums.begin(); e != enums.end(); e++) {
-      delete *e;
+      // for (vector<Enum*>::iterator e = enums.begin(); e != enums.end(); e++) {
+      //   delete *e;
+      // }
+      // enums.clear();
+      destroyed = true;
     }
-    enums.clear();
   }
 
   void Struct::AddProperty(StructProperty* property) {

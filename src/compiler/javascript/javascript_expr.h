@@ -16,14 +16,14 @@ namespace reviser {
 namespace compiler {
   class JavaScriptExpr {
   public:
-    Expr* node;
+    Expr* node = nullptr;
   };
 
   //
   // RightValue
   class JavaScriptRightValue : public JavaScriptExpr {
   public:
-    RightValue* node;
+    RightValue* node = nullptr;
 
     string Generate();
     JavaScriptRightValue(RightValue* node);
@@ -34,7 +34,7 @@ namespace compiler {
   // EnumValue
   class JavaScriptEnumValue : public JavaScriptExpr {
   public:
-    EnumValue* node;
+    EnumValue* node = nullptr;
 
     string Generate();
     JavaScriptEnumValue(EnumValue* node);
@@ -45,7 +45,7 @@ namespace compiler {
   // Assign
   class JavaScriptAssign : public JavaScriptExpr {
   public:
-    Assign* node;
+    Assign* node = nullptr;
 
     string Generate();
     JavaScriptAssign(Assign* node);
@@ -56,7 +56,7 @@ namespace compiler {
   // Declare
   class JavaScriptDeclare : public JavaScriptExpr {
   public:
-    Declare* node;
+    Declare* node = nullptr;
 
     string Generate();
     JavaScriptDeclare(Declare* node);

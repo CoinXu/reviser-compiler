@@ -18,7 +18,7 @@ namespace compiler {
   class JavaScriptStruct : public JavaScriptStmt {
   public:
     JavaScriptStruct* parent = nullptr;
-    Struct* node;
+    Struct* node = nullptr;
 
     string Generate();
     JavaScriptStruct(Struct* node);
@@ -29,7 +29,7 @@ namespace compiler {
   class JavaScriptStructProperty : public JavaScriptStmt {
   public:
     JavaScriptStruct* parent = nullptr;
-    StructProperty* node;
+    StructProperty* node = nullptr;
 
     string Generate();
     JavaScriptStructProperty(StructProperty* node, JavaScriptStruct* parent);
@@ -39,7 +39,7 @@ namespace compiler {
   class JavaScriptDecorater : public JavaScriptStmt {
   public:
     JavaScriptStruct* parent = nullptr;
-    Decorater* node;
+    Decorater* node = nullptr;
 
     string Generate();
     JavaScriptDecorater(Decorater* node, JavaScriptStruct* parent);

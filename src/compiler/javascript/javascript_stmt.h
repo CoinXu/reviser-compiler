@@ -16,7 +16,7 @@ namespace reviser {
 namespace compiler {
   class JavaScriptStmt {
   public:
-    Stmt* node;
+    Stmt* node = nullptr;
     Stmt* parent = nullptr;
     bool destroyed = false;
 
