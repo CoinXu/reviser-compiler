@@ -11,7 +11,7 @@
 
 namespace reviser {
 namespace message {
-  Message::Message(std::string name_): name(name_) {}
+  Message::Message(std::string name): name(name) {}
   Message::~Message() {}
 
   // private
