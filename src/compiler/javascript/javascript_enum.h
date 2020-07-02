@@ -12,6 +12,7 @@
 #include <ast/stmt_enum.h>
 
 using namespace reviser::ast;
+using namespace reviser::message;
 using namespace std;
 
 namespace reviser {

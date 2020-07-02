@@ -8,6 +8,7 @@
 #define REVISER_COMPILER_JAVASCRIPT_STRUCT
 
 #include <ast/stmt_struct.h>
+#include <compiler/javascript/javascript_common.h>
 #include <compiler/javascript/javascript_stmt.h>
 
 using namespace reviser::ast;

@@ -8,9 +8,14 @@
 #define REVISER_COMPILER_JAVASCRIPT_COMMON
 
 #include <string>
+#include <map>
+#include <tokenizer.h>
 
 namespace reviser {
 namespace compiler {
+  extern std::map<std::string, std::string> JavaScriptDecoraterNameMap;
+  extern std::map<DataType, std::string> JavaScriptDataTypeDecoraterNameMap;
+
   class JavaScriptCommon {
   public:
     const static int IndentSize = 2;

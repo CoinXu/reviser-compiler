@@ -101,9 +101,13 @@ namespace compiler {
       code = code + decorater.Generate();
     }
 
+    string type;
+    if (JavaScriptDataTypeDecoraterNameMap.find(node->declare->type) != JavaScriptDataTypeDecoraterNameMap.end()) {
+      type += JavaScriptCommon::Indent(node->level + 1) + "@" + JavaScriptDataTypeDecoraterNameMap.at(node->declare->type) + "\n";
+    }
+
     JavaScriptDeclare declare(node->declare);
-    return code + JavaScriptCommon::Indent(node->level + 1)
-      + declare.Generate() + ";";
+    return code + type + JavaScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
   }
 
   //
@@ -117,8 +121,12 @@ namespace compiler {
   }
 
   string JavaScriptDecorater::Generate() {
+    if (JavaScriptDecoraterNameMap.find(node->id->text) == JavaScriptDecoraterNameMap.end()) {
+      return "";
+    }
+
     return JavaScriptCommon::Indent(node->level + 1)
-      + "@" + node->id->text + "\n";
+      + "@" + JavaScriptDecoraterNameMap.at(node->id->text) + "\n";
   }
 
 }; // reviser

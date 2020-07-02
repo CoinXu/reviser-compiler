@@ -39,6 +39,7 @@ make uninstall
 + [ ] support scope.
 + [ ] support package & import.
 + [ ] syntax highligth for editor.
++ [ ] delete all pointer.
 
 # Licence
 MIT

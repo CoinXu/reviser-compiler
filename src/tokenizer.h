@@ -58,8 +58,6 @@ namespace compiler {
     RESERVED_REQUIRED
   };
 
-  extern std::map<ReservedWord, std::string> ReservedWordMap;
-
   enum DataType {
     TYPE_BOOL,
     TYPE_FLOAT,
@@ -70,7 +68,7 @@ namespace compiler {
     TYPE_UINT64,
     TYPE_STRING,
     TYPE_ENUM,
-    TYPE_nullptr
+    TYPE_NULL
   };
 
   struct Token {
@@ -84,6 +82,10 @@ namespace compiler {
     int pos_start;       // 全部字符中开始位置
     int pos_end;         // 全部字符中结束位置
   };
+
+  extern std::map<ReservedWord, std::string> ReservedWordMap;
+  extern std::map<TokenType, std::string> TokenTypeNameMap;
+  extern std::map<DataType, std::string> DataTypeName;
 
   static const struct Token EmptyToken = {
     TOKEN_ID,

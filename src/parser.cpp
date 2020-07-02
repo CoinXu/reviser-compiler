@@ -187,8 +187,8 @@ namespace compiler {
       return ConsumeEnumDeclare();
     } else {
       message.Runtime("syntax error.");
-      RightValue* rv = new RightValue(TYPE_nullptr, nullptr);
-      Declare* d = new Declare(TYPE_nullptr, nullptr, rv);
+      RightValue* rv = new RightValue(TYPE_NULL, nullptr);
+      Declare* d = new Declare(TYPE_NULL, nullptr, rv);
       return d;
     }
   }

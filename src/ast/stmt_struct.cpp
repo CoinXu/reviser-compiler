@@ -36,8 +36,8 @@ namespace ast {
       // delete id;
 
       // for (vector<StructProperty*>::iterator p = properties.begin();
-      //   p != properties.end(); p++) {
-      //   delete *p;
+        // p != properties.end(); p++) {
+        // delete *p;
       // }
       // properties.clear();
 

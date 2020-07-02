@@ -24,7 +24,7 @@ namespace compiler {
 
   JavaScriptEnum::~JavaScriptEnum() {
     if (!destroyed) {
-      delete node;
+      // delete node;
       destroyed = true;
     }
   }
@@ -56,7 +56,7 @@ namespace compiler {
 
   JavaScriptEnumProperty::~JavaScriptEnumProperty() {
     if (!destroyed) {
-      delete node;
+      // delete node;
       destroyed = true;
     }
   }
