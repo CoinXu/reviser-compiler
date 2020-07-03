@@ -45,7 +45,7 @@ namespace compiler {
           properties.push_back(g.Generate() + new_line);
 
           TypeScriptStructInterfaceProperty i(node->properties.at((*it).index), this);
-          inters.push_back(i.Generate() + new_line);
+          inters.push_back(i.Generate() + "\n");
           break;
         }
 
@@ -66,13 +66,13 @@ namespace compiler {
       }
     }
 
-    string code = code + indent_next + "interface Struct" + node->id->text + " {\n";
+    string code = indent + "interface Struct" + node->id->text + " {\n";
     for (string i : inters) {
       code = code + i;
     }
-    code = code + indent_next + "}\n";
+    code = code + indent + "};\n\n";
 
-    code = indent + "const " + node->id->text + " = (function() {\n";
+    code = code + indent + "const " + node->id->text + " = (function() {\n";
     for (string en: enums) {
       code = code + en;
     }
@@ -131,8 +131,9 @@ namespace compiler {
 
   string TypeScriptStructInterfaceProperty::Generate() {
     if (node->declare->type == TYPE_ENUM) {
-      return TypeScriptCommon::Indent(node->level + 1)
-        + node->declare->id->text + ": " + node->declare->eid->text + ";";
+      return TypeScriptCommon::Indent(node->level)
+        + node->declare->id->text + ": " + node->declare->eid->text
+        + "; /* enum " + node->declare->eid->text + " */";
     }
 
     string type;
@@ -142,8 +143,9 @@ namespace compiler {
       type = TypeScriptDataTypeMap.at(node->declare->type);
     }
 
-    return TypeScriptCommon::Indent(node->level + 1)
-      + node->declare->id->text + ": " + type + ";";
+    return TypeScriptCommon::Indent(node->level)
+      + node->declare->id->text + ": " + type
+      + "; /* " + DataTypeName.at(node->declare->type) + " */";
   }
 
   //
