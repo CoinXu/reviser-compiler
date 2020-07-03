@@ -32,7 +32,8 @@ make uninstall
 # TODO
 + [x] support comment.
 + [x] compile to javascript.
-+ [ ] compile to typescript.
++ [x] compile to typescript.
++ [ ] support `enum`, `array<T>`, `struct` types.
 + [ ] `decorator` allow parameters.
 + [ ] check data type.
 + [x] support nested statement

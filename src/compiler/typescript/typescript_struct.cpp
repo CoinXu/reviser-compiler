@@ -70,7 +70,7 @@ namespace compiler {
       code = code + s;
     }
 
-    code = code + indent_next + "class " + node->id->text + " {\n";
+    code = code + indent_next + "class " + node->id->text + " extends Reviser {\n";
 
     for (string p: properties) {
       code = code + p;

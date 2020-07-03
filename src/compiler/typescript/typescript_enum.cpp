@@ -33,7 +33,7 @@ namespace compiler {
     string code;
 
     code = TypeScriptCommon::Indent(node->level)
-      + "const " + node->id->text + " = {\n";
+      + "enum " + node->id->text + " {\n";
 
     size_t counter = 0;
     size_t total = node->properties.size();
@@ -63,9 +63,9 @@ namespace compiler {
 
   string TypeScriptEnumProperty::Generate(int index) {
     string indent = TypeScriptCommon::Indent(node->level);
-    string value = !node->value ? to_string(index) : node->value->id->text;
+    string value = !node->value ? "" : (" = " + node->value->id->text);
 
-    return indent + node->id->text + ": " + value;
+    return indent + node->id->text + value;
   }
 
 };
