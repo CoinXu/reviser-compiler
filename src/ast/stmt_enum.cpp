@@ -20,10 +20,6 @@ namespace ast {
 
   EnumProperty::~EnumProperty() {
     if (!destroyed) {
-      // delete id;
-      // if (value) {
-      //   delete value;
-      // }
       destroyed = true;
     }
   }
@@ -34,11 +30,6 @@ namespace ast {
 
   Enum::~Enum() {
     if (!destroyed) {
-      // delete id;
-
-      // for (EnumProperty* p : properties) {
-      //   delete p;
-      // }
       destroyed = true;
     }
   }

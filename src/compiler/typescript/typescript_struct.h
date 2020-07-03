@@ -37,6 +37,16 @@ namespace compiler {
     ~TypeScriptStructProperty();
   };
 
+  class TypeScriptStructInterfaceProperty : public TypeScriptStmt {
+  public:
+    TypeScriptStruct* parent = nullptr;
+    StructProperty* node = nullptr;
+
+    string Generate();
+    TypeScriptStructInterfaceProperty(StructProperty* node, TypeScriptStruct* parent);
+    ~TypeScriptStructInterfaceProperty();
+  };
+
   class TypeScriptDecorater : public TypeScriptStmt {
   public:
     TypeScriptStruct* parent = nullptr;

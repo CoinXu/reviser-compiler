@@ -15,6 +15,7 @@ namespace reviser {
 namespace compiler {
   extern std::map<std::string, std::string> TypeScriptDecoraterNameMap;
   extern std::map<DataType, std::string> TypeScriptDataTypeDecoraterNameMap;
+  extern std::map<DataType, std::string> TypeScriptDataTypeMap;
 
   class TypeScriptCommon {
   public:

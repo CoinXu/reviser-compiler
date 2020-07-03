@@ -24,7 +24,6 @@ namespace compiler {
 
   TypeScriptEnum::~TypeScriptEnum() {
     if (!destroyed) {
-      // delete node;
       destroyed = true;
     }
   }
@@ -56,7 +55,6 @@ namespace compiler {
 
   TypeScriptEnumProperty::~TypeScriptEnumProperty() {
     if (!destroyed) {
-      // delete node;
       destroyed = true;
     }
   }

@@ -33,24 +33,25 @@ namespace compiler {
     vector<string> structures;
     vector<string> enums;
 
-    for (Struct::ContentStore& p: node->contents) {
-      const string new_line = &p == &node->contents.back() ? "\n" : "\n\n";
+    for (vector<Struct::ContentStore>::iterator it = begin(node->contents);
+      it != end(node->contents); it++) {
+      const string new_line = next(it) == end(node->contents) ? "\n" : "\n\n";
 
-      switch (p.type) {
+      switch ((*it).type) {
         case DeclareProperty: {
-          JavaScriptStructProperty g(node->properties.at(p.index), this);
+          JavaScriptStructProperty g(node->properties.at((*it).index), this);
           properties.push_back(g.Generate() + new_line);
           break;
         }
 
         case DeclareStruct: {
-          JavaScriptStruct g(node->structs.at(p.index), this);
+          JavaScriptStruct g(node->structs.at((*it).index), this);
           structures.push_back(g.Generate() + new_line);
           break;
         }
 
         case DeclareEnum: {
-          JavaScriptEnum g(node->enums.at(p.index), this);
+          JavaScriptEnum g(node->enums.at((*it).index), this);
           enums.push_back(g.Generate() + new_line);
           break;
         }

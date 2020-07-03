@@ -28,29 +28,35 @@ namespace compiler {
   string TypeScriptStruct::Generate() {
     string indent = TypeScriptCommon::Indent(node->level);
     string indent_next = TypeScriptCommon::Indent(node->level + 1);
+    string def_interface("interface Struct" + node->id->text + " {\n");
 
+    vector<string> inters;
     vector<string> properties;
     vector<string> structures;
     vector<string> enums;
 
-    for (Struct::ContentStore& p: node->contents) {
-      const string new_line = &p == &node->contents.back() ? "\n" : "\n\n";
+    for (vector<Struct::ContentStore>::iterator it = begin(node->contents);
+      it != end(node->contents); it++) {
+      const string new_line = next(it) == end(node->contents) ? "\n" : "\n\n";
 
-      switch (p.type) {
+      switch ((*it).type) {
         case DeclareProperty: {
-          TypeScriptStructProperty g(node->properties.at(p.index), this);
+          TypeScriptStructProperty g(node->properties.at((*it).index), this);
           properties.push_back(g.Generate() + new_line);
+
+          TypeScriptStructInterfaceProperty i(node->properties.at((*it).index), this);
+          inters.push_back(i.Generate() + new_line);
           break;
         }
 
         case DeclareStruct: {
-          TypeScriptStruct g(node->structs.at(p.index), this);
+          TypeScriptStruct g(node->structs.at((*it).index), this);
           structures.push_back(g.Generate() + new_line);
           break;
         }
 
         case DeclareEnum: {
-          TypeScriptEnum g(node->enums.at(p.index), this);
+          TypeScriptEnum g(node->enums.at((*it).index), this);
           enums.push_back(g.Generate() + new_line);
           break;
         }
@@ -60,8 +66,13 @@ namespace compiler {
       }
     }
 
-    string code = indent + "const " + node->id->text + " = (function() {\n";
+    string code = code + indent_next + "interface Struct" + node->id->text + " {\n";
+    for (string i : inters) {
+      code = code + i;
+    }
+    code = code + indent_next + "}\n";
 
+    code = indent + "const " + node->id->text + " = (function() {\n";
     for (string en: enums) {
       code = code + en;
     }
@@ -71,7 +82,6 @@ namespace compiler {
     }
 
     code = code + indent_next + "class " + node->id->text + " extends Reviser {\n";
-
     for (string p: properties) {
       code = code + p;
     }
@@ -108,6 +118,32 @@ namespace compiler {
 
     TypeScriptDeclare declare(node->declare);
     return code + type + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
+  }
+
+  //
+  // TypeScriptStructInterfaceProperty
+  TypeScriptStructInterfaceProperty::TypeScriptStructInterfaceProperty(StructProperty* node, TypeScriptStruct* parent)
+    : node(node), parent(parent) {
+      node->level = parent->node->level + 1;
+    }
+
+  TypeScriptStructInterfaceProperty::~TypeScriptStructInterfaceProperty() {}
+
+  string TypeScriptStructInterfaceProperty::Generate() {
+    if (node->declare->type == TYPE_ENUM) {
+      return TypeScriptCommon::Indent(node->level + 1)
+        + node->declare->id->text + ": " + node->declare->eid->text + ";";
+    }
+
+    string type;
+    if (TypeScriptDataTypeMap.find(node->declare->type) == TypeScriptDataTypeMap.end()) {
+      type = "any";
+    } else {
+      type = TypeScriptDataTypeMap.at(node->declare->type);
+    }
+
+    return TypeScriptCommon::Indent(node->level + 1)
+      + node->declare->id->text + ": " + type + ";";
   }
 
   //

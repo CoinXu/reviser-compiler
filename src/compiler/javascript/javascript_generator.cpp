@@ -116,16 +116,6 @@ namespace compiler {
       }
     }
 
-    for (auto s : structures) {
-      delete s;
-    }
-    structures.clear();
-
-    for (auto e : enums) {
-      delete e;
-    }
-    enums.clear();
-
     return code + Export() + block_separetor;
   }
 

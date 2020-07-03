@@ -27,6 +27,17 @@ namespace compiler {
     { TYPE_STRING, "TypeString" }
   };
 
+  std::map<DataType, string> TypeScriptDataTypeMap = {
+    { TYPE_BOOL, "number" },
+    { TYPE_FLOAT, "number" },
+    { TYPE_DOUBLE, "number" },
+    { TYPE_INT32, "number" },
+    { TYPE_INT64, "number" },
+    { TYPE_UINT32, "number" },
+    { TYPE_UINT64, "number" },
+    { TYPE_STRING, "string" }
+  };
+
   TypeScriptGenerator::TypeScriptGenerator(): CodeGenerator(), message("typescript") {}
 
   TypeScriptGenerator::~TypeScriptGenerator() {}
@@ -80,6 +91,7 @@ namespace compiler {
   //
   // public
   string TypeScriptGenerator::StmtStruct(Struct* s) {
+    descriptor->AddGlobalVariable("Struct" + s->id->text);
     TypeScriptStruct g(s);
     return g.Generate();
   }
@@ -115,16 +127,6 @@ namespace compiler {
           break;
       }
     }
-
-    for (auto s : structures) {
-      delete s;
-    }
-    structures.clear();
-
-    for (auto e : enums) {
-      delete e;
-    }
-    enums.clear();
 
     return code + Export() + block_separetor;
   }
