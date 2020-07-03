@@ -32,12 +32,10 @@ int main(int args, char** argv) {
     logger.Info("args::[" +  to_string(i) + "] = " + argv[i]);
     string s = string(argv[i]);
 
-    if (~s.find_first_of("--js-output")) {
-      logger.Info("js = post: " + s.find_first_of("="));
-      javascript_output = s.substr(s.find_first_of("="));
-    } else if (~s.find_first_of("--ts-output")) {
-      logger.Info("ts = post: " + s.find_first_of("="));
-      typescript_output = s.substr(s.find_first_of("="));
+    if (~s.find("--js-output")) {
+      javascript_output = s.substr(s.find("=") + 1);
+    } else if (~s.find("--ts-output")) {
+      typescript_output = s.substr(s.find("=") + 1);
     } else {
       file_name = s;
     }
