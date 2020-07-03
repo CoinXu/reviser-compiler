@@ -24,24 +24,37 @@ int main(int args, char** argv) {
   Message logger("main");
 
   logger.Info("args: " + to_string(args));
+  string javascript_output;
+  string typescript_output;
+  string file_name;
 
-  for (int i = 0; i < args; ++i) {
+  for (int i = 1; i < args; ++i) {
     logger.Info("args::[" +  to_string(i) + "] = " + argv[i]);
+    string s = string(argv[i]);
+
+    if (~s.find_first_of("--js-output")) {
+      logger.Info("js = post: " + s.find_first_of("="));
+      javascript_output = s.substr(s.find_first_of("="));
+    } else if (~s.find_first_of("--ts-output")) {
+      logger.Info("ts = post: " + s.find_first_of("="));
+      typescript_output = s.substr(s.find_first_of("="));
+    } else {
+      file_name = s;
+    }
   }
 
-  if (args == 1) {
+  if (file_name.size() == 0) {
+    logger.Info("no entry source file");
     return 1;
   }
 
-  string filename = argv[1];
-
-  logger.Info("open file: " + filename);
+  logger.Info("open file: " + file_name);
 
   // read file
-  ifstream is(filename, ifstream::binary);
+  ifstream is(file_name, ifstream::binary);
 
   if (!is) {
-    logger.Runtime("not found file :" + filename);
+    logger.Runtime("not found file :" + file_name);
   }
 
   is.seekg(0, is.end);
@@ -55,19 +68,21 @@ int main(int args, char** argv) {
 
   // 转为string，传给Tokenizer
   string input(buffer, length);
-
-  JavaScriptGenerator javascript;
-  TypeScriptGenerator typescript;
-  CodeGenerator generator;
   PrinterTerminal printer;
 
-  Tokenizer tokenizer(input);
+  if (javascript_output.size() > 0) {
+    Tokenizer tokenizer(input);
+    JavaScriptGenerator javascript;
+    Parser parser(&tokenizer, &javascript, &printer);
+    parser.Program();
+  }
 
-  // Parser parser(&tokenizer, &javascript, &printer);
-  Parser parser(&tokenizer, &typescript, &printer);
-  // Parser parser(&tokenizer, &generator, &printer);
-
-  parser.Program();
+  if (typescript_output.size() > 0) {
+    Tokenizer tokenizer(input);
+    TypeScriptGenerator typescript;
+    Parser parser(&tokenizer, &typescript, &printer);
+    parser.Program();
+  }
 
   delete[] buffer;
 
