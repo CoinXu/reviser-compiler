@@ -19,6 +19,7 @@
 #include <compiler/javascript/javascript_generator.h>
 #include <compiler/typescript/typescript_generator.h>
 #include <compiler/descriptor.h>
+#include <compiler/printer.h>
 
 using namespace std;
 using namespace reviser::message;
@@ -30,12 +31,10 @@ namespace compiler {
   private:
     Tokenizer* tokenizer;
     CodeGenerator* generator;
-    Descriptor* descriptor;
+    Token* token;
+    Printer* printer;
 
     Message message;
-    Seq seq;
-    Token token;
-    CodeGeneratorType generator_type;
 
     bool Accept(TokenType type);
     void Expect(TokenType type);
@@ -43,32 +42,31 @@ namespace compiler {
     bool LookAt(string expect);
     bool LookAtType(TokenType expect);
 
+    Token* CloneToken(const Token* t);
     TokenType CurrentType();
     TokenType PreviousType();
     string CurrentText();
     string PreviousText();
 
     // stmt -> struct
-    Struct ConsumeStruct();
-    StructProperty ConsumeStructProperty();
-    Decorater ConsumeDecorater();
+    Struct* ConsumeStruct();
+    StructProperty* ConsumeStructProperty();
+    Decorater* ConsumeDecorater();
 
     // expr
-    RightValue ConsumeRightValue();
-    EnumValue ConsumeEnumValue();
-    Assign ConsumeAssign();
-    Declare ConsumeDeclare();
-    Declare ConsumeDataTypeDeclare();
-    Declare ConsumeEnumDeclare();
+    RightValue* ConsumeRightValue();
+    EnumValue* ConsumeEnumValue();
+    Assign* ConsumeAssign();
+    Declare* ConsumeDeclare();
+    Declare* ConsumeDataTypeDeclare();
+    Declare* ConsumeEnumDeclare();
 
     // stmt -> enum
-    EnumProperty ConsumeEnumProperty();
-    Enum ConsumeEnum();
-
-    template<typename T> void ProgramByGenerator(T* generator);
+    EnumProperty* ConsumeEnumProperty();
+    Enum* ConsumeEnum();
 
   public:
-    Parser(Tokenizer*, CodeGenerator*, Descriptor*, CodeGeneratorType);
+    Parser(Tokenizer*, CodeGenerator*, Printer*);
     ~Parser();
     void Program();
   };

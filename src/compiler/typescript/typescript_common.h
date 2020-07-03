@@ -1,11 +1,11 @@
 /**
- * @date 2020-06-22
+ * @date 2020-07-03
  * @author duanxian0605@163.com
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_COMMON
-#define REVISER_COMPILER_JAVASCRIPT_COMMON
+#ifndef REVISER_COMPILER_TYPESCRIPT_COMMON
+#define REVISER_COMPILER_TYPESCRIPT_COMMON
 
 #include <string>
 #include <map>
@@ -13,10 +13,11 @@
 
 namespace reviser {
 namespace compiler {
-  extern std::map<std::string, std::string> JavaScriptDecoraterNameMap;
-  extern std::map<DataType, std::string> JavaScriptDataTypeDecoraterNameMap;
+  extern std::map<std::string, std::string> TypeScriptDecoraterNameMap;
+  extern std::map<DataType, std::string> TypeScriptDataTypeDecoraterNameMap;
+  extern std::map<DataType, std::string> TypeScriptDataTypeMap;
 
-  class JavaScriptCommon {
+  class TypeScriptCommon {
   public:
     const static int IndentSize = 2;
 

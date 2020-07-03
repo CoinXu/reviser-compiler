@@ -1,11 +1,11 @@
 /**
- * @date 2020-06-22
+ * @date 2020-07-03
  * @author duanxian0605@163.com
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_EXPR
-#define REVISER_COMPILER_JAVASCRIPT_EXPR
+#ifndef REVISER_COMPILER_TYPESCRIPT_EXPR
+#define REVISER_COMPILER_TYPESCRIPT_EXPR
 
 #include <ast/expr.h>
 
@@ -14,53 +14,53 @@ using namespace std;
 
 namespace reviser {
 namespace compiler {
-  class JavaScriptExpr {
+  class TypeScriptExpr {
   public:
     Expr* node = nullptr;
   };
 
   //
   // RightValue
-  class JavaScriptRightValue : public JavaScriptExpr {
+  class TypeScriptRightValue : public TypeScriptExpr {
   public:
     RightValue* node = nullptr;
 
     string Generate();
-    JavaScriptRightValue(RightValue* node);
-    ~JavaScriptRightValue();
+    TypeScriptRightValue(RightValue* node);
+    ~TypeScriptRightValue();
   };
 
   //
   // EnumValue
-  class JavaScriptEnumValue : public JavaScriptExpr {
+  class TypeScriptEnumValue : public TypeScriptExpr {
   public:
     EnumValue* node = nullptr;
 
     string Generate();
-    JavaScriptEnumValue(EnumValue* node);
-    ~JavaScriptEnumValue();
+    TypeScriptEnumValue(EnumValue* node);
+    ~TypeScriptEnumValue();
   };
 
   //
   // Assign
-  class JavaScriptAssign : public JavaScriptExpr {
+  class TypeScriptAssign : public TypeScriptExpr {
   public:
     Assign* node = nullptr;
 
     string Generate();
-    JavaScriptAssign(Assign* node);
-    ~JavaScriptAssign();
+    TypeScriptAssign(Assign* node);
+    ~TypeScriptAssign();
   };
 
   //
   // Declare
-  class JavaScriptDeclare : public JavaScriptExpr {
+  class TypeScriptDeclare : public TypeScriptExpr {
   public:
     Declare* node = nullptr;
 
     string Generate();
-    JavaScriptDeclare(Declare* node);
-    ~JavaScriptDeclare();
+    TypeScriptDeclare(Declare* node);
+    ~TypeScriptDeclare();
   };
 
 }; // compiler

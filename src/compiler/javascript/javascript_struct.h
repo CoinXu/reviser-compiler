@@ -8,6 +8,7 @@
 #define REVISER_COMPILER_JAVASCRIPT_STRUCT
 
 #include <ast/stmt_struct.h>
+#include <compiler/javascript/javascript_common.h>
 #include <compiler/javascript/javascript_stmt.h>
 
 using namespace reviser::ast;
@@ -17,8 +18,8 @@ namespace reviser {
 namespace compiler {
   class JavaScriptStruct : public JavaScriptStmt {
   public:
-    JavaScriptStruct* parent = NULL;
-    Struct* node;
+    JavaScriptStruct* parent = nullptr;
+    Struct* node = nullptr;
 
     string Generate();
     JavaScriptStruct(Struct* node);
@@ -28,8 +29,8 @@ namespace compiler {
 
   class JavaScriptStructProperty : public JavaScriptStmt {
   public:
-    JavaScriptStruct* parent = NULL;
-    StructProperty* node;
+    JavaScriptStruct* parent = nullptr;
+    StructProperty* node = nullptr;
 
     string Generate();
     JavaScriptStructProperty(StructProperty* node, JavaScriptStruct* parent);
@@ -38,8 +39,8 @@ namespace compiler {
 
   class JavaScriptDecorater : public JavaScriptStmt {
   public:
-    JavaScriptStruct* parent = NULL;
-    Decorater* node;
+    JavaScriptStruct* parent = nullptr;
+    Decorater* node = nullptr;
 
     string Generate();
     JavaScriptDecorater(Decorater* node, JavaScriptStruct* parent);

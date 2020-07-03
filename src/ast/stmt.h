@@ -18,12 +18,15 @@ namespace ast {
   class Stmt: public Node {
   public:
     int level = 0;
+    bool destroyed = false;
     string name = "";
+
+    virtual ~Stmt();
   };
 
   class Seq: public Stmt {
   public:
-    vector<Stmt> stmts;
+    vector<Stmt*> stmts;
   };
 
 }; // compiler

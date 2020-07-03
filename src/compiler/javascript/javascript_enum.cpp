@@ -22,19 +22,23 @@ namespace compiler {
     node->level = parent->node->level + 1;
   }
 
-  JavaScriptEnum::~JavaScriptEnum() {}
+  JavaScriptEnum::~JavaScriptEnum() {
+    if (!destroyed) {
+      destroyed = true;
+    }
+  }
 
   string JavaScriptEnum::Generate() {
     string code;
 
     code = JavaScriptCommon::Indent(node->level)
-      + "var " + node->id.text + " = {\n";
+      + "const " + node->id->text + " = {\n";
 
     size_t counter = 0;
     size_t total = node->properties.size();
 
-    for (EnumProperty p: node->properties) {
-      JavaScriptEnumProperty property(&p, this);
+    for (EnumProperty* p: node->properties) {
+      JavaScriptEnumProperty property(p, this);
       counter++;
       code  = code + property.Generate(counter) + (counter >= total ? "\n" : ",\n");
     }
@@ -49,12 +53,17 @@ namespace compiler {
     node->level = parent->node->level + 1;
   }
 
-  JavaScriptEnumProperty::~JavaScriptEnumProperty() {}
+  JavaScriptEnumProperty::~JavaScriptEnumProperty() {
+    if (!destroyed) {
+      destroyed = true;
+    }
+  }
 
   string JavaScriptEnumProperty::Generate(int index) {
-    return JavaScriptCommon::Indent(node->level)
-      + node->id.text + ": "
-      + (node->value.type == TYPE_NULL ? to_string(index) : node->value.id.text);
+    string indent = JavaScriptCommon::Indent(node->level);
+    string value = !node->value ? to_string(index) : node->value->id->text;
+
+    return indent + node->id->text + ": " + value;
   }
 
 };

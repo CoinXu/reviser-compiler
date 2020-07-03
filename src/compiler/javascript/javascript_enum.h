@@ -12,14 +12,15 @@
 #include <ast/stmt_enum.h>
 
 using namespace reviser::ast;
+using namespace reviser::message;
 using namespace std;
 
 namespace reviser {
 namespace compiler {
   class JavaScriptEnum : public JavaScriptStmt {
   public:
-    JavaScriptStruct* parent = NULL;
-    Enum* node;
+    JavaScriptStruct* parent = nullptr;
+    Enum* node = nullptr;
 
     string Generate();
     JavaScriptEnum(Enum* node);
@@ -29,8 +30,8 @@ namespace compiler {
 
   class JavaScriptEnumProperty : public JavaScriptStmt {
   public:
-    JavaScriptEnum* parent;
-    EnumProperty* node;
+    JavaScriptEnum* parent = nullptr;
+    EnumProperty* node = nullptr;
 
     string Generate(int index = 0);
     JavaScriptEnumProperty(EnumProperty* node, JavaScriptEnum* parent);

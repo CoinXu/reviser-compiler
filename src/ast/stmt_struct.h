@@ -24,19 +24,21 @@ namespace ast {
   // required | optional
   class Decorater: public Stmt {
   public:
-    Token id;
+    Token* id = nullptr;
 
-    Decorater(Token id);
+    Decorater(Token* id);
+    ~Decorater();
   };
 
   //
   // SructPrototype
   class StructProperty: public Stmt {
   public:
-    vector<Decorater> decoraters;
-    Declare declare;
+    vector<Decorater*> decoraters;
+    Declare* declare = nullptr;
 
-    StructProperty(Declare declare);
+    StructProperty(Declare* declare);
+    ~StructProperty();
   };
 
   enum StructBlockContentType {
@@ -54,17 +56,18 @@ namespace ast {
       size_t index;
     };
 
-    Token id;
-    vector<StructProperty> properties;
-    vector<Struct> structs;
-    vector<Enum> enums;
+    Token* id = nullptr;
+    vector<StructProperty*> properties;
+    vector<Struct*> structs;
+    vector<Enum*> enums;
     vector<ContentStore> contents;
-    int level;
+    int level = 0;
 
-    Struct(Token id, int level = 0);
-    void AddProperty(StructProperty property);
-    void AddStruct(Struct st);
-    void AddEnum(Enum en);
+    Struct(Token* id, int level = 0);
+    ~Struct();
+    void AddProperty(StructProperty* property);
+    void AddStruct(Struct* st);
+    void AddEnum(Enum* en);
   };
 
 }; // compiler

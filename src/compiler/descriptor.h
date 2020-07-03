@@ -9,7 +9,7 @@
 
 #include<vector>
 #include<string>
-#include <tokenizer.h>
+#include<tokenizer.h>
 
 using namespace std;
 
@@ -29,6 +29,9 @@ namespace compiler {
     void AddDataTypes(DataType type);
     void AddDecorator(string decorator);
     void AddGlobalVariable(string variable);
+
+    Descriptor();
+    ~Descriptor();
   };
 }; // reviser
 }; // compiler

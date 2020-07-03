@@ -21,6 +21,7 @@ RUN sed -i 's/security.ubuntu.com/mirrors.163.com/g' /etc/apt/sources.list      
     && apt-get install -y build-essential                                          \
     && curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -             \
     && apt-get install -y nodejs                                                   \
+    && apt-get install -y gdb                                                      \
     && npm install -g npm                                                          \
     && npm config set registry=${NPM_REGISTRY}                                     \        
     && apt-get install -y zsh                                                      \

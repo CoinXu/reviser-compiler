@@ -83,6 +83,16 @@ std::map<ReservedWord, std::string> ReservedWordMap = {
   { RESERVED_REQUIRED, "required" }
 };
 
+std::map<DataType, std::string> DataTypeName {
+  { TYPE_BOOL, ReservedWordMap[RESERVED_BOOL] },
+  { TYPE_FLOAT, ReservedWordMap[RESERVED_FLOAT] },
+  { TYPE_DOUBLE, ReservedWordMap[RESERVED_DOUBLE] },
+  { TYPE_INT32, ReservedWordMap[RESERVED_INT32] },
+  { TYPE_INT64, ReservedWordMap[RESERVED_INT64] },
+  { TYPE_UINT32, ReservedWordMap[RESERVED_UINT32] },
+  { TYPE_UINT64, ReservedWordMap[RESERVED_UINT64] },
+  { TYPE_STRING, ReservedWordMap[RESERVED_STRING] }
+};
 
 Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
   peek = input.at(0);

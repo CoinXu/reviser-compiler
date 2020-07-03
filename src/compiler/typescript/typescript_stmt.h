@@ -1,11 +1,11 @@
 /**
- * @date 2020-06-22
+ * @date 2020-07-03
  * @author duanxian0605@163.com
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_STMT
-#define REVISER_COMPILER_JAVASCRIPT_STMT
+#ifndef REVISER_COMPILER_TYPESCRIPT_STMT
+#define REVISER_COMPILER_TYPESCRIPT_STMT
 
 #include <ast/stmt.h>
 
@@ -14,7 +14,7 @@ using namespace std;
 
 namespace reviser {
 namespace compiler {
-  class JavaScriptStmt {
+  class TypeScriptStmt {
   public:
     Stmt* node = nullptr;
     Stmt* parent = nullptr;

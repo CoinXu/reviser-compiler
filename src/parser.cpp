@@ -13,67 +13,64 @@ namespace reviser {
 namespace compiler {
   //
   // public
-  Parser::Parser(Tokenizer* tokenizer, CodeGenerator* generator,
-    Descriptor* descriptor, CodeGeneratorType generator_type)
-    : tokenizer(tokenizer),
+  Parser::Parser(Tokenizer* tokenizer, CodeGenerator* generator, Printer* printer)
+    : token(nullptr),
       message("parser"),
-      seq(),
+      tokenizer(tokenizer),
       generator(generator),
-      descriptor(descriptor),
-      generator_type(generator_type) {}
+      printer(printer) {}
 
   Parser::~Parser() {}
 
   void Parser::Program() {
-    switch (generator_type) {
-      case JavaScript:
-        ProgramByGenerator<JavaScriptGenerator>(static_cast<JavaScriptGenerator*>(generator));
-        break;
-
-      case TypeScript:
-        ProgramByGenerator<TypeScriptGenerator>(static_cast<TypeScriptGenerator*>(generator));
-        break;
-
-      case Default:
-        ProgramByGenerator<CodeGenerator>(static_cast<CodeGenerator*>(generator));
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  template<typename T> void Parser::ProgramByGenerator(T* generator) {
-    static_assert(is_base_of<CodeGenerator, T>::value,
-      "generator must a CodeGenerator child class");
-
     Accept(TOKEN_CODE_START);
 
     do {
       if (LookAtType(TOKEN_STRUCT)) {
-        Struct s = ConsumeStruct();
-
-        descriptor->AddGlobalVariable(s.id.text);
-        message.Info(generator->StmtStruct(&s));
+        Struct* s = ConsumeStruct();
+        generator->descriptor->AddGlobalVariable(s->id->text);
+        generator->AddStmtStruct(s);
       } else if (LookAtType(TOKEN_ENUM)) {
-        Enum s = ConsumeEnum();
-
-        descriptor->AddGlobalVariable(s.id.text);
-        message.Info(generator->StmtEnum(&s));
+        Enum* s = ConsumeEnum();
+        generator->descriptor->AddGlobalVariable(s->id->text);
+        generator->AddStmtEnum(s);
       } else {
         Next();
       }
     } while (!Accept(TOKEN_CODE_END));
+
+    printer->Print(generator->Generate());
+  }
+
+  Token* Parser::CloneToken(const Token* t) {
+    return new Token {
+      t->type,
+      t->text,
+      t->start_line,
+      t->end_line,
+      t->column_start,
+      t->column_start,
+      t->pos_start,
+      t->pos_end
+    };
   }
 
   //
   // private
   bool Parser::Accept(TokenType type) {
-    token = tokenizer->Current();
-    if (token.type == type) {
+    const Token& t = tokenizer->Current();
+
+    if (token) {
+      delete token;
+    }
+
+    token = CloneToken(&t);
+
+    if (token->type == type) {
       tokenizer->Next();
       return true;
     }
+
     return false;
   }
 
@@ -114,27 +111,27 @@ namespace compiler {
   }
 
   // stmt -> struct
-  Struct Parser::ConsumeStruct() {
+  Struct* Parser::ConsumeStruct() {
     Expect(TOKEN_STRUCT);
     Expect(TOKEN_ID);
-    Struct s(token);
+    Struct* s = new Struct(CloneToken(token));
     Expect(TOKEN_LEFT_BRACE);
 
     do {
       if (LookAtType(TOKEN_STRUCT)) {
-        s.AddStruct(ConsumeStruct());
+        s->AddStruct(ConsumeStruct());
       } else if (LookAtType(TOKEN_ENUM)) {
-        s.AddEnum(ConsumeEnum());
+        s->AddEnum(ConsumeEnum());
       } else {
-        s.AddProperty(ConsumeStructProperty());
+        s->AddProperty(ConsumeStructProperty());
       }
     } while (!Accept(TOKEN_RIGHT_BRACE));
 
     return s;
   }
 
-  StructProperty Parser::ConsumeStructProperty() {
-    vector<Decorater> v;
+  StructProperty* Parser::ConsumeStructProperty() {
+    vector<Decorater*> v;
 
     if (Accept(TOKEN_DECORATER)) {
       do {
@@ -142,40 +139,40 @@ namespace compiler {
       } while (Accept(TOKEN_DECORATER));
     }
 
-    Declare declare = ConsumeDeclare();
-    StructProperty property(declare);
+    Declare* declare = ConsumeDeclare();
+    StructProperty* property = new StructProperty(declare);
 
     Expect(TOKEN_SEMICOLON);
 
-    for (Decorater d: v) {
-      property.decoraters.push_back(d);
+    for (Decorater* d : v) {
+      property->decoraters.push_back(d);
     }
 
     return property;
   }
 
-  Decorater Parser::ConsumeDecorater() {
-    Decorater d(token);
-    descriptor->AddDecorator(token.text);
+  Decorater* Parser::ConsumeDecorater() {
+    Decorater* d = new Decorater(CloneToken(token));
+    generator->descriptor->AddDecorator(token->text);
     return d;
   }
 
   // expr
-  Declare Parser::ConsumeDeclare() {
+  Declare* Parser::ConsumeDeclare() {
     if (Accept(TOKEN_DATA_TYPE)) {
       return ConsumeDataTypeDeclare();
     } else if (Accept(TOKEN_ID)) {
       return ConsumeEnumDeclare();
     } else {
       message.Runtime("syntax error.");
-      RightValue rv(TYPE_NULL, EmptyToken);
-      Declare d(TYPE_NULL, EmptyToken, rv);
+      RightValue* rv = new RightValue(TYPE_NULL, nullptr);
+      Declare* d = new Declare(TYPE_NULL, nullptr, rv);
       return d;
     }
   }
 
-  Declare Parser::ConsumeDataTypeDeclare() {
-    Token id = tokenizer->Current();
+  Declare* Parser::ConsumeDataTypeDeclare() {
+    Token* id = CloneToken(&tokenizer->Current());
     string type = PreviousText();
 
     Expect(TOKEN_ID);
@@ -184,7 +181,7 @@ namespace compiler {
     // value optional support
     Expect(TOKEN_ASSIGN);
 
-    Token dvt = tokenizer->Current();
+    Token* dvt = CloneToken(&tokenizer->Current());
     string value = CurrentText();
     DataType data_type;
 
@@ -194,98 +191,98 @@ namespace compiler {
         && value != ReservedWordMap[RESERVED_TRUE]) {
         message.Runtime("expect true or false");
       } else {
-        descriptor->AddDataTypes(TYPE_BOOL);
+        generator->descriptor->AddDataTypes(TYPE_BOOL);
         Next();
       }
     } else if (type == ReservedWordMap[RESERVED_FLOAT]) {
       data_type = TYPE_FLOAT;
-      descriptor->AddDataTypes(TYPE_FLOAT);
+      generator->descriptor->AddDataTypes(TYPE_FLOAT);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_DOUBLE]) {
       data_type = TYPE_DOUBLE;
-      descriptor->AddDataTypes(TYPE_DOUBLE);
+      generator->descriptor->AddDataTypes(TYPE_DOUBLE);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_INT32]) {
       data_type = TYPE_INT32;
-      descriptor->AddDataTypes(TYPE_INT32);
+      generator->descriptor->AddDataTypes(TYPE_INT32);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_INT64]) {
       data_type = TYPE_INT64;
-      descriptor->AddDataTypes(TYPE_INT64);
+      generator->descriptor->AddDataTypes(TYPE_INT64);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_UINT32]) {
       data_type = TYPE_UINT32;
-      descriptor->AddDataTypes(TYPE_UINT32);
+      generator->descriptor->AddDataTypes(TYPE_UINT32);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_UINT64]) {
       data_type = TYPE_UINT64;
-      descriptor->AddDataTypes(TYPE_UINT64);
+      generator->descriptor->AddDataTypes(TYPE_UINT64);
 
       Expect(TOKEN_DIGIT);
     } else if (type == ReservedWordMap[RESERVED_STRING]) {
       data_type = TYPE_STRING;
-      descriptor->AddDataTypes(TYPE_STRING);
+      generator->descriptor->AddDataTypes(TYPE_STRING);
 
       Expect(TOKEN_LETTER);
     }
 
-    RightValue dv(data_type, dvt);
-    Declare declare(data_type, id, dv);
+    RightValue* dv = new RightValue(data_type, dvt);
+    Declare* declare = new Declare(data_type, id, dv);
     return declare;
   }
 
-  Declare Parser::ConsumeEnumDeclare() {
-    Token eid = token;
+  Declare* Parser::ConsumeEnumDeclare() {
+    Token* eid = CloneToken(token);
     Expect(TOKEN_ID);
-    Token id = token;
+    Token* id = CloneToken(token);
     Expect(TOKEN_ASSIGN);
     Expect(TOKEN_ID);
-    Token ei = token;
+    Token* ei = CloneToken(token);
     Expect(TOKEN_CONNECTION);
     Expect(TOKEN_ID);
-    Token ep = token;
+    Token* ep = CloneToken(token);
 
-    EnumValue v(ei, ep);
-    Declare declare(TYPE_ENUM, id, eid, v);
-
+    EnumValue* v = new EnumValue(ei, ep);
+    Declare* declare = new Declare(TYPE_ENUM, id, eid, v);
     return declare;
   }
 
   //
   // stmt -> enum
-  EnumProperty Parser::ConsumeEnumProperty() {
+  EnumProperty* Parser::ConsumeEnumProperty() {
     Expect(TOKEN_ID);
-    Token id = token;
+    Token* id = CloneToken(token);
 
     if (Accept(TOKEN_ASSIGN)) {
       Expect(TOKEN_DIGIT);
-      RightValue value(TYPE_INT32, token);
-      EnumProperty property(id, value);
+      RightValue* value = new RightValue(TYPE_INT32, CloneToken(token));
+      EnumProperty* property = new EnumProperty(id, value);
       return property;
     }
 
-    EnumProperty property(id);
+    EnumProperty* property = new EnumProperty(id);
     return property;
   }
 
-  Enum Parser::ConsumeEnum () {
+  Enum* Parser::ConsumeEnum () {
     Expect(TOKEN_ENUM);
     Expect(TOKEN_ID);
-    Token id = token;
+    Token* id = CloneToken(token);
     Expect(TOKEN_LEFT_BRACE);
 
-    Enum e(id);
+    Enum* e = new Enum(id);
 
     do {
-      e.properties.push_back(ConsumeEnumProperty());
+      e->properties.push_back(ConsumeEnumProperty());
     } while (Accept(TOKEN_COMMA));
 
     Expect(TOKEN_RIGHT_BRACE);
+
     return e;
   }
 }; // compiler
