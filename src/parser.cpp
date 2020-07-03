@@ -13,39 +13,16 @@ namespace reviser {
 namespace compiler {
   //
   // public
-  Parser::Parser(Tokenizer* tokenizer, CodeGenerator* generator,
-    CodeGeneratorType generator_type, Printer* printer)
+  Parser::Parser(Tokenizer* tokenizer, CodeGenerator* generator, Printer* printer)
     : token(nullptr),
       message("parser"),
       tokenizer(tokenizer),
       generator(generator),
-      generator_type(generator_type),
       printer(printer) {}
 
   Parser::~Parser() {}
 
   void Parser::Program() {
-    switch (generator_type) {
-      case JavaScript:
-        ProgramByGenerator<JavaScriptGenerator>(static_cast<JavaScriptGenerator*>(generator));
-        break;
-
-      case TypeScript:
-        ProgramByGenerator<TypeScriptGenerator>(static_cast<TypeScriptGenerator*>(generator));
-        break;
-
-      case Default:
-        ProgramByGenerator<CodeGenerator>(static_cast<CodeGenerator*>(generator));
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  template<typename T> void Parser::ProgramByGenerator(T* generator) {
-    static_assert(is_base_of<CodeGenerator, T>::value, "generator must a CodeGenerator child class");
-
     Accept(TOKEN_CODE_START);
 
     do {

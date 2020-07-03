@@ -63,8 +63,9 @@ int main(int args, char** argv) {
 
   Tokenizer tokenizer(input);
 
-  // Parser parser(&tokenizer, &javascript, JavaScript, &printer);
-  Parser parser(&tokenizer, &typescript, TypeScript, &printer);
+  // Parser parser(&tokenizer, &javascript, &printer);
+  Parser parser(&tokenizer, &typescript, &printer);
+  // Parser parser(&tokenizer, &generator, &printer);
 
   parser.Program();
 

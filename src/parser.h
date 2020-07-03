@@ -35,7 +35,6 @@ namespace compiler {
     Printer* printer;
 
     Message message;
-    CodeGeneratorType generator_type;
 
     bool Accept(TokenType type);
     void Expect(TokenType type);
@@ -66,10 +65,8 @@ namespace compiler {
     EnumProperty* ConsumeEnumProperty();
     Enum* ConsumeEnum();
 
-    template<typename T> void ProgramByGenerator(T* generator);
-
   public:
-    Parser(Tokenizer*, CodeGenerator*, CodeGeneratorType, Printer*);
+    Parser(Tokenizer*, CodeGenerator*, Printer*);
     ~Parser();
     void Program();
   };

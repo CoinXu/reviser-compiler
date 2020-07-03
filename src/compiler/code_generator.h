@@ -18,12 +18,6 @@ using namespace std;
 
 namespace reviser {
 namespace compiler {
-  enum CodeGeneratorType {
-    JavaScript,
-    TypeScript,
-    Default
-  };
-
   class CodeGenerator {
   protected:
     enum StmtSeqItemType {
@@ -42,13 +36,12 @@ namespace compiler {
 
   public:
     Descriptor* descriptor;
-    string StmtStruct(Struct*);
-    string StmtEnum(Enum*);
+    virtual string StmtStruct(Struct*);
+    virtual string StmtEnum(Enum*);
+    virtual string Generate();
 
     void AddStmtStruct(Struct*);
     void AddStmtEnum(Enum*);
-
-    string Generate();
 
     CodeGenerator();
     ~CodeGenerator();
