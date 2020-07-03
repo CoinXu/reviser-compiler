@@ -60,7 +60,7 @@ namespace compiler {
       }
     }
 
-    string code = indent + "var " + node->id->text + " = (function() {\n";
+    string code = indent + "const " + node->id->text + " = (function() {\n";
 
     for (string en: enums) {
       code = code + en;

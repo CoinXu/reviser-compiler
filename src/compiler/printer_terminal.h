@@ -8,7 +8,7 @@
 
 namespace reviser {
 namespace compiler {
-  class PrinterTerminal : Printer {
+  class PrinterTerminal : public Printer {
   public:
     bool Print(std::string message);
 

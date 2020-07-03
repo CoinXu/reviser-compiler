@@ -14,12 +14,13 @@ namespace compiler {
   //
   // public
   Parser::Parser(Tokenizer* tokenizer, CodeGenerator* generator,
-    CodeGeneratorType generator_type)
-    : tokenizer(tokenizer),
+    CodeGeneratorType generator_type, Printer* printer)
+    : token(nullptr),
       message("parser"),
+      tokenizer(tokenizer),
       generator(generator),
-      token(nullptr),
-      generator_type(generator_type) {}
+      generator_type(generator_type),
+      printer(printer) {}
 
   Parser::~Parser() {}
 
@@ -61,7 +62,7 @@ namespace compiler {
       }
     } while (!Accept(TOKEN_CODE_END));
 
-    message.Info(generator->Generate());
+    printer->Print(generator->Generate());
   }
 
   Token* Parser::CloneToken(const Token* t) {

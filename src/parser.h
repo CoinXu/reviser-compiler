@@ -19,6 +19,7 @@
 #include <compiler/javascript/javascript_generator.h>
 #include <compiler/typescript/typescript_generator.h>
 #include <compiler/descriptor.h>
+#include <compiler/printer.h>
 
 using namespace std;
 using namespace reviser::message;
@@ -31,6 +32,7 @@ namespace compiler {
     Tokenizer* tokenizer;
     CodeGenerator* generator;
     Token* token;
+    Printer* printer;
 
     Message message;
     CodeGeneratorType generator_type;
@@ -67,7 +69,7 @@ namespace compiler {
     template<typename T> void ProgramByGenerator(T* generator);
 
   public:
-    Parser(Tokenizer*, CodeGenerator*, CodeGeneratorType);
+    Parser(Tokenizer*, CodeGenerator*, CodeGeneratorType, Printer*);
     ~Parser();
     void Program();
   };

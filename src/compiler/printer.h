@@ -13,10 +13,7 @@ namespace reviser {
 namespace compiler {
   class Printer {
   public:
-    bool Print(std::string message);
-
-    Printer();
-    ~Printer();
+    virtual bool Print(std::string message) = 0;
   };
 }; // reviser
 }; // compiler

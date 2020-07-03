@@ -14,6 +14,7 @@
 #include <fstream>
 
 #include <parser.h>
+#include <compiler/printer_terminal.h>
 
 using namespace reviser::compiler;
 using namespace reviser::message;
@@ -58,10 +59,11 @@ int main(int args, char** argv) {
   JavaScriptGenerator javascript;
   TypeScriptGenerator typescript;
   CodeGenerator generator;
+  PrinterTerminal printer;
 
   Tokenizer tokenizer(input);
 
-  Parser parser(&tokenizer, &javascript, JavaScript);
+  Parser parser(&tokenizer, &javascript, JavaScript, &printer);
   // Parser parser(&tokenizer, &typescript, &descriptor, TypeScript);
 
   parser.Program();
