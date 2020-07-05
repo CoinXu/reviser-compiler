@@ -143,6 +143,14 @@ template<typename CharacterClass> inline bool Tokenizer::InCharacters() {
   return CharacterClass::InClass(peek);
 }
 
+bool Tokenizer::TryConsume(char c) {
+  if (peek == c) {
+    NextChar();
+    return true;
+  }
+  return false;
+}
+
 bool Tokenizer::TypeIdentifier(const std::string id) {
   auto result = std::find(std::begin(type), std::end(type), id);
   return result != std::end(type);
@@ -151,6 +159,42 @@ bool Tokenizer::TypeIdentifier(const std::string id) {
 bool Tokenizer::DecoraterIdentifier(const std::string id) {
   auto result = std::find(std::begin(decorater), std::end(decorater), id);
   return result != std::end(decorater);
+}
+
+void Tokenizer::ConsumeComment() {
+  while (InCharacters<CharDivide>()) {
+    NextChar();
+
+    if (InCharacters<CharDivide>()) {
+      // line comment
+      TryConsumeCharacters<NewLine>();
+      NextChar();
+    } else if (InCharacters<CharAsterisk>()) {
+      // block comment
+      NextChar();
+
+      while (true) {
+        TryConsumeCharacters<CharAsterisk>();
+        NextChar();
+        if (InCharacters<CharDivide>() || peek == EOF) {
+          NextChar();
+          break;
+        }
+      }
+    }
+
+    ConsumeCharacters<Whitespace>();
+  }
+}
+
+void Tokenizer::ConsumeNumber() {
+  // 整数位
+  ConsumeCharacters<CharDigit>();  
+
+  // 小数位
+  if (TryConsume('.')) {
+    ConsumeCharacters<CharDigit>();
+  }
 }
 
 // public
@@ -190,32 +234,6 @@ void Tokenizer::NextChar() {
 
   peek = input.at(pos);
   pos++;
-}
-
-void Tokenizer::ConsumeComment() {
-  while (InCharacters<CharDivide>()) {
-    NextChar();
-
-    if (InCharacters<CharDivide>()) {
-      // sigle line comment
-      TryConsumeCharacters<NewLine>();
-      NextChar();
-    } else if (InCharacters<CharAsterisk>()) {
-      // block comment
-      NextChar();
-
-      while (true) {
-        TryConsumeCharacters<CharAsterisk>();
-        NextChar();
-        if (InCharacters<CharDivide>() || peek == EOF) {
-          NextChar();
-          break;
-        }
-      }
-    }
-
-    ConsumeCharacters<Whitespace>();
-  }
 }
 
 bool Tokenizer::Next() {
@@ -258,7 +276,7 @@ bool Tokenizer::Next() {
     default:
       if (InCharacters<CharDigit>()) {
         current.type = TOKEN_DIGIT;
-        ConsumeCharacters<CharDigit>();
+        ConsumeNumber();
         current.text = input.substr(start_pos - 1, pos - start_pos);
       } else if (InCharacters<Identifier>()) {
         ConsumeCharacters<Identifier>();
