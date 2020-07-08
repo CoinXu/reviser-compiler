@@ -14,14 +14,19 @@
 #include <fstream>
 
 #include <parser.h>
+#include <path.h>
 #include <compiler/printer_terminal.h>
 
+using namespace reviser;
 using namespace reviser::compiler;
 using namespace reviser::message;
 
-int main(int args, char** argv) {
+int main(int args, char** argv, char** envp) {
 
   Message logger("main");
+
+  const string pwd = string(getenv("PWD"));
+  logger.Debug("pwd: " + pwd);
 
   logger.Info("args: " + to_string(args));
   string javascript_output;
@@ -41,12 +46,17 @@ int main(int args, char** argv) {
     }
   }
 
+
+  file_name = path::join(pwd, file_name);
+
   if (file_name.size() == 0) {
     logger.Info("no entry source file");
     return 1;
   }
 
   logger.Info("open file: " + file_name);
+
+  return 0;
 
   // read file
   ifstream is(file_name, ifstream::binary);
