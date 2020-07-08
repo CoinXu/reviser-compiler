@@ -27,7 +27,7 @@ make uninstall
      int32 age = 0;
    }
    ```
-2. execute `reviserc example.dr` will output code to the terminal.
+2. execute `reviserc --ts-output=tsoutput example.dr` will output code to the terminal.
 
 # TODO
 + [x] support comment.
@@ -35,7 +35,7 @@ make uninstall
 + [x] compile to typescript.
 + [ ] support `enum`, `array<T>`, `struct` types.
 + [ ] `decorator` allow parameters.
-+ [ ] check data type.
++ [x] check data type.
 + [x] support nested statement
 + [ ] support scope.
 + [ ] support package & import.
