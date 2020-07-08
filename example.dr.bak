@@ -1,0 +1,47 @@
+// sigle line comment
+/*
+  block comment
+*/
+enum Color /* 11 */ {
+  // Red
+  Red,
+  Pink = 100,
+  // Pink
+  Blue = 200 // blue
+  /* foo */
+}
+
+struct Foo {
+  enum Type {
+    foo,
+    bar,
+    baz = 10
+  }
+
+  Type type = Type.foo;
+  required Color bar = Color.Red;
+
+  /**
+   *
+   */
+  struct Bar {
+    enum BarType {
+      Foo
+      // Foo
+    }
+
+    struct Baz {
+      optional BarType baz = BarType.Foo;
+    }
+
+    BarType bar = BarType.Foo;
+    // Bar
+    bool baz = true;
+  }
+
+  required string foo = "foo";
+  bool baz = true; /* Bar */
+  int32 age = 10;
+  int64 i64 = 11;
+  uint32 ui32  = 123;
+}

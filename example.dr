@@ -12,36 +12,10 @@ enum Color /* 11 */ {
 }
 
 struct Foo {
-  enum Type {
-    foo,
-    bar,
-    baz = 10
-  }
-
-  Type type = Type.foo;
-  required Color bar = Color.Red;
-
-  /**
-   *
-   */
-  struct Bar {
-    enum BarType {
-      Foo
-      // Foo
-    }
-
-    struct Baz {
-      optional BarType baz = BarType.Foo;
-    }
-
-    BarType bar = BarType.Foo;
-    // Bar
-    bool baz = true;
-  }
-
-  required string foo = "foo";
-  bool baz = true; /* Bar */
-  int32 age = 10;
-  int64 i64 = 11;
-  uint32 ui32  = 123;
+  required bool baz = true;
+  required Color c0 = Color.Red;
+  required Color c1 = Color.Red;
+  int32 i32 = 123;
+  double d = 123.0123;
+  float f = 123.123;
 }

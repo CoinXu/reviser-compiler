@@ -15,20 +15,32 @@ using namespace std;
 
 namespace reviser {
 namespace compiler {
+  enum DeclareType {
+    DECLARE_ENUM,
+    DECLARE_STRUCT,
+    DECLARE_INTERFACE
+  };
+
   class Descriptor {
+  public:
+    struct VariableDeclare {
+      string id;
+      DeclareType type;
+    };
+
   private:
     vector<string> decorators_;
-    vector<string> global_variables_;
+    vector<VariableDeclare> global_variables_;
     vector<DataType> data_types_;
 
   public:
     vector<string> Decorators();
-    vector<string> GlobalVariables();
+    vector<VariableDeclare> GlobalVariables();
     vector<DataType> DataTypes();
 
     void AddDataTypes(DataType type);
     void AddDecorator(string decorator);
-    void AddGlobalVariable(string variable);
+    void AddGlobalVariable(string variable, DeclareType type);
 
     Descriptor();
     ~Descriptor();

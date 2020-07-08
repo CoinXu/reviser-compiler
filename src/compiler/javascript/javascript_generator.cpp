@@ -69,9 +69,9 @@ namespace compiler {
     }
 
     code += "export {\n";
-    vector<string> variables = descriptor->GlobalVariables();
-    for (vector<string>::iterator it = begin(variables); it != end(variables); it++) {
-      code += JavaScriptCommon::Indent(1) + *it + (*it == variables.back() ? "\n" : ",\n");
+    vector<Descriptor::VariableDeclare> variables = descriptor->GlobalVariables();
+    for (vector<Descriptor::VariableDeclare>::iterator it = begin(variables); it != end(variables); it++) {
+      code += JavaScriptCommon::Indent(1) + (*it).id + (next(it) == end(variables) ? "\n" : ",\n");
     }
 
     return code += "}";

@@ -124,8 +124,15 @@ namespace compiler {
     // 当前字符是否是某个字符集中的字符
     template<typename CharacterClass> inline bool InCharacters();
 
+    bool TryConsume(char c);
+
     bool TypeIdentifier(const std::string id);
     bool DecoraterIdentifier(const std::string id);
+
+    void ConsumeComment();
+
+    // 处理数字，包括小数
+    void ConsumeNumber();
 
   public:
     Tokenizer(std::string input);
@@ -134,7 +141,6 @@ namespace compiler {
     const Token& Current();
     const Token& Previous();
 
-    void ConsumeComment();
     void Printf(const Token* token);
     void PrintPoint(const std::string mark);
     void NextChar();
