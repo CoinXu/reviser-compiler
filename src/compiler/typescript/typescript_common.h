@@ -13,10 +13,37 @@
 
 namespace reviser {
 namespace compiler {
+  enum TypeScriptDecoraterType {
+    DECORATER_CALLBLE,
+    DECORATER_FUNCTIONAL
+  };
+
+  enum TypeScriptDecoraterArgDataType {
+    DECORATER_ARG_TYPE_NUMBER,
+    DECORATER_ARG_TYPE_STRING,
+    DECORATER_ARG_TYPE_JSON
+  };
+
+  struct TypeScriptDecoraterArgDefinition {
+    TypeScriptDecoraterArgDataType type;
+    bool optional;
+  };
+
+  struct TypeScriptDecoraterDefinition {
+    std::string name;
+    TypeScriptDecoraterType type;
+    vector<TypeScriptDecoraterArgDefinition> args;
+  };
+
+
   extern std::map<std::string, std::string> TypeScriptDecoraterNameMap;
   extern std::map<DataType, std::string> TypeScriptDataTypeDecoraterNameMap;
   extern std::map<DataType, std::string> TypeScriptDataTypeTranslatorNameMap;
   extern std::map<DataType, std::string> TypeScriptDataTypeMap;
+
+  extern std::map<std::string, TypeScriptDecoraterDefinition> TypeScriptBuildInDefinitionMap;
+  extern std::map<DataType, TypeScriptDecoraterDefinition> TypeScriptDecoraterDefinitionMap;
+  extern std::map<DataType, TypeScriptDecoraterDefinition> TypeScriptDataTYpeDefinitionMap;
 
   class TypeScriptCommon {
   public:
@@ -30,6 +57,7 @@ namespace compiler {
       return s;
     }
   };
+
 };
 };
 

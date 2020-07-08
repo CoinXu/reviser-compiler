@@ -11,20 +11,39 @@
 
 namespace reviser {
 namespace compiler {
+  std::map<std::string, TypeScriptDecoraterDefinition> TypeScriptBuildInDefinitionMap = {
+    {
+      ReservedWordMap[RESERVED_OPTIONAL],
+      {
+        "Optional",
+        DECORATER_FUNCTIONAL,
+        vector<TypeScriptDecoraterArgDefinition>({})
+      }
+    },
+    {
+      ReservedWordMap[RESERVED_REQUIRED],
+      {
+        "Required",
+        DECORATER_FUNCTIONAL,
+        vector<TypeScriptDecoraterArgDefinition>({})
+      }
+    }
+  };
+
   std::map<string, string> TypeScriptDecoraterNameMap = {
-    { ReservedWordMap[RESERVED_OPTIONAL], "Optional()" },
-    { ReservedWordMap[RESERVED_REQUIRED], "Required()" }
+    { ReservedWordMap[RESERVED_OPTIONAL], "Optional" },
+    { ReservedWordMap[RESERVED_REQUIRED], "Required" }
   };
 
   std::map<DataType, string> TypeScriptDataTypeDecoraterNameMap = {
-    { TYPE_BOOL, "TypeBoolean()" },
-    { TYPE_FLOAT, "TypeFloat()" },
-    { TYPE_DOUBLE, "TypeDouble()" },
-    { TYPE_INT32, "TypeInt32()" },
-    { TYPE_INT64, "TypeInt64()" },
-    { TYPE_UINT32, "TypeUnInt32()" },
-    { TYPE_UINT64, "TypeUnInt64()" },
-    { TYPE_STRING, "TypeString()" }
+    { TYPE_BOOL, "TypeBoolean" },
+    { TYPE_FLOAT, "TypeFloat" },
+    { TYPE_DOUBLE, "TypeDouble" },
+    { TYPE_INT32, "TypeInt32" },
+    { TYPE_INT64, "TypeInt64" },
+    { TYPE_UINT32, "TypeUnInt32" },
+    { TYPE_UINT64, "TypeUnInt64" },
+    { TYPE_STRING, "TypeString" }
   };
 
   std::map<DataType, string> TypeScriptDataTypeTranslatorNameMap = {

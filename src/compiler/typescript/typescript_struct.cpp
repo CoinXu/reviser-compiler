@@ -162,12 +162,18 @@ namespace compiler {
   }
 
   string TypeScriptDecorater::Generate() {
-    if (TypeScriptDecoraterNameMap.find(node->id->text) == TypeScriptDecoraterNameMap.end()) {
+    if (TypeScriptBuildInDefinitionMap.find(node->id->text) == TypeScriptBuildInDefinitionMap.end()) {
       return "";
     }
+    // if (TypeScriptDecoraterNameMap.find日立(node->id->text) == TypeScriptDecoraterNameMap.end()) {
+    //   return "";
+    // }
+
+
+    printf("size: %lu\n", TypeScriptBuildInDefinitionMap.at(node->id->text).args.size());
 
     return TypeScriptCommon::Indent(node->level + 1)
-      + "@" + TypeScriptDecoraterNameMap.at(node->id->text) + "\n";
+      + "@" + TypeScriptBuildInDefinitionMap.at(node->id->text).name + "\n";
   }
 
 }; // reviser
