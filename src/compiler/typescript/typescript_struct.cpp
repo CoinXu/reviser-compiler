@@ -105,19 +105,18 @@ namespace compiler {
 
   string TypeScriptStructProperty::Generate() {
     string code;
-
     for (Decorater* d: node->decoraters) {
       TypeScriptDecorater decorater(d, parent);
       code = code + decorater.Generate();
     }
 
     string type;
-    if (TypeScriptDataTypeDecoraterNameMap.find(node->declare->type) != TypeScriptDataTypeDecoraterNameMap.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeDecoraterNameMap.at(node->declare->type) + "\n";
-    }
-
     if (TypeScriptDataTypeTranslatorNameMap.find(node->declare->type) != TypeScriptDataTypeTranslatorNameMap.end()) {
       type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeTranslatorNameMap.at(node->declare->type) + "\n";
+    }
+
+    if (TypeScriptDataTypeDecoraterNameMap.find(node->declare->type) != TypeScriptDataTypeDecoraterNameMap.end()) {
+      type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeDecoraterNameMap.at(node->declare->type) + "\n";
     }
 
     TypeScriptDeclare declare(node->declare);

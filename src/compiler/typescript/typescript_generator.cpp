@@ -59,7 +59,6 @@ namespace compiler {
     // decorators
     string code_decorator = "import {";
     vector<string> decorators = descriptor->Decorators();
-
     for (vector<string>::iterator it = begin(decorators); it != end(decorators); it++ ) {
       if (TypeScriptDecoraterNameMap.find(*it) == TypeScriptDecoraterNameMap.end()) {
         message.Runtime("undefined error: " + *it + " not defined in decorators.");
@@ -71,7 +70,6 @@ namespace compiler {
     // data type
     string code_data_type = "import {";
     vector<DataType> types = descriptor->DataTypes();
-
     for (vector<DataType>::iterator it = begin(types); it != end(types); it++) {
       if (TypeScriptDataTypeDecoraterNameMap.find(*it) == TypeScriptDataTypeDecoraterNameMap.end()) {
         message.Runtime("undefined error: " + DataTypeName.at(*it) + " not defined in data types.");
