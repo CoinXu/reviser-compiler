@@ -22,13 +22,11 @@ using namespace reviser::compiler;
 using namespace reviser::message;
 
 int main(int args, char** argv, char** envp) {
-
+  const string pwd = string(getenv("PWD"));
   Message logger("main");
 
-  const string pwd = string(getenv("PWD"));
-  logger.Debug("pwd: " + pwd);
-
   logger.Info("args: " + to_string(args));
+
   string javascript_output;
   string typescript_output;
   string file_name;
@@ -46,8 +44,9 @@ int main(int args, char** argv, char** envp) {
     }
   }
 
-
-  file_name = path::join(pwd, file_name);
+  if (!path::absolute(file_name)) {
+    file_name = path::join(pwd, file_name);
+  }
 
   if (file_name.size() == 0) {
     logger.Info("no entry source file");
@@ -55,8 +54,6 @@ int main(int args, char** argv, char** envp) {
   }
 
   logger.Info("open file: " + file_name);
-
-  return 0;
 
   // read file
   ifstream is(file_name, ifstream::binary);
