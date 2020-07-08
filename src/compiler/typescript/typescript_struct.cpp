@@ -116,8 +116,12 @@ namespace compiler {
       type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeDecoraterNameMap.at(node->declare->type) + "\n";
     }
 
+    if (TypeScriptDataTypeTranslatorNameMap.find(node->declare->type) != TypeScriptDataTypeTranslatorNameMap.end()) {
+      type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeTranslatorNameMap.at(node->declare->type) + "\n";
+    }
+
     TypeScriptDeclare declare(node->declare);
-    return code + type + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
+    return type + code + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
   }
 
   //

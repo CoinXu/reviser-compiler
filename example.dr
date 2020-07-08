@@ -14,7 +14,7 @@ enum Color /* 11 */ {
 struct Foo {
   required bool baz = true;
   required Color c0 = Color.Red;
-  Color c1 = Color.Red;
+  required Color c1 = Color.Red;
   int32 i32 = 123;
   double d = 123.0123;
   float f = 123.123;

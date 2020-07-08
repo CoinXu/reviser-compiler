@@ -28,11 +28,11 @@ namespace compiler {
     do {
       if (LookAtType(TOKEN_STRUCT)) {
         Struct* s = ConsumeStruct();
-        generator->descriptor->AddGlobalVariable(s->id->text);
+        generator->descriptor->AddGlobalVariable(s->id->text, DECLARE_STRUCT);
         generator->AddStmtStruct(s);
       } else if (LookAtType(TOKEN_ENUM)) {
         Enum* s = ConsumeEnum();
-        generator->descriptor->AddGlobalVariable(s->id->text);
+        generator->descriptor->AddGlobalVariable(s->id->text, DECLARE_ENUM);
         generator->AddStmtEnum(s);
       } else {
         Next();

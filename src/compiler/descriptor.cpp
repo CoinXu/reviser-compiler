@@ -25,7 +25,7 @@ namespace compiler {
     return decorators_;
   }
 
-  vector<string> Descriptor::GlobalVariables() {
+  vector<Descriptor::VariableDeclare> Descriptor::GlobalVariables() {
     return global_variables_;
   }
 
@@ -39,10 +39,13 @@ namespace compiler {
     }
   }
 
-  void Descriptor::AddGlobalVariable(string variable) {
-    if (!VectorIncludeItem<string>(&global_variables_, &variable)) {
-      global_variables_.push_back(variable);
+  void Descriptor::AddGlobalVariable(string variable, DeclareType type) {
+    for (auto it: global_variables_) {
+      if (it.id == variable) {
+        return;
+      }
     }
+    global_variables_.push_back({ variable, type });
   }
 
   void Descriptor::AddDataTypes(DataType type) {
