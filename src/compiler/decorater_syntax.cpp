@@ -36,8 +36,8 @@ namespace compiler {
     { TYPE_DOUBLE, { "ToDouble", SYNTAX_FUNCTION, vector<DecoraterArg>({}) } },
     { TYPE_INT32, { "ToInt32", SYNTAX_FUNCTION, vector<DecoraterArg>({}) } },
     { TYPE_INT64, { "ToInt64", SYNTAX_FUNCTION, vector<DecoraterArg>({}) } },
-    { TYPE_UINT32, { "ToUnUnInt32", SYNTAX_FUNCTION, vector<DecoraterArg>({}) } },
-    { TYPE_UINT64, { "ToUnUnInt64", SYNTAX_FUNCTION, vector<DecoraterArg>({}) } },
+    { TYPE_UINT32, { "ToUnInt32", SYNTAX_FUNCTION, vector<DecoraterArg>({}) } },
+    { TYPE_UINT64, { "ToUnInt64", SYNTAX_FUNCTION, vector<DecoraterArg>({}) } },
     { TYPE_STRING, { "ToString", SYNTAX_FUNCTION, vector<DecoraterArg>({}) } }
   };
 };

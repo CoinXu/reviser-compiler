@@ -12,7 +12,7 @@
 namespace reviser {
 namespace compiler {
   std::map<DataType, string> TypeScriptDataTypeMap = {
-    { TYPE_BOOL, "number" },
+    { TYPE_BOOL, "boolean" },
     { TYPE_FLOAT, "number" },
     { TYPE_DOUBLE, "number" },
     { TYPE_INT32, "number" },

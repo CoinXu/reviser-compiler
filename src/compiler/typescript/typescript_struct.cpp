@@ -30,7 +30,7 @@ namespace compiler {
     string indent_next = TypeScriptCommon::Indent(node->level + 1);
     string def_interface("interface Struct" + node->id->text + " {\n");
 
-    vector<string> inters;
+    // vector<string> inters;
     vector<string> properties;
     vector<string> structures;
     vector<string> enums;
@@ -44,8 +44,8 @@ namespace compiler {
           TypeScriptStructProperty g(node->properties.at((*it).index), this);
           properties.push_back(g.Generate() + new_line);
 
-          TypeScriptStructInterfaceProperty i(node->properties.at((*it).index), this);
-          inters.push_back(i.Generate() + "\n");
+          // TypeScriptStructInterfaceProperty i(node->properties.at((*it).index), this);
+          // inters.push_back(i.Generate() + "\n");
           break;
         }
 
@@ -66,13 +66,13 @@ namespace compiler {
       }
     }
 
-    string code = indent + "interface Struct" + node->id->text + " {\n";
-    for (string i : inters) {
-      code = code + i;
-    }
-    code = code + indent + "};\n\n";
+    // string code = indent + "interface Struct" + node->id->text + " {\n";
+    // for (string i : inters) {
+    //   code = code + i;
+    // }
+    // code = code + indent + "};\n\n";
 
-    code = code + indent + "const " + node->id->text + " = (function() {\n";
+    string code = indent + "const " + node->id->text + " = (function() {\n";
     for (string en: enums) {
       code = code + en;
     }
@@ -119,7 +119,8 @@ namespace compiler {
     }
 
     if (DecoraterSyntaxDataType.find(node->declare->type) != DecoraterSyntaxDataType.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1) + "@"
+      type += TypeScriptCommon::Indent(node->level + 1)
+        + "@"
         + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
         + "\n";
     }
