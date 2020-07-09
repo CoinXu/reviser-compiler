@@ -5,6 +5,7 @@
  */
 
 #include <compiler/typescript/typescript_expr.h>
+#include <compiler/typescript/typescript_common.h>
 
 namespace reviser {
 namespace compiler {
@@ -60,7 +61,16 @@ namespace compiler {
       value = rv.Generate();
     }
 
-    return node->id->text + " = " + value;
+    string type;
+    if (node->type == TYPE_ENUM) {
+      type = node->ev->id->text;
+    } else if (TypeScriptDataTypeMap.find(node->type) != TypeScriptDataTypeMap.end()) {
+      type = TypeScriptDataTypeMap[node->type];
+    } else {
+      type = "any";
+    }
+
+    return "public " + node->id->text + ": " + type + " = " + value;
   }
 }; // reviser
 }; // compiler
