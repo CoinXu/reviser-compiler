@@ -111,16 +111,16 @@ namespace compiler {
     }
 
     string type;
-    if (TypeScriptTranslatorDefinition.find(node->declare->type) != TypeScriptTranslatorDefinition.end()) {
+    if (DecoraterSyntaxTranslator.find(node->declare->type) != DecoraterSyntaxTranslator.end()) {
       type += TypeScriptCommon::Indent(node->level + 1)
         + "@"
-        + TypeScriptCommon::DecoraterDefinition(TypeScriptTranslatorDefinition.at(node->declare->type))
+        + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
         + "\n";
     }
 
-    if (TypeScriptDataTypeDefinition.find(node->declare->type) != TypeScriptDataTypeDefinition.end()) {
+    if (DecoraterSyntaxDataType.find(node->declare->type) != DecoraterSyntaxDataType.end()) {
       type += TypeScriptCommon::Indent(node->level + 1) + "@"
-        + TypeScriptCommon::DecoraterDefinition(TypeScriptDataTypeDefinition.at(node->declare->type))
+        + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
         + "\n";
     }
 
@@ -167,13 +167,13 @@ namespace compiler {
   }
 
   string TypeScriptDecorater::Generate() {
-    if (TypeScriptBuildInDefinition.find(node->id->text) == TypeScriptBuildInDefinition.end()) {
+    if (DecoraterSyntaxBuildIn.find(node->id->text) == DecoraterSyntaxBuildIn.end()) {
       return "";
     }
 
     return TypeScriptCommon::Indent(node->level + 1)
       + "@"
-      + TypeScriptCommon::DecoraterDefinition(TypeScriptBuildInDefinition.at(node->id->text))
+      + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxBuildIn.at(node->id->text))
       + "\n";
   }
 
