@@ -11,50 +11,45 @@
 
 namespace reviser {
 namespace compiler {
-  std::map<std::string, TypeScriptDecoraterDefinition> TypeScriptBuildInDefinitionMap = {
+  std::map<std::string, TypeScriptDecoraterDefinition> TypeScriptBuildInDefinition = {
     {
       ReservedWordMap[RESERVED_OPTIONAL],
       {
         "Optional",
-        DECORATER_FUNCTIONAL,
-        vector<TypeScriptDecoraterArgDefinition>({})
+        DECORATER_CALLABLE,
+        vector<TypeScriptArgDefinition>({})
       }
     },
     {
       ReservedWordMap[RESERVED_REQUIRED],
       {
         "Required",
-        DECORATER_FUNCTIONAL,
-        vector<TypeScriptDecoraterArgDefinition>({})
+        DECORATER_CALLABLE,
+        vector<TypeScriptArgDefinition>({})
       }
     }
   };
 
-  std::map<string, string> TypeScriptDecoraterNameMap = {
-    { ReservedWordMap[RESERVED_OPTIONAL], "Optional" },
-    { ReservedWordMap[RESERVED_REQUIRED], "Required" }
+  std::map<DataType, TypeScriptDecoraterDefinition> TypeScriptDataTypeDefinition = {
+    { TYPE_BOOL, { "TypeBoolean", DECORATER_CALLABLE, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_FLOAT, { "TypeFloat", DECORATER_CALLABLE, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_DOUBLE, { "TypeDouble", DECORATER_CALLABLE, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_INT32, { "TypeInt32", DECORATER_CALLABLE, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_INT64, { "TypeInt64", DECORATER_CALLABLE, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_UINT32, { "TypeUnInt32", DECORATER_CALLABLE, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_UINT64, { "TypeUnInt64", DECORATER_CALLABLE, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_STRING, { "TypeString", DECORATER_CALLABLE, vector<TypeScriptArgDefinition>({}) } }
   };
 
-  std::map<DataType, string> TypeScriptDataTypeDecoraterNameMap = {
-    { TYPE_BOOL, "TypeBoolean" },
-    { TYPE_FLOAT, "TypeFloat" },
-    { TYPE_DOUBLE, "TypeDouble" },
-    { TYPE_INT32, "TypeInt32" },
-    { TYPE_INT64, "TypeInt64" },
-    { TYPE_UINT32, "TypeUnInt32" },
-    { TYPE_UINT64, "TypeUnInt64" },
-    { TYPE_STRING, "TypeString" }
-  };
-
-  std::map<DataType, string> TypeScriptDataTypeTranslatorNameMap = {
-    { TYPE_BOOL, "ToBoolean" },
-    { TYPE_FLOAT, "ToFloat" },
-    { TYPE_DOUBLE, "ToDouble" },
-    { TYPE_INT32, "ToInt32" },
-    { TYPE_INT64, "ToInt64" },
-    { TYPE_UINT32, "ToUnInt32" },
-    { TYPE_UINT64, "ToUnInt64" },
-    { TYPE_STRING, "ToString" }
+  std::map<DataType, TypeScriptDecoraterDefinition> TypeScriptTranslatorDefinition = {
+    { TYPE_BOOL, { "ToBoolean", DECORATER_FUNCTION, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_FLOAT, { "ToFloat", DECORATER_FUNCTION, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_DOUBLE, { "ToDouble", DECORATER_FUNCTION, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_INT32, { "ToInt32", DECORATER_FUNCTION, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_INT64, { "ToInt64", DECORATER_FUNCTION, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_UINT32, { "ToUnUnInt32", DECORATER_FUNCTION, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_UINT64, { "ToUnUnInt64", DECORATER_FUNCTION, vector<TypeScriptArgDefinition>({}) } },
+    { TYPE_STRING, { "ToString", DECORATER_FUNCTION, vector<TypeScriptArgDefinition>({}) } }
   };
 
   std::map<DataType, string> TypeScriptDataTypeMap = {
@@ -79,10 +74,12 @@ namespace compiler {
     string code_decorator = "import {";
     vector<string> decorators = descriptor->Decorators();
     for (vector<string>::iterator it = begin(decorators); it != end(decorators); it++ ) {
-      if (TypeScriptDecoraterNameMap.find(*it) == TypeScriptDecoraterNameMap.end()) {
+      if (TypeScriptBuildInDefinition.find(*it) == TypeScriptBuildInDefinition.end()) {
         message.Runtime("undefined error: " + *it + " not defined in decorators.");
       }
-      code_decorator += " " + TypeScriptDecoraterNameMap.at(*it) + (next(it) == end(decorators) ? "" : ",");
+      code_decorator += " "
+        + TypeScriptCommon::ImportId(TypeScriptBuildInDefinition.at(*it))
+        + (next(it) == end(decorators) ? "" : ",");
     }
     code_decorator += " } from \"data-reviser\";";
 
@@ -90,15 +87,16 @@ namespace compiler {
     string code_data_type = "import {";
     vector<DataType> types = descriptor->DataTypes();
     for (vector<DataType>::iterator it = begin(types); it != end(types); it++) {
-      if (TypeScriptDataTypeDecoraterNameMap.find(*it) == TypeScriptDataTypeDecoraterNameMap.end()) {
+      if (TypeScriptDataTypeDefinition.find(*it) == TypeScriptDataTypeDefinition.end()) {
         message.Runtime("undefined error: " + DataTypeName.at(*it) + " not defined in data types.");
       }
 
-      if (TypeScriptDataTypeTranslatorNameMap.find(*it) != TypeScriptDataTypeTranslatorNameMap.end()) {
-        code_data_type += " " + TypeScriptDataTypeTranslatorNameMap.at(*it) + ",";
+      if (TypeScriptTranslatorDefinition.find(*it) != TypeScriptTranslatorDefinition.end()) {
+        code_data_type += " " + TypeScriptCommon::ImportId(TypeScriptTranslatorDefinition.at(*it)) + ",";
       }
 
-      code_data_type += " " + TypeScriptDataTypeDecoraterNameMap.at(*it) + (next(it) == end(types) ? "" : ",");
+      code_data_type += " " + TypeScriptCommon::ImportId(TypeScriptDataTypeDefinition.at(*it))
+        + (next(it) == end(types) ? "" : ",");
     }
 
     code_data_type += " } from \"data-reviser\";";

@@ -14,8 +14,8 @@
 namespace reviser {
 namespace compiler {
   enum TypeScriptDecoraterType {
-    DECORATER_CALLBLE,
-    DECORATER_FUNCTIONAL
+    DECORATER_CALLABLE,
+    DECORATER_FUNCTION
   };
 
   enum TypeScriptDecoraterArgDataType {
@@ -24,7 +24,7 @@ namespace compiler {
     DECORATER_ARG_TYPE_JSON
   };
 
-  struct TypeScriptDecoraterArgDefinition {
+  struct TypeScriptArgDefinition {
     TypeScriptDecoraterArgDataType type;
     bool optional;
   };
@@ -32,18 +32,16 @@ namespace compiler {
   struct TypeScriptDecoraterDefinition {
     std::string name;
     TypeScriptDecoraterType type;
-    vector<TypeScriptDecoraterArgDefinition> args;
+    vector<TypeScriptArgDefinition> args;
   };
 
 
-  extern std::map<std::string, std::string> TypeScriptDecoraterNameMap;
   extern std::map<DataType, std::string> TypeScriptDataTypeDecoraterNameMap;
-  extern std::map<DataType, std::string> TypeScriptDataTypeTranslatorNameMap;
   extern std::map<DataType, std::string> TypeScriptDataTypeMap;
 
-  extern std::map<std::string, TypeScriptDecoraterDefinition> TypeScriptBuildInDefinitionMap;
-  extern std::map<DataType, TypeScriptDecoraterDefinition> TypeScriptDecoraterDefinitionMap;
-  extern std::map<DataType, TypeScriptDecoraterDefinition> TypeScriptDataTYpeDefinitionMap;
+  extern std::map<std::string, TypeScriptDecoraterDefinition> TypeScriptBuildInDefinition;
+  extern std::map<DataType, TypeScriptDecoraterDefinition> TypeScriptTranslatorDefinition;
+  extern std::map<DataType, TypeScriptDecoraterDefinition> TypeScriptDataTypeDefinition;
 
   class TypeScriptCommon {
   public:
@@ -55,6 +53,23 @@ namespace compiler {
         s = s + " ";
       }
       return s;
+    }
+
+    const static std::string DecoraterDefinition(TypeScriptDecoraterDefinition def) {
+      switch (def.type) {
+        case DECORATER_FUNCTION:
+          return def.name;
+
+        case DECORATER_CALLABLE:
+          return def.name + "()";
+
+        default:
+          return "";
+      }
+    }
+
+    const static std::string ImportId(TypeScriptDecoraterDefinition def) {
+      return def.name;
     }
   };
 

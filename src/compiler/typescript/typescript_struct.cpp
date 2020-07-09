@@ -111,12 +111,17 @@ namespace compiler {
     }
 
     string type;
-    if (TypeScriptDataTypeTranslatorNameMap.find(node->declare->type) != TypeScriptDataTypeTranslatorNameMap.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeTranslatorNameMap.at(node->declare->type) + "\n";
+    if (TypeScriptTranslatorDefinition.find(node->declare->type) != TypeScriptTranslatorDefinition.end()) {
+      type += TypeScriptCommon::Indent(node->level + 1)
+        + "@"
+        + TypeScriptCommon::DecoraterDefinition(TypeScriptTranslatorDefinition.at(node->declare->type))
+        + "\n";
     }
 
-    if (TypeScriptDataTypeDecoraterNameMap.find(node->declare->type) != TypeScriptDataTypeDecoraterNameMap.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeDecoraterNameMap.at(node->declare->type) + "\n";
+    if (TypeScriptDataTypeDefinition.find(node->declare->type) != TypeScriptDataTypeDefinition.end()) {
+      type += TypeScriptCommon::Indent(node->level + 1) + "@"
+        + TypeScriptCommon::DecoraterDefinition(TypeScriptDataTypeDefinition.at(node->declare->type))
+        + "\n";
     }
 
     TypeScriptDeclare declare(node->declare);
@@ -162,18 +167,14 @@ namespace compiler {
   }
 
   string TypeScriptDecorater::Generate() {
-    if (TypeScriptBuildInDefinitionMap.find(node->id->text) == TypeScriptBuildInDefinitionMap.end()) {
+    if (TypeScriptBuildInDefinition.find(node->id->text) == TypeScriptBuildInDefinition.end()) {
       return "";
     }
-    // if (TypeScriptDecoraterNameMap.find日立(node->id->text) == TypeScriptDecoraterNameMap.end()) {
-    //   return "";
-    // }
-
-
-    printf("size: %lu\n", TypeScriptBuildInDefinitionMap.at(node->id->text).args.size());
 
     return TypeScriptCommon::Indent(node->level + 1)
-      + "@" + TypeScriptBuildInDefinitionMap.at(node->id->text).name + "\n";
+      + "@"
+      + TypeScriptCommon::DecoraterDefinition(TypeScriptBuildInDefinition.at(node->id->text))
+      + "\n";
   }
 
 }; // reviser
