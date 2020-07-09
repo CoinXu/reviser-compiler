@@ -74,11 +74,15 @@ namespace compiler {
     return false;
   }
 
+  void Parser::RuntimeError(string msg = "syntax error") {
+    message.SetLine(tokenizer->Current().start_line);
+    message.SetColumn(tokenizer->Current().column_start);
+    message.Runtime(msg + ": " + tokenizer->Current().text);
+  }
+
   void Parser::Expect(TokenType type) {
     if (!Accept(type)) {
-      message.SetLine(tokenizer->Current().start_line);
-      message.SetColumn(tokenizer->Current().column_start);
-      message.Runtime("syntax error: " + tokenizer->Current().text);
+      RuntimeError("expect token [" + TokenTypeNameMap[type] + "] but receive ");
     }
   }
 
@@ -118,7 +122,9 @@ namespace compiler {
     Expect(TOKEN_LEFT_BRACE);
 
     do {
-      if (LookAtType(TOKEN_STRUCT)) {
+      if (LookAtType(TOKEN_RIGHT_BRACE)) {
+        continue;
+      } else if (LookAtType(TOKEN_STRUCT)) {
         s->AddStruct(ConsumeStruct());
       } else if (LookAtType(TOKEN_ENUM)) {
         s->AddEnum(ConsumeEnum());
@@ -164,10 +170,8 @@ namespace compiler {
     } else if (Accept(TOKEN_ID)) {
       return ConsumeEnumDeclare();
     } else {
-      message.Runtime("syntax error.");
-      RightValue* rv = new RightValue(TYPE_NULL, nullptr);
-      Declare* d = new Declare(TYPE_NULL, nullptr, rv);
-      return d;
+      RuntimeError("unexpected token");
+      return nullptr;
     }
   }
 
@@ -189,7 +193,7 @@ namespace compiler {
       data_type = TYPE_BOOL;
       if (value != ReservedWordMap[RESERVED_FALSE]
         && value != ReservedWordMap[RESERVED_TRUE]) {
-        message.Runtime("expect true or false");
+        RuntimeError("expect true or false");
       } else {
         generator->descriptor->AddDataTypes(TYPE_BOOL);
         Next();

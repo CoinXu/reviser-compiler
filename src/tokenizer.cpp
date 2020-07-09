@@ -189,7 +189,7 @@ void Tokenizer::ConsumeComment() {
 
 void Tokenizer::ConsumeNumber() {
   // 整数位
-  ConsumeCharacters<CharDigit>();  
+  ConsumeCharacters<CharDigit>();
 
   // 小数位
   if (TryConsume('.')) {
@@ -232,8 +232,13 @@ void Tokenizer::NextChar() {
     column++;
   }
 
-  peek = input.at(pos);
-  pos++;
+  if (pos < input.size()) {
+    peek = input.at(pos);
+    pos++;
+    return;
+  }
+
+  peek = EOF;
 }
 
 bool Tokenizer::Next() {
@@ -255,6 +260,11 @@ bool Tokenizer::Next() {
   int start_pos = pos;
 
   switch (peek) {
+    case EOF:
+      current.type = TOKEN_CODE_END;
+      current.text = "";
+      break;
+
     case TOKEN_ASSIGN:
     case TOKEN_LEFT_BRACE:
     case TOKEN_RIGHT_BRACE:

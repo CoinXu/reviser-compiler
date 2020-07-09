@@ -84,7 +84,6 @@ namespace compiler {
   //
   // public
   string TypeScriptGenerator::StmtStruct(Struct* s) {
-    descriptor->AddGlobalVariable("Struct" + s->id->text, DECLARE_INTERFACE);
     TypeScriptStruct g(s);
     return g.Generate();
   }

@@ -2,6 +2,13 @@
 /*
   block comment
 */
+
+struct {
+
+}
+// end
+/* end */
+
 enum Color /* 11 */ {
   // Red
   Red,
@@ -49,4 +56,3 @@ struct Foo {
 }
 // end
 /* end */
-struct Baz {}
