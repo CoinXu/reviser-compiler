@@ -82,7 +82,11 @@ namespace compiler {
 
   void Parser::Expect(TokenType type) {
     if (!Accept(type)) {
-      RuntimeError("expect token [" + TokenTypeNameMap[type] + "] but receive ");
+      RuntimeError(
+        "expect token ["
+        + TokenTypeNameMap[type] + "] but receive ["
+        + TokenTypeNameMap[token->type] + "]"
+      );
     }
   }
 

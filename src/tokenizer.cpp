@@ -53,7 +53,7 @@ std::map<TokenType, std::string> TokenTypeNameMap = {
   { TOKEN_LETTER, "letter" },
   { TOKEN_DIGIT, "digit" },
   { TOKEN_BOOL, "bool" },
-  { TOKEN_CODE_END, "codeEnd" },
+  { TOKEN_CODE_END, "code end" },
   { TOKEN_ASSIGN, "assig" },
   { TOKEN_LEFT_BRACE, "left brace" },
   { TOKEN_RIGHT_BRACE, "right brace" },
