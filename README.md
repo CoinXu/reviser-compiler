@@ -3,7 +3,7 @@ compile [data-reviser](https://github.com/CoinXu/data-reviser) code to javascrip
 
 # Developer
 1. base on vscode `Remote-Containers` https://code.visualstudio.com/docs/remote/containers
-2. execute `Open folder in contaier` in vscode
+2. execute `Remote-Containers: Open Folder In Contaier` in vscode then chose this project root dir.
 
 # Install
 ```bash
