@@ -61,27 +61,23 @@ namespace compiler {
       }
     }
 
-    string code = indent + "const " + node->id->text + " = (function() {\n";
-
+    string ns =  indent + "namespace Class" + node->id->text + " {\n";
     for (string en: enums) {
-      code = code + en;
+      ns = ns + en;
     }
 
     for (string s: structures) {
-      code = code + s;
+      ns = ns + s;
     }
+    ns += "\n}";
 
-    code = code + indent_next + "class " + node->id->text + " extends Reviser {\n";
-
+    string code = indent + "class " + node->id->text + " extends Reviser {\n";
     for (string p: properties) {
       code = code + p;
     }
+    code = code + indent + "}\n";
 
-    code = code + indent_next + "}\n";
-
-    return code
-      + indent_next + "return " + node->id->text + ";\n"
-      + indent + "})();\n";
+    return ns + "\n\n" + code + "\n";
   }
 
   //

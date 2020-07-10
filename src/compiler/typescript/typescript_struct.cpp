@@ -28,7 +28,6 @@ namespace compiler {
   string TypeScriptStruct::Generate() {
     string indent = TypeScriptCommon::Indent(node->level);
     string indent_next = TypeScriptCommon::Indent(node->level + 1);
-    string def_interface("interface Struct" + node->id->text + " {\n");
 
     // vector<string> inters;
     vector<string> properties;
@@ -43,9 +42,6 @@ namespace compiler {
         case DeclareProperty: {
           TypeScriptStructProperty g(node->properties.at((*it).index), this);
           properties.push_back(g.Generate() + new_line);
-
-          // TypeScriptStructInterfaceProperty i(node->properties.at((*it).index), this);
-          // inters.push_back(i.Generate() + "\n");
           break;
         }
 
@@ -66,31 +62,24 @@ namespace compiler {
       }
     }
 
-    // string code = indent + "interface Struct" + node->id->text + " {\n";
-    // for (string i : inters) {
-    //   code = code + i;
-    // }
-    // code = code + indent + "};\n\n";
-
-    string code = indent + "const " + node->id->text + " = (function() {\n";
+    string ns =  indent + "namespace Class" + node->id->text + " {\n";
     for (string en: enums) {
-      code = code + en;
+      ns = ns + en;
     }
 
     for (string s: structures) {
-      code = code + s;
+      ns = ns + s;
     }
+    ns += indent + "}\n\n";
 
-    code = code + indent_next + "class " + node->id->text + " extends Reviser {\n";
+
+    string code = indent + "class " + node->id->text + " extends Reviser {\n";
     for (string p: properties) {
       code = code + p;
     }
+    code = code + indent + "}\n";
 
-    code = code + indent_next + "}\n";
-
-    return code
-      + indent_next + "return " + node->id->text + ";\n"
-      + indent + "})();\n";
+    return ns + code + "\n";
   }
 
   //

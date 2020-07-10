@@ -106,8 +106,8 @@ Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
   current.end_line = line;
   current.column_start = column;
   current.column_end = column;
-  current.pos_start = 0;
-  current.pos_end = 0;
+  current.pos_start = pos;
+  current.pos_end = pos;
 
   type.push_back(ReservedWordMap[RESERVED_BOOL]);
   type.push_back(ReservedWordMap[RESERVED_FLOAT]);
@@ -167,22 +167,18 @@ void Tokenizer::ConsumeComment() {
 
     if (InCharacters<CharDivide>()) {
       // line comment
-      TryConsumeCharacters<NewLine>();
       NextChar();
+      if (peek != EOF) {
+        TryConsumeCharacters<NewLine>();
+      }
     } else if (InCharacters<CharAsterisk>()) {
       // block comment
       NextChar();
-
-      while (true) {
-        TryConsumeCharacters<CharAsterisk>();
-        NextChar();
-        if (InCharacters<CharDivide>() || peek == EOF) {
-          NextChar();
-          break;
-        }
-      }
+      TryConsumeCharacters<CharAsterisk>();
+      NextChar();
     }
 
+    NextChar();
     ConsumeCharacters<Whitespace>();
   }
 }

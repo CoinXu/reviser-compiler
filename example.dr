@@ -3,10 +3,6 @@
   block comment
 */
 
-struct Baz {
-
-}
-
 enum Color /* 11 */ {
   // Red
   Red,
@@ -17,14 +13,7 @@ enum Color /* 11 */ {
 }
 
 struct Bar {
-  struct Baz {
-    int32 baz = 1;
-  }
-
-  enum Foo {
-    Foo
-  }
-
-  Color color = Color.Pink;
-  double d = 1.23;
+  optional Foo foo = Foo.Foo;
 }
+
+//

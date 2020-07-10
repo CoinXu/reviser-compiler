@@ -35,8 +35,13 @@ namespace compiler {
   // private
   string JavaScriptGenerator::Import() {
     // decorators
-    string code_decorator = "import {";
-    vector<string> decorators = descriptor->Decorators();
+    string code_decorator( 
+      "import { Reviser } from \"data-reviser\";\n"
+      "import {"
+    );
+
+    vector<string> decorators(descriptor->Decorators());
+
     for (vector<string>::iterator it = begin(decorators); it != end(decorators); it++ ) {
       if (JavaScriptDecoraterNameMap.find(*it) == JavaScriptDecoraterNameMap.end()) {
         message.Runtime("undefined error: " + *it + " not defined in decorators.");
