@@ -1,6 +1,10 @@
 # data-reviser compiler
 compile [data-reviser](https://github.com/CoinXu/data-reviser) code to javascript or typescript.
 
+# Developer
+1. base on vscode `Remote-Containers` https://code.visualstudio.com/docs/remote/containers
+2. execute `Open folder in contaier` in vscode
+
 # Install
 ```bash
 make install

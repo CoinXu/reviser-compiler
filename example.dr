@@ -3,7 +3,7 @@
   block comment
 */
 
-struct {
+struct Baz {
 
 }
 // end
