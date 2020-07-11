@@ -43,7 +43,7 @@ namespace compiler {
       code  = code + property.Generate(counter) + (counter >= total ? "\n" : ",\n");
     }
 
-    return code + TypeScriptCommon::Indent(node->level) + "};";
+    return code + TypeScriptCommon::Indent(node->level) + "}";
   }
 
   //

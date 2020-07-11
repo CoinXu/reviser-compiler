@@ -13,7 +13,39 @@ enum Color /* 11 */ {
 }
 
 struct Bar {
-  optional Foo foo = Foo.Foo;
+  enum Numberic {
+    Int32,
+    Float,
+    Double
+  }
+
+  struct Baz {
+    enum DataType {
+      Int32,
+      Int64,
+      String
+    }
+
+    optional DataType type = DataType.Int32;
+    optional Numberic num = Numberic.Double;
+
+    struct Foo {
+      enum Language {
+        Cpp,
+        TypeScript,
+        JavaScript
+      }
+
+      required Language lang = Language.Cpp; 
+      required Language second_lang = Language.TypeScript; 
+      optional DataType type = DataType.String;
+    }
+  }
+
+  optional Numberic num = Numberic.Int32;
+  required string s = "string";
+  required int32 i32 = 1;
+  double doub = 0.123;
 }
 
 //

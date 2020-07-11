@@ -32,7 +32,7 @@ namespace compiler {
     string code;
 
     code = JavaScriptCommon::Indent(node->level)
-      + "const " + node->id->text + " = {\n";
+      + "var " + node->id->text + " = {\n";
 
     size_t counter = 0;
     size_t total = node->properties.size();

@@ -77,13 +77,17 @@ namespace compiler {
     }
 
     code += "export {\n";
+    string alias;
     vector<Descriptor::VariableDeclare> variables = descriptor->GlobalVariables();
 
     for (vector<Descriptor::VariableDeclare>::iterator it = begin(variables); it != end(variables); it++) {
+      if ((*it).type == DECLARE_STRUCT) {
+        alias += "const " + (*it).id + " = Ns" + (*it).id + "." + (*it).id + ";\n";
+      }
       code += TypeScriptCommon::Indent(1) + (*it).id + (next(it) == end(variables) ? "\n" : ",\n");
     }
 
-    return code += "}";
+    return (alias.size() > 0 ? (alias + "\n") : "") + code += "}";
   }
 
   //

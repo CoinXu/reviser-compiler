@@ -29,10 +29,8 @@ namespace compiler {
     string indent = TypeScriptCommon::Indent(node->level);
     string indent_next = TypeScriptCommon::Indent(node->level + 1);
 
-    // vector<string> inters;
     vector<string> properties;
-    vector<string> structures;
-    vector<string> enums;
+    string ns =  indent + "namespace Ns" + node->id->text + " {\n";
 
     for (vector<Struct::ContentStore>::iterator it = begin(node->contents);
       it != end(node->contents); it++) {
@@ -47,13 +45,13 @@ namespace compiler {
 
         case DeclareStruct: {
           TypeScriptStruct g(node->structs.at((*it).index), this);
-          structures.push_back(g.Generate() + new_line);
+          ns += g.Generate() + new_line;
           break;
         }
 
         case DeclareEnum: {
           TypeScriptEnum g(node->enums.at((*it).index), this);
-          enums.push_back(g.Generate() + new_line);
+          ns += g.Generate() + new_line;
           break;
         }
 
@@ -62,24 +60,14 @@ namespace compiler {
       }
     }
 
-    string ns =  indent + "namespace Class" + node->id->text + " {\n";
-    for (string en: enums) {
-      ns = ns + en;
-    }
-
-    for (string s: structures) {
-      ns = ns + s;
-    }
-    ns += indent + "}\n\n";
-
-
-    string code = indent + "class " + node->id->text + " extends Reviser {\n";
+    ns += indent_next + "export class " + node->id->text + " extends Reviser {\n";
     for (string p: properties) {
-      code = code + p;
+      ns += p;
     }
-    code = code + indent + "}\n";
+    ns += indent_next + "}\n";
+    ns += indent + "}\n";
 
-    return ns + code + "\n";
+    return ns;
   }
 
   //
