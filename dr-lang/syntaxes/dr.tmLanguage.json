@@ -63,7 +63,7 @@
       "patterns": [
         {
           "name": "support.type",
-          "match": "\\b(bool|double|int32|int64|uint32|uint64|string)\\b"
+          "match": "\\b(bool|double|float|int32|int64|uint32|uint64|string)\\b"
         }
       ]
     },

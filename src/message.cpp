@@ -16,7 +16,8 @@ namespace message {
 
   // private
   std::string Message::mark(std::string level) {
-    return  name + " " + level + " " + std::to_string(line) + ":" + std::to_string(column);
+    return "[" + name + "]" + "[" + level + "] "
+      + "line " + std::to_string(line) + ", column " + std::to_string(column);
   }
 
   // public
@@ -38,7 +39,8 @@ namespace message {
   }
 
   void Message::Runtime(std::string msg) {
-    throw std::runtime_error(mark("runtime") + ": " + msg);
+    std::cout << mark("runtime") + ": " + msg << std::endl;
+    std::exit(EXIT_FAILURE);
   }
 } // message
 } // reviser

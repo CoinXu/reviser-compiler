@@ -53,7 +53,7 @@ std::map<TokenType, std::string> TokenTypeNameMap = {
   { TOKEN_LETTER, "letter" },
   { TOKEN_DIGIT, "digit" },
   { TOKEN_BOOL, "bool" },
-  { TOKEN_CODE_END, "codeEnd" },
+  { TOKEN_CODE_END, "code end" },
   { TOKEN_ASSIGN, "assig" },
   { TOKEN_LEFT_BRACE, "left brace" },
   { TOKEN_RIGHT_BRACE, "right brace" },
@@ -106,8 +106,8 @@ Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
   current.end_line = line;
   current.column_start = column;
   current.column_end = column;
-  current.pos_start = 0;
-  current.pos_end = 0;
+  current.pos_start = pos;
+  current.pos_end = pos;
 
   type.push_back(ReservedWordMap[RESERVED_BOOL]);
   type.push_back(ReservedWordMap[RESERVED_FLOAT]);
@@ -167,29 +167,25 @@ void Tokenizer::ConsumeComment() {
 
     if (InCharacters<CharDivide>()) {
       // line comment
-      TryConsumeCharacters<NewLine>();
       NextChar();
+      if (peek != EOF) {
+        TryConsumeCharacters<NewLine>();
+      }
     } else if (InCharacters<CharAsterisk>()) {
       // block comment
       NextChar();
-
-      while (true) {
-        TryConsumeCharacters<CharAsterisk>();
-        NextChar();
-        if (InCharacters<CharDivide>() || peek == EOF) {
-          NextChar();
-          break;
-        }
-      }
+      TryConsumeCharacters<CharAsterisk>();
+      NextChar();
     }
 
+    NextChar();
     ConsumeCharacters<Whitespace>();
   }
 }
 
 void Tokenizer::ConsumeNumber() {
   // 整数位
-  ConsumeCharacters<CharDigit>();  
+  ConsumeCharacters<CharDigit>();
 
   // 小数位
   if (TryConsume('.')) {
@@ -232,8 +228,13 @@ void Tokenizer::NextChar() {
     column++;
   }
 
-  peek = input.at(pos);
-  pos++;
+  if (pos < input.size()) {
+    peek = input.at(pos);
+    pos++;
+    return;
+  }
+
+  peek = EOF;
 }
 
 bool Tokenizer::Next() {
@@ -255,6 +256,11 @@ bool Tokenizer::Next() {
   int start_pos = pos;
 
   switch (peek) {
+    case EOF:
+      current.type = TOKEN_CODE_END;
+      current.text = "";
+      break;
+
     case TOKEN_ASSIGN:
     case TOKEN_LEFT_BRACE:
     case TOKEN_RIGHT_BRACE:

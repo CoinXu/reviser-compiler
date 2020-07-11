@@ -30,8 +30,7 @@ namespace compiler {
     string indent_next = JavaScriptCommon::Indent(node->level + 1);
 
     vector<string> properties;
-    vector<string> structures;
-    vector<string> enums;
+    string code = indent + "var " + node->id->text + " = (function() {\n";
 
     for (vector<Struct::ContentStore>::iterator it = begin(node->contents);
       it != end(node->contents); it++) {
@@ -46,13 +45,13 @@ namespace compiler {
 
         case DeclareStruct: {
           JavaScriptStruct g(node->structs.at((*it).index), this);
-          structures.push_back(g.Generate() + new_line);
+          code += g.Generate() + new_line;
           break;
         }
 
         case DeclareEnum: {
           JavaScriptEnum g(node->enums.at((*it).index), this);
-          enums.push_back(g.Generate() + new_line);
+          code += g.Generate() + new_line;
           break;
         }
 
@@ -61,27 +60,14 @@ namespace compiler {
       }
     }
 
-    string code = indent + "const " + node->id->text + " = (function() {\n";
-
-    for (string en: enums) {
-      code = code + en;
-    }
-
-    for (string s: structures) {
-      code = code + s;
-    }
-
-    code = code + indent_next + "class " + node->id->text + " extends Reviser {\n";
-
+    code += indent_next + "class " + node->id->text + " extends Reviser {\n";
     for (string p: properties) {
       code = code + p;
     }
+    code += indent_next + "}\n";
+    code += indent_next + "return " + node->id->text + ";\n"; 
 
-    code = code + indent_next + "}\n";
-
-    return code
-      + indent_next + "return " + node->id->text + ";\n"
-      + indent + "})();\n";
+    return code + indent + "})();" + "\n\n";
   }
 
   //

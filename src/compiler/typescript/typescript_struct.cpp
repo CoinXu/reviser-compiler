@@ -28,12 +28,9 @@ namespace compiler {
   string TypeScriptStruct::Generate() {
     string indent = TypeScriptCommon::Indent(node->level);
     string indent_next = TypeScriptCommon::Indent(node->level + 1);
-    string def_interface("interface Struct" + node->id->text + " {\n");
 
-    vector<string> inters;
     vector<string> properties;
-    vector<string> structures;
-    vector<string> enums;
+    string ns =  indent + "namespace Ns" + node->id->text + " {\n";
 
     for (vector<Struct::ContentStore>::iterator it = begin(node->contents);
       it != end(node->contents); it++) {
@@ -43,21 +40,18 @@ namespace compiler {
         case DeclareProperty: {
           TypeScriptStructProperty g(node->properties.at((*it).index), this);
           properties.push_back(g.Generate() + new_line);
-
-          TypeScriptStructInterfaceProperty i(node->properties.at((*it).index), this);
-          inters.push_back(i.Generate() + "\n");
           break;
         }
 
         case DeclareStruct: {
           TypeScriptStruct g(node->structs.at((*it).index), this);
-          structures.push_back(g.Generate() + new_line);
+          ns += g.Generate() + new_line;
           break;
         }
 
         case DeclareEnum: {
           TypeScriptEnum g(node->enums.at((*it).index), this);
-          enums.push_back(g.Generate() + new_line);
+          ns += g.Generate() + new_line;
           break;
         }
 
@@ -66,31 +60,14 @@ namespace compiler {
       }
     }
 
-    string code = indent + "interface Struct" + node->id->text + " {\n";
-    for (string i : inters) {
-      code = code + i;
-    }
-    code = code + indent + "};\n\n";
-
-    code = code + indent + "const " + node->id->text + " = (function() {\n";
-    for (string en: enums) {
-      code = code + en;
-    }
-
-    for (string s: structures) {
-      code = code + s;
-    }
-
-    code = code + indent_next + "class " + node->id->text + " extends Reviser {\n";
+    ns += indent_next + "export class " + node->id->text + " extends Reviser {\n";
     for (string p: properties) {
-      code = code + p;
+      ns += p;
     }
+    ns += indent_next + "}\n";
+    ns += indent + "}\n";
 
-    code = code + indent_next + "}\n";
-
-    return code
-      + indent_next + "return " + node->id->text + ";\n"
-      + indent + "})();\n";
+    return ns;
   }
 
   //
@@ -111,12 +88,18 @@ namespace compiler {
     }
 
     string type;
-    if (TypeScriptDataTypeTranslatorNameMap.find(node->declare->type) != TypeScriptDataTypeTranslatorNameMap.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeTranslatorNameMap.at(node->declare->type) + "\n";
+    if (DecoraterSyntaxTranslator.find(node->declare->type) != DecoraterSyntaxTranslator.end()) {
+      type += TypeScriptCommon::Indent(node->level + 1)
+        + "@"
+        + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
+        + "\n";
     }
 
-    if (TypeScriptDataTypeDecoraterNameMap.find(node->declare->type) != TypeScriptDataTypeDecoraterNameMap.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1) + "@" + TypeScriptDataTypeDecoraterNameMap.at(node->declare->type) + "\n";
+    if (DecoraterSyntaxDataType.find(node->declare->type) != DecoraterSyntaxDataType.end()) {
+      type += TypeScriptCommon::Indent(node->level + 1)
+        + "@"
+        + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
+        + "\n";
     }
 
     TypeScriptDeclare declare(node->declare);
@@ -162,12 +145,14 @@ namespace compiler {
   }
 
   string TypeScriptDecorater::Generate() {
-    if (TypeScriptDecoraterNameMap.find(node->id->text) == TypeScriptDecoraterNameMap.end()) {
+    if (DecoraterSyntaxBuildIn.find(node->id->text) == DecoraterSyntaxBuildIn.end()) {
       return "";
     }
 
     return TypeScriptCommon::Indent(node->level + 1)
-      + "@" + TypeScriptDecoraterNameMap.at(node->id->text) + "\n";
+      + "@"
+      + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxBuildIn.at(node->id->text))
+      + "\n";
   }
 
 }; // reviser

@@ -12,18 +12,40 @@
 
 #include <iostream>
 #include <fstream>
+#include <execinfo.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include <parser.h>
+#include <path.h>
 #include <compiler/printer_terminal.h>
 
+using namespace reviser;
 using namespace reviser::compiler;
 using namespace reviser::message;
 
-int main(int args, char** argv) {
+void handler(int sig) {
+  void *array[10];
+  size_t size;
 
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 10);
+
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  exit(1);
+}
+
+int main(int args, char** argv, char** envp) {
+  signal(SIGSEGV, handler);
+  
+  const string pwd = string(getenv("PWD"));
   Message logger("main");
 
   logger.Info("args: " + to_string(args));
+
   string javascript_output;
   string typescript_output;
   string file_name;
@@ -39,6 +61,10 @@ int main(int args, char** argv) {
     } else {
       file_name = s;
     }
+  }
+
+  if (!path::absolute(file_name)) {
+    file_name = path::join(pwd, file_name);
   }
 
   if (file_name.size() == 0) {

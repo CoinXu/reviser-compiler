@@ -1,7 +1,7 @@
 CPP = g++
 SOURCES_DIR = src
 HEAD_FILE_PATH = $(shell pwd)/$(SOURCES_DIR)
-COMPILE_CMD = $(CPP) -g -std=c++11 -I$(HEAD_FILE_PATH)
+COMPILE_CMD = $(CPP) -g -rdynamic -std=c++11 -I$(HEAD_FILE_PATH)
 LIB_NAME = reviserc
 
 SRC = $(wildcard $(SOURCES_DIR)/*cpp)  \

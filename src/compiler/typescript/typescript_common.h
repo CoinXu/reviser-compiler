@@ -10,12 +10,10 @@
 #include <string>
 #include <map>
 #include <tokenizer.h>
+#include <compiler/decorater_syntax.h>
 
 namespace reviser {
 namespace compiler {
-  extern std::map<std::string, std::string> TypeScriptDecoraterNameMap;
-  extern std::map<DataType, std::string> TypeScriptDataTypeDecoraterNameMap;
-  extern std::map<DataType, std::string> TypeScriptDataTypeTranslatorNameMap;
   extern std::map<DataType, std::string> TypeScriptDataTypeMap;
 
   class TypeScriptCommon {
@@ -29,7 +27,25 @@ namespace compiler {
       }
       return s;
     }
+
+    const static std::string DecoraterDefinition(DecoraterSyntaxDefinition def) {
+      switch (def.type) {
+        case SYNTAX_FUNCTION:
+          return def.name;
+
+        case SYNTAX_CALLABLE:
+          return def.name + "()";
+
+        default:
+          return "";
+      }
+    }
+
+    const static std::string ImportId(DecoraterSyntaxDefinition def) {
+      return def.name;
+    }
   };
+
 };
 };
 
