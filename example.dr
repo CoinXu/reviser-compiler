@@ -48,8 +48,8 @@ struct Bar {
   required int32 i32 = 1;
   double[] doub = [];
   float[] f = [];
-  int64[] i64 = [];
-  uint32[] ui32 = []; 
+  optional int64[] i64 = [];
+  required uint32[] ui32 = []; 
 }
 
 //
