@@ -10,7 +10,7 @@
 #include <compiler/typescript/typescript_common.h>
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   //
   // TypeScriptStruct
   TypeScriptStruct::TypeScriptStruct(Struct* node): node(node) {

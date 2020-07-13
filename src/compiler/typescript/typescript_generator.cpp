@@ -10,7 +10,7 @@
 #include <compiler/typescript/typescript_struct.h>
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   std::map<DataType, string> TypeScriptDataTypeMap = {
     { TYPE_BOOL, "boolean" },
     { TYPE_FLOAT, "number" },

@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_TYPESCRIPT_STMT
-#define REVISER_COMPILER_TYPESCRIPT_STMT
+#ifndef REVISER_TYPESCRIPT_STMT
+#define REVISER_TYPESCRIPT_STMT
 
 #include <ast/stmt.h>
 
@@ -13,7 +13,7 @@ using namespace reviser::ast;
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   class TypeScriptStmt {
   public:
     Stmt* node = nullptr;

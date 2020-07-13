@@ -10,7 +10,7 @@
 #include <compiler/javascript/javascript_common.h>
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   //
   // JavaScriptStruct
   JavaScriptStruct::JavaScriptStruct(Struct* node): node(node) {

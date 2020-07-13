@@ -10,7 +10,7 @@
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   //
   // TypeScriptEnum
   TypeScriptEnum::TypeScriptEnum(Enum* node): node(node) {

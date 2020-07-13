@@ -8,7 +8,7 @@
 #include <compiler/typescript/typescript_common.h>
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   //
   // TypeScriptRightValue
   TypeScriptRightValue::TypeScriptRightValue(RightValue* node): node(node) {}

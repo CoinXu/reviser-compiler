@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_TYPESCRIPT_EXPR
-#define REVISER_COMPILER_TYPESCRIPT_EXPR
+#ifndef REVISER_TYPESCRIPT_EXPR
+#define REVISER_TYPESCRIPT_EXPR
 
 #include <ast/expr.h>
 
@@ -13,7 +13,7 @@ using namespace reviser::ast;
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   class TypeScriptExpr {
   public:
     Expr* node = nullptr;

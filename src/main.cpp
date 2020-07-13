@@ -22,8 +22,10 @@
 #include <compiler/printer_terminal.h>
 
 using namespace reviser;
-using namespace reviser::compiler;
 using namespace reviser::message;
+using namespace reviser::compiler;
+using namespace reviser::javascript;
+using namespace reviser::typescript;
 
 void handler(int sig) {
   void *array[10];

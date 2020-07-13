@@ -10,7 +10,7 @@
 #include <compiler/javascript/javascript_struct.h>
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   std::map<string, string> JavaScriptDecoraterNameMap = {
     { ReservedWordMap[RESERVED_OPTIONAL], "Optional" },
     { ReservedWordMap[RESERVED_REQUIRED], "Required" }

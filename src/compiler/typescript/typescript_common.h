@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_TYPESCRIPT_COMMON
-#define REVISER_COMPILER_TYPESCRIPT_COMMON
+#ifndef REVISER_TYPESCRIPT_COMMON
+#define REVISER_TYPESCRIPT_COMMON
 
 #include <string>
 #include <map>
@@ -13,7 +13,7 @@
 #include <compiler/decorater_syntax.h>
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   extern std::map<DataType, std::string> TypeScriptDataTypeMap;
 
   class TypeScriptCommon {

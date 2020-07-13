@@ -193,7 +193,7 @@ void Tokenizer::ConsumeNumber() {
   ConsumeCharacters<CharDigit>();
 
   // 小数位
-  if (TryConsume('.')) {
+  if (TryConsume(TOKEN_CONNECTION)) {
     ConsumeCharacters<CharDigit>();
   }
 }
@@ -272,7 +272,7 @@ bool Tokenizer::Next() {
     case TOKEN_SEMICOLON:
     case TOKEN_COMMA:
     case TOKEN_CONNECTION:
-      current.type = (TokenType) peek;
+      current.type = (TokenType)peek;
       NextChar();
       break;
 

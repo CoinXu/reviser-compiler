@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_STMT
-#define REVISER_COMPILER_JAVASCRIPT_STMT
+#ifndef REVISER_JAVASCRIPT_STMT
+#define REVISER_JAVASCRIPT_STMT
 
 #include <ast/stmt.h>
 
@@ -13,7 +13,7 @@ using namespace reviser::ast;
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   class JavaScriptStmt {
   public:
     Stmt* node = nullptr;

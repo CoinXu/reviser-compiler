@@ -4,15 +4,16 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_TYPESCRIPT_GENERATOR
-#define REVISER_COMPILER_TYPESCRIPT_GENERATOR
+#ifndef REVISER_TYPESCRIPT_GENERATOR
+#define REVISER_TYPESCRIPT_GENERATOR
 
 #include <compiler/code_generator.h>
 
 using namespace reviser::message;
+using namespace reviser::compiler;
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
 
   class TypeScriptGenerator : public CodeGenerator {
   private:
