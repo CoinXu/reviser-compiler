@@ -163,13 +163,40 @@ namespace compiler {
   // expr
   Declare* Parser::ConsumeDeclare() {
     if (Accept(TOKEN_DATA_TYPE)) {
+      const string type = PreviousText();
+      if (Accept(TOKEN_LEFT_BRACKET)) {
+        return ConsumeDataTypeArrayDeclare(type);
+      }
       return ConsumeDataTypeDeclare();
     } else if (Accept(TOKEN_ID)) {
+      const string id = PreviousText();
+      if (Accept(TOKEN_LEFT_BRACKET)) {
+        return ConsumeEnumArrayDeclare(id);
+      }
       return ConsumeEnumDeclare();
     } else {
       RuntimeError("unexpected token");
       return nullptr;
     }
+  }
+
+  // int32[] foo = []
+  Declare* Parser::ConsumeDataTypeArrayDeclare(string type_string) {
+    Expect(TOKEN_RIGHT_BRACKET);
+
+    if (DataTypeValue.find(type_string) == DataTypeValue.end()) {
+      RuntimeError("unknow data type: " + type_string);
+    }
+
+    Expect(TOKEN_ID);
+    const Token id = token;
+
+    Expect(TOKEN_ASSIGN);
+    Expect(TOKEN_LEFT_BRACKET);
+    // TODO support initial values
+    Expect(TOKEN_RIGHT_BRACKET);
+
+    return new Declare(DataTypeValue[type_string], CloneToken(id));
   }
 
   Declare* Parser::ConsumeDataTypeDeclare() {
@@ -251,6 +278,10 @@ namespace compiler {
     EnumValue* v = new EnumValue(ei, ep);
     Declare* declare = new Declare(TYPE_ENUM, id, eid, v);
     return declare;
+  }
+
+  Declare* Parser::ConsumeEnumArrayDeclare(string id) {
+    return nullptr;
   }
 
   //

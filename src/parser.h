@@ -60,7 +60,9 @@ namespace compiler {
     Assign* ConsumeAssign();
     Declare* ConsumeDeclare();
     Declare* ConsumeDataTypeDeclare();
+    Declare* ConsumeDataTypeArrayDeclare(string type);
     Declare* ConsumeEnumDeclare();
+    Declare* ConsumeEnumArrayDeclare(string id);
 
     // stmt -> enum
     EnumProperty* ConsumeEnumProperty();

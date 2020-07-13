@@ -83,7 +83,7 @@ std::map<ReservedWord, std::string> ReservedWordMap = {
   { RESERVED_REQUIRED, "required" }
 };
 
-std::map<DataType, std::string> DataTypeName {
+std::map<DataType, std::string> DataTypeName = {
   { TYPE_BOOL, ReservedWordMap[RESERVED_BOOL] },
   { TYPE_FLOAT, ReservedWordMap[RESERVED_FLOAT] },
   { TYPE_DOUBLE, ReservedWordMap[RESERVED_DOUBLE] },
@@ -92,6 +92,17 @@ std::map<DataType, std::string> DataTypeName {
   { TYPE_UINT32, ReservedWordMap[RESERVED_UINT32] },
   { TYPE_UINT64, ReservedWordMap[RESERVED_UINT64] },
   { TYPE_STRING, ReservedWordMap[RESERVED_STRING] }
+};
+
+std::map<std::string, DataType> DataTypeValue {
+  { ReservedWordMap[RESERVED_BOOL], TYPE_BOOL },
+  { ReservedWordMap[RESERVED_FLOAT], TYPE_FLOAT },
+  { ReservedWordMap[RESERVED_DOUBLE], TYPE_DOUBLE },
+  { ReservedWordMap[RESERVED_INT32], TYPE_INT32 },
+  { ReservedWordMap[RESERVED_INT64], TYPE_INT64 },
+  { ReservedWordMap[RESERVED_UINT32], TYPE_UINT32 },
+  { ReservedWordMap[RESERVED_UINT64], TYPE_UINT64 },
+  { ReservedWordMap[RESERVED_STRING], TYPE_STRING }
 };
 
 Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
@@ -272,6 +283,8 @@ bool Tokenizer::Next() {
     case TOKEN_SEMICOLON:
     case TOKEN_COMMA:
     case TOKEN_CONNECTION:
+    case TOKEN_LEFT_BRACKET:
+    case TOKEN_RIGHT_BRACKET:
       current.type = (TokenType)peek;
       NextChar();
       break;

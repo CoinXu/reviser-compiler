@@ -38,6 +38,9 @@ namespace ast {
 
   Declare::Declare(DataType type, Token* id, Token* eid, EnumValue* ev)
     : type(type), id(id), eid(eid), dv(nullptr), ev(ev) {}
+  
+  Declare::Declare(DataType type, Token* id)
+    : type(type), id(id), array_type(true) {}
 
   Declare::~Declare() {
   }

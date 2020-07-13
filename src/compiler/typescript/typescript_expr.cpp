@@ -53,7 +53,10 @@ namespace typescript {
   string TypeScriptDeclare::Generate() {
     string value;
 
-    if (node->type == TYPE_ENUM) {
+    // TODO support initial values
+    if (node->array_type) {
+      value = "[]";
+    } else if (node->type == TYPE_ENUM) {
       TypeScriptEnumValue ev(node->ev);
       value = ev.Generate();
     } else {
@@ -66,6 +69,9 @@ namespace typescript {
       type = node->ev->id->text;
     } else if (TypeScriptDataTypeMap.find(node->type) != TypeScriptDataTypeMap.end()) {
       type = TypeScriptDataTypeMap[node->type];
+      if (node->array_type) {
+        type = type + "[]";
+      }
     } else {
       type = "any";
     }

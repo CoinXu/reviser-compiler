@@ -33,6 +33,8 @@ namespace compiler {
     TOKEN_ASSIGN = '=',
     TOKEN_LEFT_BRACE = '{',
     TOKEN_RIGHT_BRACE = '}',
+    TOKEN_LEFT_BRACKET = '[',
+    TOKEN_RIGHT_BRACKET = ']',
     TOKEN_SEMICOLON = ';',
     TOKEN_COMMA = ',',
     TOKEN_CONNECTION = '.',
@@ -86,6 +88,7 @@ namespace compiler {
   extern std::map<ReservedWord, std::string> ReservedWordMap;
   extern std::map<TokenType, std::string> TokenTypeNameMap;
   extern std::map<DataType, std::string> DataTypeName;
+  extern std::map<std::string, DataType> DataTypeValue;
 
   static const struct Token EmptyToken = {
     TOKEN_ID,

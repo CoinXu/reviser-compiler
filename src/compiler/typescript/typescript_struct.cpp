@@ -89,18 +89,28 @@ namespace typescript {
 
     string type;
     if (DecoraterSyntaxTranslator.find(node->declare->type) != DecoraterSyntaxTranslator.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1)
-        + "@"
-        + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
-        + "\n";
+      if (!node->declare->array_type) {
+        type += TypeScriptCommon::Indent(node->level + 1)
+          + "@"
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
+          + "\n";
+      }
     }
 
     if (DecoraterSyntaxDataType.find(node->declare->type) != DecoraterSyntaxDataType.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1)
-        + "@"
-        + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
-        + "\n";
-    }
+      if (node->declare->array_type) {
+        type += TypeScriptCommon::Indent(node->level + 1)
+          + "@TypeArray(["
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type)) + ", "
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
+          + "])\n";
+      } else {
+        type += TypeScriptCommon::Indent(node->level + 1)
+          + "@"
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
+          + "\n";
+      }
+   }
 
     TypeScriptDeclare declare(node->declare);
     return type + code + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";

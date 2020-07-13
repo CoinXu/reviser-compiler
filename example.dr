@@ -46,7 +46,10 @@ struct Bar {
   optional Numberic num = Numberic.Int32;
   required string s = "string";
   required int32 i32 = 1;
-  double doub = 0.123;
+  double[] doub = [];
+  float[] f = [];
+  int64[] i64 = [];
+  uint32[] ui32 = []; 
 }
 
 //

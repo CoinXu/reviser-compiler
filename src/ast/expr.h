@@ -64,13 +64,16 @@ namespace ast {
   class Declare : public Expr {
   public:
     DataType type;
+    bool array_type = false;
     Token* id = nullptr;
     Token* eid = nullptr;
     RightValue* dv = nullptr;
     EnumValue* ev = nullptr;
+    vector<string> values;
 
     Declare(DataType type, Token* id, RightValue* dv);
     Declare(DataType type, Token* id, Token* eid, EnumValue* ev);
+    Declare(DataType type, Token *id);
     ~Declare();
   };
 

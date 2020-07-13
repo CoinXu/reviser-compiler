@@ -43,8 +43,8 @@ make uninstall
 + [x] support nested statement
 + [ ] support scope.
 + [ ] support package & import.
-+ [ ] syntax highligth for editor.
-+ [ ] delete all pointer.
++ [x] syntax highligth for editor.
++ [ ] delete unused ast pointer.
 
 # Licence
 MIT
