@@ -1,7 +1,8 @@
 // sigle line comment
 /*
-  block comment
-*/
+ *
+ * block comment
+ */
 
 enum Color /* 11 */ {
   // Red

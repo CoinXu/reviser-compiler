@@ -14,7 +14,7 @@ namespace compiler {
   //
   // public
   Parser::Parser(Tokenizer* tokenizer, CodeGenerator* generator, Printer* printer)
-    : token(nullptr),
+    : token(EmptyToken),
       message("parser"),
       tokenizer(tokenizer),
       generator(generator),
@@ -42,31 +42,25 @@ namespace compiler {
     printer->Print(generator->Generate());
   }
 
-  Token* Parser::CloneToken(const Token* t) {
+  Token* Parser::CloneToken(const Token& t) {
     return new Token {
-      t->type,
-      t->text,
-      t->start_line,
-      t->end_line,
-      t->column_start,
-      t->column_start,
-      t->pos_start,
-      t->pos_end
+      t.type,
+      t.text,
+      t.start_line,
+      t.end_line,
+      t.column_start,
+      t.column_start,
+      t.pos_start,
+      t.pos_end
     };
   }
 
   //
   // private
   bool Parser::Accept(TokenType type) {
-    const Token& t = tokenizer->Current();
+    token = tokenizer->Current();
 
-    if (token) {
-      delete token;
-    }
-
-    token = CloneToken(&t);
-
-    if (token->type == type) {
+    if (token.type == type) {
       tokenizer->Next();
       return true;
     }
@@ -84,7 +78,7 @@ namespace compiler {
     if (!Accept(type)) {
       RuntimeError(
         "expect token [" + TokenTypeNameMap[type] + "] but receive ["
-        + TokenTypeNameMap[token->type] + "]"
+        + TokenTypeNameMap[token.type] + "]"
       );
     }
   }
@@ -162,7 +156,7 @@ namespace compiler {
 
   Decorater* Parser::ConsumeDecorater() {
     Decorater* d = new Decorater(CloneToken(token));
-    generator->descriptor->AddDecorator(token->text);
+    generator->descriptor->AddDecorator(token.text);
     return d;
   }
 
@@ -179,7 +173,7 @@ namespace compiler {
   }
 
   Declare* Parser::ConsumeDataTypeDeclare() {
-    Token* id = CloneToken(&tokenizer->Current());
+    Token* id = CloneToken(tokenizer->Current());
     string type = PreviousText();
 
     Expect(TOKEN_ID);
@@ -188,7 +182,7 @@ namespace compiler {
     // value optional support
     Expect(TOKEN_ASSIGN);
 
-    Token* dvt = CloneToken(&tokenizer->Current());
+    Token* dvt = CloneToken(tokenizer->Current());
     string value = CurrentText();
     DataType data_type;
 

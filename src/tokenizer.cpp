@@ -174,8 +174,13 @@ void Tokenizer::ConsumeComment() {
     } else if (InCharacters<CharAsterisk>()) {
       // block comment
       NextChar();
-      TryConsumeCharacters<CharAsterisk>();
-      NextChar();
+      while(true) {
+        TryConsumeCharacters<CharAsterisk>();
+        NextChar();
+        if (InCharacters<CharDivide>() || peek == EOF) {
+          break;
+        }
+      }
     }
 
     NextChar();
