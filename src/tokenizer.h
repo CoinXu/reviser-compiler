@@ -71,6 +71,7 @@ namespace compiler {
     TYPE_STRING,
     TYPE_ENUM,
     TYPE_NULL,
+    TYPE_STRUCT,
     TYPE_ARRAY,
     TYPE_ARRAY_STRUCT
   };

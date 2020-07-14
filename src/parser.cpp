@@ -169,6 +169,7 @@ namespace compiler {
       }
       return ConsumeDataTypeDeclare();
     } else if (Accept(TOKEN_ID)) {
+      // TODO support struct type
       const string id = PreviousText();
       if (Accept(TOKEN_LEFT_BRACKET)) {
         return ConsumeEnumArrayDeclare(id);

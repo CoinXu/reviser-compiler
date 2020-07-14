@@ -67,6 +67,10 @@ namespace typescript {
     string type;
     if (node->type == TYPE_ENUM) {
       type = node->ev->id->text;
+    } else if (node->type == TYPE_STRUCT) {
+      // TODO
+    } else if (node->type == TYPE_ARRAY_STRUCT) {
+      // TODO
     } else if (TypeScriptDataTypeMap.find(node->type) != TypeScriptDataTypeMap.end()) {
       type = TypeScriptDataTypeMap[node->type];
       if (node->array_type) {
