@@ -81,16 +81,17 @@ namespace typescript {
   }
 
   string TypeScriptStructProperty::Generate() {
-    string code;
+    string code_decorater;
     for (Decorater* d: node->decoraters) {
       TypeScriptDecorater decorater(d, parent);
-      code = code + decorater.Generate();
+      code_decorater += decorater.Generate();
     }
 
-    string type;
+    string code_type;
     if (DecoraterSyntaxTranslator.find(node->declare->type) != DecoraterSyntaxTranslator.end()) {
+      // 如果是数组类型数据，将translator放在TypeArray装饰器中
       if (!node->declare->array_type) {
-        type += TypeScriptCommon::Indent(node->level + 1)
+        code_type += TypeScriptCommon::Indent(node->level + 1)
           + "@"
           + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
           + "\n";
@@ -99,13 +100,22 @@ namespace typescript {
 
     if (DecoraterSyntaxDataType.find(node->declare->type) != DecoraterSyntaxDataType.end()) {
       if (node->declare->array_type) {
-        type += TypeScriptCommon::Indent(node->level + 1)
-          + "@TypeArray(["
-          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type)) + ", "
-          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
-          + "])\n";
+        vector<DecoraterArg> args({
+          { 
+            ARG_ARRAY, 
+            vector<string>({ 
+              TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[node->declare->type]),
+              TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator[node->declare->type]) 
+            }) 
+          }
+        });
+
+        code_type += TypeScriptCommon::Indent(node->level + 1)
+          + "@"
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[TYPE_ARRAY], &args)
+          + "\n";
       } else {
-        type += TypeScriptCommon::Indent(node->level + 1)
+        code_type += TypeScriptCommon::Indent(node->level + 1)
           + "@"
           + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
           + "\n";
@@ -113,7 +123,7 @@ namespace typescript {
    }
 
     TypeScriptDeclare declare(node->declare);
-    return type + code + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
+    return code_type + code_decorater + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
   }
 
   //

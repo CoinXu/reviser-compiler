@@ -196,6 +196,8 @@ namespace compiler {
     // TODO support initial values
     Expect(TOKEN_RIGHT_BRACKET);
 
+    generator->descriptor->AddDataTypes(DataTypeValue[type_string]);
+
     return new Declare(DataTypeValue[type_string], CloneToken(id));
   }
 
