@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_EXPR
-#define REVISER_COMPILER_JAVASCRIPT_EXPR
+#ifndef REVISER_JAVASCRIPT_EXPR
+#define REVISER_JAVASCRIPT_EXPR
 
 #include <ast/expr.h>
 
@@ -13,7 +13,7 @@ using namespace reviser::ast;
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   class JavaScriptExpr {
   public:
     Expr* node = nullptr;

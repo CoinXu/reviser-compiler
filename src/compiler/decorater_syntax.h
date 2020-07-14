@@ -23,10 +23,11 @@ namespace compiler {
   enum DecoraterSyntaxArgType {
     ARG_NUMBER,
     ARG_STRING,
-    ARG_STRUCT
+    ARG_STRUCT,
+    ARG_ARRAY
   };
 
-  struct DecoraterArg {
+  struct DecoraterArgDef {
     string name;
     DecoraterSyntaxArgType type;
     bool optional;
@@ -35,7 +36,12 @@ namespace compiler {
   struct DecoraterSyntaxDefinition {
     string name;
     DecoraterSyntaxType type;
-    vector<DecoraterArg> args;
+    vector<DecoraterArgDef> args;
+  };
+
+  struct DecoraterArg {
+    DecoraterSyntaxArgType type;
+    vector<string> value;
   };
 
   extern std::map<std::string, DecoraterSyntaxDefinition> DecoraterSyntaxBuildIn;

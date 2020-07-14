@@ -7,7 +7,7 @@
 #include <compiler/javascript/javascript_expr.h>
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   //
   // JavaScriptRightValue
   JavaScriptRightValue::JavaScriptRightValue(RightValue* node): node(node) {}

@@ -8,7 +8,7 @@
 #include <compiler/typescript/typescript_common.h>
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   //
   // TypeScriptRightValue
   TypeScriptRightValue::TypeScriptRightValue(RightValue* node): node(node) {}
@@ -53,7 +53,10 @@ namespace compiler {
   string TypeScriptDeclare::Generate() {
     string value;
 
-    if (node->type == TYPE_ENUM) {
+    // TODO support initial values
+    if (node->array_type) {
+      value = "[]";
+    } else if (node->type == TYPE_ENUM) {
       TypeScriptEnumValue ev(node->ev);
       value = ev.Generate();
     } else {
@@ -64,8 +67,15 @@ namespace compiler {
     string type;
     if (node->type == TYPE_ENUM) {
       type = node->ev->id->text;
+    } else if (node->type == TYPE_STRUCT) {
+      // TODO
+    } else if (node->type == TYPE_ARRAY_STRUCT) {
+      // TODO
     } else if (TypeScriptDataTypeMap.find(node->type) != TypeScriptDataTypeMap.end()) {
       type = TypeScriptDataTypeMap[node->type];
+      if (node->array_type) {
+        type = type + "[]";
+      }
     } else {
       type = "any";
     }

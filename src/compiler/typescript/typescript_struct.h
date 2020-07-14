@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_TYPESCRIPT_STRUCT
-#define REVISER_COMPILER_TYPESCRIPT_STRUCT
+#ifndef REVISER_TYPESCRIPT_STRUCT
+#define REVISER_TYPESCRIPT_STRUCT
 
 #include <ast/stmt_struct.h>
 #include <compiler/typescript/typescript_common.h>
@@ -15,7 +15,7 @@ using namespace reviser::ast;
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   class TypeScriptStruct : public TypeScriptStmt {
   public:
     TypeScriptStruct* parent = nullptr;

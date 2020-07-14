@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_ENUM
-#define REVISER_COMPILER_JAVASCRIPT_ENUM
+#ifndef REVISER_JAVASCRIPT_ENUM
+#define REVISER_JAVASCRIPT_ENUM
 
 #include <compiler/javascript/javascript_stmt.h>
 #include <compiler/javascript/javascript_struct.h>
@@ -16,7 +16,7 @@ using namespace reviser::message;
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   class JavaScriptEnum : public JavaScriptStmt {
   public:
     JavaScriptStruct* parent = nullptr;

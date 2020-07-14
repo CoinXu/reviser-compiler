@@ -42,6 +42,7 @@ namespace compiler {
 
     void AddStmtStruct(Struct*);
     void AddStmtEnum(Enum*);
+    bool IncludeArrayType();
 
     CodeGenerator();
     ~CodeGenerator();

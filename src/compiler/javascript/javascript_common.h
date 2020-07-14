@@ -4,15 +4,15 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_COMMON
-#define REVISER_COMPILER_JAVASCRIPT_COMMON
+#ifndef REVISER_JAVASCRIPT_COMMON
+#define REVISER_JAVASCRIPT_COMMON
 
 #include <string>
 #include <map>
 #include <tokenizer.h>
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   extern std::map<std::string, std::string> JavaScriptDecoraterNameMap;
   extern std::map<DataType, std::string> JavaScriptDataTypeDecoraterNameMap;
 

@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_JAVASCRIPT_STRUCT
-#define REVISER_COMPILER_JAVASCRIPT_STRUCT
+#ifndef REVISER_JAVASCRIPT_STRUCT
+#define REVISER_JAVASCRIPT_STRUCT
 
 #include <ast/stmt_struct.h>
 #include <compiler/javascript/javascript_common.h>
@@ -15,7 +15,7 @@ using namespace reviser::ast;
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   class JavaScriptStruct : public JavaScriptStmt {
   public:
     JavaScriptStruct* parent = nullptr;

@@ -10,7 +10,7 @@
 #include <compiler/typescript/typescript_common.h>
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   //
   // TypeScriptStruct
   TypeScriptStruct::TypeScriptStruct(Struct* node): node(node) {
@@ -81,29 +81,49 @@ namespace compiler {
   }
 
   string TypeScriptStructProperty::Generate() {
-    string code;
+    string code_decorater;
     for (Decorater* d: node->decoraters) {
       TypeScriptDecorater decorater(d, parent);
-      code = code + decorater.Generate();
+      code_decorater += decorater.Generate();
     }
 
-    string type;
+    string code_type;
     if (DecoraterSyntaxTranslator.find(node->declare->type) != DecoraterSyntaxTranslator.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1)
-        + "@"
-        + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
-        + "\n";
+      // 如果是数组类型数据，将translator放在TypeArray装饰器中
+      if (!node->declare->array_type) {
+        code_type += TypeScriptCommon::Indent(node->level + 1)
+          + "@"
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
+          + "\n";
+      }
     }
 
     if (DecoraterSyntaxDataType.find(node->declare->type) != DecoraterSyntaxDataType.end()) {
-      type += TypeScriptCommon::Indent(node->level + 1)
-        + "@"
-        + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
-        + "\n";
-    }
+      if (node->declare->array_type) {
+        vector<DecoraterArg> args({
+          { 
+            ARG_ARRAY, 
+            vector<string>({ 
+              TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[node->declare->type]),
+              TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator[node->declare->type]) 
+            }) 
+          }
+        });
+
+        code_type += TypeScriptCommon::Indent(node->level + 1)
+          + "@"
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[TYPE_ARRAY], &args)
+          + "\n";
+      } else {
+        code_type += TypeScriptCommon::Indent(node->level + 1)
+          + "@"
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
+          + "\n";
+      }
+   }
 
     TypeScriptDeclare declare(node->declare);
-    return type + code + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
+    return code_type + code_decorater + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
   }
 
   //

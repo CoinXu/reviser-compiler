@@ -4,8 +4,8 @@
  * @description
  */
 
-#ifndef REVISER_COMPILER_TYPESCRIPT_ENUM
-#define REVISER_COMPILER_TYPESCRIPT_ENUM
+#ifndef REVISER_TYPESCRIPT_ENUM
+#define REVISER_TYPESCRIPT_ENUM
 
 #include <compiler/typescript/typescript_stmt.h>
 #include <compiler/typescript/typescript_struct.h>
@@ -16,7 +16,7 @@ using namespace reviser::message;
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   class TypeScriptEnum : public TypeScriptStmt {
   public:
     TypeScriptStruct* parent = nullptr;

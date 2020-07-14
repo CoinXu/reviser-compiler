@@ -10,7 +10,7 @@
 using namespace std;
 
 namespace reviser {
-namespace compiler {
+namespace javascript {
   //
   // JavaScriptEnum
   JavaScriptEnum::JavaScriptEnum(Enum* node): node(node) {

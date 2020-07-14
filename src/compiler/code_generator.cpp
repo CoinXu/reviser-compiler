@@ -52,5 +52,23 @@ namespace compiler {
   string CodeGenerator::StmtEnum(Enum* e) {
     return "enum";
   }
+
+  bool CodeGenerator::IncludeArrayType() {
+    vector<Struct*> structs(structures.begin(), structures.end());
+
+    for (Struct* s: structs) {
+      for (StructProperty* p: s->properties) {
+        if (p->declare->array_type) {
+          return true;
+        }
+      }
+
+      if (s->structs.size() > 0) {
+        structs.insert(structs.end(), s->structs.begin(), s->structs.end());
+      }
+    }
+
+    return false;
+  }
 }; // reviser
 }; // compiler

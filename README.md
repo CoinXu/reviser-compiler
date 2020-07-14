@@ -37,14 +37,15 @@ make uninstall
 + [x] support comment.
 + [x] compile to javascript.
 + [x] compile to typescript.
-+ [ ] support `enum`, `array<T>`, `struct` types.
++ [ ] support `struct` types.
++ [x] support `enum`, `array<T>` types.
 + [ ] `decorator` allow parameters.
 + [x] check data type.
 + [x] support nested statement
 + [ ] support scope.
 + [ ] support package & import.
-+ [ ] syntax highligth for editor.
-+ [ ] delete all pointer.
++ [x] syntax highligth for editor.
++ [ ] delete unused ast pointer.
 
 # Licence
 MIT

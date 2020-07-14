@@ -10,7 +10,7 @@
 #include <compiler/typescript/typescript_struct.h>
 
 namespace reviser {
-namespace compiler {
+namespace typescript {
   std::map<DataType, string> TypeScriptDataTypeMap = {
     { TYPE_BOOL, "boolean" },
     { TYPE_FLOAT, "number" },
@@ -48,8 +48,13 @@ namespace compiler {
     code_decorator += " } from \"data-reviser\";";
 
     // data type
-    string code_data_type = "import {";
     vector<DataType> types = descriptor->DataTypes();
+    string code_data_type = "import {";
+
+    if (IncludeArrayType()) {
+      code_data_type += " " + TypeScriptCommon::ImportId(DecoraterSyntaxDataType[TYPE_ARRAY]);
+    }
+
     for (vector<DataType>::iterator it = begin(types); it != end(types); it++) {
       if (DecoraterSyntaxDataType.find(*it) == DecoraterSyntaxDataType.end()) {
         message.Runtime("undefined error: " + DataTypeName.at(*it) + " not defined in data types.");
