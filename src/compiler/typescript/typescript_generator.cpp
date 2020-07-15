@@ -30,7 +30,7 @@ namespace typescript {
   // private
   string TypeScriptGenerator::Import() {
     // decorators
-    string code_decorator( 
+    string code_decorator(
       "import { Reviser } from \"data-reviser\";\n"
       "import {"
     );
@@ -51,9 +51,9 @@ namespace typescript {
     vector<DataType> types = descriptor->DataTypes();
     string code_data_type = "import {";
 
-    if (IncludeArrayType()) {
-      code_data_type += " " + TypeScriptCommon::ImportId(DecoraterSyntaxDataType[TYPE_ARRAY]);
-    }
+    // if (IncludeArrayType()) {
+    //   code_data_type += " " + TypeScriptCommon::ImportId(DecoraterSyntaxDataType[TYPE_ARRAY]);
+    // }
 
     for (vector<DataType>::iterator it = begin(types); it != end(types); it++) {
       if (DecoraterSyntaxDataType.find(*it) == DecoraterSyntaxDataType.end()) {

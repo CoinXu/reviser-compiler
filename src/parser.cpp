@@ -176,7 +176,7 @@ namespace compiler {
     }
 
     if (Accept(TOKEN_ID)) {
-      // TODO support struct type
+      // TODO support struct array type
       const string id = PreviousText();
 
       if (Accept(TOKEN_LEFT_BRACKET)) {
@@ -217,6 +217,7 @@ namespace compiler {
     // TODO support initial values
     Expect(TOKEN_RIGHT_BRACKET);
 
+    generator->descriptor->AddDataTypes(TYPE_ARRAY);
     generator->descriptor->AddDataTypes(DataTypeValue[type_string]);
 
     return new Declare(DataTypeValue[type_string], CloneToken(id));
@@ -310,6 +311,7 @@ namespace compiler {
       sv = new StructValue(sid, nullptr);
     }
 
+    generator->descriptor->AddDataTypes(TYPE_STRUCT);
     Declare* declare = new Declare(sid, sv);
     return declare;
   }

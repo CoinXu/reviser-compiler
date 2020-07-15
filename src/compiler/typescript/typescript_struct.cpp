@@ -101,18 +101,30 @@ namespace typescript {
     if (DecoraterSyntaxDataType.find(node->declare->type) != DecoraterSyntaxDataType.end()) {
       if (node->declare->array_type) {
         vector<DecoraterArg> args({
-          { 
-            ARG_ARRAY, 
-            vector<string>({ 
+          {
+            ARG_ARRAY,
+            vector<string>({
               TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[node->declare->type]),
-              TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator[node->declare->type]) 
-            }) 
+              TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator[node->declare->type])
+            })
           }
         });
 
         code_type += TypeScriptCommon::Indent(node->level + 1)
           + "@"
           + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[TYPE_ARRAY], &args)
+          + "\n";
+      } else if (node->declare->type == TYPE_STRUCT) {
+        vector<DecoraterArg> args({
+          {
+            ARG_STRING,
+            vector<string>({ node->declare->sv->id->text })
+          }
+        });
+
+        code_type += TypeScriptCommon::Indent(node->level + 1)
+          + "@"
+          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[TYPE_STRUCT], &args)
           + "\n";
       } else {
         code_type += TypeScriptCommon::Indent(node->level + 1)
