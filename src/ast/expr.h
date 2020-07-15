@@ -45,6 +45,14 @@ namespace ast {
     ~EnumValue();
   };
 
+  class StructValue : public Expr {
+  public:
+    Token* id;
+    Token* value;
+    StructValue(Token* id, Token* value);
+    ~StructValue();
+  };
+
   //
   // Assign
   // foo = bar
@@ -69,11 +77,13 @@ namespace ast {
     Token* eid = nullptr;
     RightValue* dv = nullptr;
     EnumValue* ev = nullptr;
+    StructValue* sv = nullptr;
     vector<string> values;
 
     Declare(DataType type, Token* id, RightValue* dv);
     Declare(DataType type, Token* id, Token* eid, EnumValue* ev);
-    Declare(DataType type, Token *id);
+    Declare(DataType type, Token* id);
+    Declare(Token* id, StructValue* sv);
     ~Declare();
   };
 

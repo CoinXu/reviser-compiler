@@ -12,6 +12,7 @@
 #include <map>
 #include <message.h>
 
+using namespace std;
 using namespace reviser;
 
 namespace reviser {
@@ -28,6 +29,7 @@ namespace compiler {
     TOKEN_BOOL,
     TOKEN_CODE_START,
     TOKEN_CODE_END,
+    TOKEN_NULL,
     TOKEN_DIVIDE = '/',
     TOKEN_ASTERISK = '*',
     TOKEN_ASSIGN = '=',
@@ -55,6 +57,7 @@ namespace compiler {
     RESERVED_UINT32,
     RESERVED_UINT64,
     RESERVED_STRING,
+    RESERVED_NULL,
 
     RESERVED_OPTIONAL,
     RESERVED_REQUIRED
@@ -69,8 +72,8 @@ namespace compiler {
     TYPE_UINT32,
     TYPE_UINT64,
     TYPE_STRING,
-    TYPE_ENUM,
     TYPE_NULL,
+    TYPE_ENUM,
     TYPE_STRUCT,
     TYPE_ARRAY,
     TYPE_ARRAY_STRUCT
@@ -78,7 +81,7 @@ namespace compiler {
 
   struct Token {
     TokenType type;
-    std::string text;
+    string text;
 
     int start_line;       // 开始行号
     int end_line;         // 结束行号
@@ -88,10 +91,10 @@ namespace compiler {
     int pos_end;         // 全部字符中结束位置
   };
 
-  extern std::map<ReservedWord, std::string> ReservedWordMap;
-  extern std::map<TokenType, std::string> TokenTypeNameMap;
-  extern std::map<DataType, std::string> DataTypeName;
-  extern std::map<std::string, DataType> DataTypeValue;
+  extern map<ReservedWord, string> ReservedWordMap;
+  extern map<TokenType, string> TokenTypeNameMap;
+  extern map<DataType, string> DataTypeName;
+  extern map<string, DataType> DataTypeValue;
 
   static const struct Token EmptyToken = {
     TOKEN_ID,
@@ -106,9 +109,9 @@ namespace compiler {
 
   class Tokenizer {
   private:
-    std::string input;
-    std::vector<std::string> type;
-    std::vector<std::string> decorater;
+    string input;
+    vector<string> type;
+    vector<string> decorater;
     message::Message message;
 
     Token current;
@@ -132,8 +135,8 @@ namespace compiler {
 
     bool TryConsume(char c);
 
-    bool TypeIdentifier(const std::string id);
-    bool DecoraterIdentifier(const std::string id);
+    bool TypeIdentifier(const string id);
+    bool DecoraterIdentifier(const string id);
 
     void ConsumeComment();
 
@@ -141,14 +144,14 @@ namespace compiler {
     void ConsumeNumber();
 
   public:
-    Tokenizer(std::string input);
+    Tokenizer(string input);
     ~Tokenizer();
 
     const Token& Current();
     const Token& Previous();
 
     void Printf(const Token* token);
-    void PrintPoint(const std::string mark);
+    void PrintPoint(const string mark);
     void NextChar();
     bool Next();
   };

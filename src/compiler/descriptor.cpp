@@ -17,6 +17,113 @@ namespace compiler {
     return false;
   }
 
+  void Descriptor::PushNewContext() {
+    context.push_back(vector<ContextVariable>({}));
+  }
+
+  void Descriptor::PopBackContext() {
+    context.pop_back();
+  }
+
+  void Descriptor::PushContextVariable(Enum* e) {
+    VariableAst node;
+    node.e = e;
+    context.back().push_back({ e->id->text, DECLARE_ENUM, node });
+  }
+
+  void Descriptor::PushContextVariable(Struct* s) {
+    VariableAst node;
+    node.s = s;
+    context.back().push_back({ s->id->text, DECLARE_STRUCT, node });
+  }
+
+  bool Descriptor::EnumInlcudeProperty(Enum* e, string name) {
+    if (!e) {
+      return false;
+    }
+
+    for (auto item : e->properties) {
+      if (item->id->text == name) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Enum* Descriptor::FindEnumContextById(string id) {
+    ContextVariable* variable = FindContextVariableById(id);
+
+    if (!variable) {
+      return nullptr;
+    }
+
+    if (variable->type == DECLARE_ENUM) {
+      return variable->node.e;
+    }
+
+    return nullptr;
+  }
+
+  Struct* Descriptor::FindStructContextById(string id) {
+    ContextVariable* variable = FindContextVariableById(id);
+
+    if (!variable) {
+      return nullptr;
+    }
+
+    if (variable->type == DECLARE_STRUCT) {
+      return variable->node.s;
+    }
+
+    return nullptr;
+  }
+
+  bool Descriptor::FindContextVariableEnumProperty(string id, string property) {
+    ContextVariable* variable = FindContextVariableById(id);
+
+    if (!variable) {
+      return false;
+    }
+
+    if (variable->type != DECLARE_ENUM) {
+      return false;
+    }
+
+    return EnumInlcudeProperty(variable->node.e, property);
+  }
+
+  Descriptor::ContextVariable* Descriptor::FindContextVariableById(string id) {
+    if (context.size() < 1) {
+      return nullptr;
+    }
+
+    for (int i = context.size() - 1; i >= 0; i--) {
+      vector<ContextVariable> v = context.at(i);
+
+      if (v.size() < 1) {
+        continue;
+      }
+
+      for (int j = v.size() - 1; j >= 0; j--) {
+        if (v.at(j).id == id) {
+          return &v.at(j);
+        }
+      }
+    }
+    return nullptr;
+  }
+
+  DeclareType Descriptor::FindContextVariableTypeById(string id) {
+    ContextVariable* variable = FindContextVariableById(id);
+
+    if (!variable) {
+      return DECLARE_UNDEFINED;
+    }
+
+    return variable->type;
+  }
+
   Descriptor::Descriptor() {}
 
   Descriptor::~Descriptor() {}

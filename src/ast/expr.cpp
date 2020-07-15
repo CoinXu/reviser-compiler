@@ -19,6 +19,11 @@ namespace ast {
   RightValue::~RightValue() {
   }
 
+  // StructValue
+  StructValue::StructValue(Token* id, Token* value): id(id), value(value) {}
+  StructValue::~StructValue() {
+  }
+
   // EnumValue
   EnumValue::EnumValue(Token* id, Token* property)
     : id(id), property(property) {}
@@ -38,9 +43,11 @@ namespace ast {
 
   Declare::Declare(DataType type, Token* id, Token* eid, EnumValue* ev)
     : type(type), id(id), eid(eid), dv(nullptr), ev(ev) {}
-  
+
   Declare::Declare(DataType type, Token* id)
     : type(type), id(id), array_type(true) {}
+
+  Declare::Declare(Token* id, StructValue* sv): id(id), type(TYPE_STRUCT), sv(sv) {}
 
   Declare::~Declare() {
   }

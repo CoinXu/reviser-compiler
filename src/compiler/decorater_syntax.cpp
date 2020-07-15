@@ -28,15 +28,25 @@ namespace compiler {
     { TYPE_UINT32, { "TypeUnInt32", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
     { TYPE_UINT64, { "TypeUnInt64", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
     { TYPE_STRING, { "TypeString", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
-    { 
-      TYPE_ARRAY, 
-      { 
-        "TypeArray", 
+    {
+      TYPE_STRUCT,
+      {
+        "TypeStruct",
+        SYNTAX_CALLABLE,
+        vector<DecoraterArgDef>({
+          { "Clazz", ARG_STRING, false }
+        })
+      }
+    },
+    {
+      TYPE_ARRAY,
+      {
+        "TypeArray",
         SYNTAX_CALLABLE, vector<DecoraterArgDef>({
           { "decorators", ARG_ARRAY, true },
           { "template", ARG_STRING, true }
-        }) 
-      } 
+        })
+      }
     },
     { TYPE_ARRAY_STRUCT, { "TypeArrayStruct", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } }
   };
