@@ -62,6 +62,7 @@ namespace compiler {
     Declare* ConsumeDataTypeDeclare();
     Declare* ConsumeDataTypeArrayDeclare(string type);
     Declare* ConsumeEnumDeclare();
+    Declare* ConsumeStructDeclare();
     Declare* ConsumeEnumArrayDeclare(string id);
 
     // stmt -> enum

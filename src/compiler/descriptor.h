@@ -7,10 +7,13 @@
 #ifndef REVISER_COMPILER_DESCRIPTOR
 #define REVISER_COMPILER_DESCRIPTOR
 
-#include<vector>
-#include<string>
-#include<tokenizer.h>
+#include <string>
+#include <stack>
+#include <tokenizer.h>
+#include <ast/stmt_enum.h>
+#include <ast/stmt_struct.h>
 
+using namespace reviser::ast;
 using namespace std;
 
 namespace reviser {
@@ -18,7 +21,7 @@ namespace compiler {
   enum DeclareType {
     DECLARE_ENUM,
     DECLARE_STRUCT,
-    DECLARE_INTERFACE
+    DECLARE_UNDEFINED
   };
 
   class Descriptor {
@@ -28,12 +31,36 @@ namespace compiler {
       DeclareType type;
     };
 
+    union VariableAst {
+      Enum* e;
+      Struct* s;
+    };
+
+    struct ContextVariable {
+      string id;
+      DeclareType type;
+      VariableAst node;
+    };
+
   private:
     vector<string> decorators_;
     vector<VariableDeclare> global_variables_;
     vector<DataType> data_types_;
 
   public:
+    vector<vector<ContextVariable>> context;
+
+    void PushNewContext();
+    void PopBackContext();
+    void PushContextVariable(Enum*);
+    void PushContextVariable(Struct*);
+    bool EnumInlcudeProperty(Enum*, string);
+    bool FindContextVariableEnumProperty(string, string);
+    Enum* FindEnumContextById(string);
+    Struct* FindStructContextById(string);
+    ContextVariable* FindContextVariableById(string);
+    DeclareType FindContextVariableTypeById(string);
+
     vector<string> Decorators();
     vector<VariableDeclare> GlobalVariables();
     vector<DataType> DataTypes();

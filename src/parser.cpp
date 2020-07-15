@@ -24,6 +24,7 @@ namespace compiler {
 
   void Parser::Program() {
     Accept(TOKEN_CODE_START);
+    generator->descriptor->PushNewContext();
 
     do {
       if (LookAtType(TOKEN_STRUCT)) {
@@ -39,6 +40,7 @@ namespace compiler {
       }
     } while (!Accept(TOKEN_CODE_END));
 
+    generator->descriptor->PopBackContext();
     printer->Print(generator->Generate());
   }
 
@@ -115,21 +117,24 @@ namespace compiler {
   Struct* Parser::ConsumeStruct() {
     Expect(TOKEN_STRUCT);
     Expect(TOKEN_ID);
+
     Struct* s = new Struct(CloneToken(token));
+    generator->descriptor->PushContextVariable(s);
+    generator->descriptor->PushNewContext();
+
     Expect(TOKEN_LEFT_BRACE);
 
-    do {
-      if (LookAtType(TOKEN_RIGHT_BRACE)) {
-        continue;
-      } else if (LookAtType(TOKEN_STRUCT)) {
+    while (!Accept(TOKEN_RIGHT_BRACE)) {
+      if (LookAtType(TOKEN_STRUCT)) {
         s->AddStruct(ConsumeStruct());
       } else if (LookAtType(TOKEN_ENUM)) {
         s->AddEnum(ConsumeEnum());
       } else {
         s->AddProperty(ConsumeStructProperty());
       }
-    } while (!Accept(TOKEN_RIGHT_BRACE));
+    }
 
+    generator->descriptor->PopBackContext();
     return s;
   }
 
@@ -168,17 +173,32 @@ namespace compiler {
         return ConsumeDataTypeArrayDeclare(type);
       }
       return ConsumeDataTypeDeclare();
-    } else if (Accept(TOKEN_ID)) {
+    }
+
+    if (Accept(TOKEN_ID)) {
       // TODO support struct type
       const string id = PreviousText();
+
       if (Accept(TOKEN_LEFT_BRACKET)) {
         return ConsumeEnumArrayDeclare(id);
       }
-      return ConsumeEnumDeclare();
-    } else {
-      RuntimeError("unexpected token");
-      return nullptr;
+
+      DeclareType type = generator->descriptor->FindContextVariableTypeById(id);
+      if (type == DECLARE_STRUCT) {
+        return ConsumeStructDeclare();
+      }
+
+      if (type == DECLARE_ENUM) {
+        return ConsumeEnumDeclare();
+      }
+
+      if (type == DECLARE_UNDEFINED) {
+        RuntimeError("undefined type [" + id + "]");
+      }
     }
+
+    RuntimeError("unexpected token");
+    return nullptr;
   }
 
   // int32[] foo = []
@@ -267,16 +287,64 @@ namespace compiler {
     return declare;
   }
 
+  Declare* Parser::ConsumeStructDeclare() {
+    Token* sid = CloneToken(tokenizer->Previous());
+
+    // enum type id
+    if (!generator->descriptor->FindStructContextById(sid->text)) {
+      RuntimeError("undefined struct [" + sid->text + "] in current scope");
+    }
+
+    Expect(TOKEN_ID);
+    Token* id = CloneToken(token);
+    StructValue* sv;
+
+    // struct only allow null to default value
+    if (Accept(TOKEN_ASSIGN)) {
+      Expect(TOKEN_DATA_TYPE);
+      sv = new StructValue(sid, CloneToken(token));
+      if (PreviousText() != ReservedWordMap[RESERVED_NULL]) {
+        RuntimeError("struct only allow null to default value");
+      }
+    } else {
+      sv = new StructValue(sid, nullptr);
+    }
+
+    Declare* declare = new Declare(sid, sv);
+    return declare;
+  }
+
   Declare* Parser::ConsumeEnumDeclare() {
-    Token* eid = CloneToken(token);
+    Token* eid = CloneToken(tokenizer->Previous());
+
+    // enum type id
+    if (!generator->descriptor->FindEnumContextById(eid->text)) {
+      RuntimeError("undefined enum [" + eid->text + "] in current scope");
+    }
+
     Expect(TOKEN_ID);
     Token* id = CloneToken(token);
     Expect(TOKEN_ASSIGN);
     Expect(TOKEN_ID);
     Token* ei = CloneToken(token);
+
+    // value must match type
+    if (eid->text != ei->text) {
+      RuntimeError("enum type [" + eid->text + "] not match value [" + ei->text + "]");
+    }
+
+    // enum variable id
+    if (!generator->descriptor->FindEnumContextById(ei->text)) {
+      RuntimeError("undefined enum [" + ei->text + "] in current scope");
+    }
+
     Expect(TOKEN_CONNECTION);
     Expect(TOKEN_ID);
     Token* ep = CloneToken(token);
+
+    if (!generator->descriptor->EnumInlcudeProperty(generator->descriptor->FindEnumContextById(ei->text), ep->text)) {
+      RuntimeError("undefined property [" + ep->text + "] in enum [" + ei->text + "]");
+    }
 
     EnumValue* v = new EnumValue(ei, ep);
     Declare* declare = new Declare(TYPE_ENUM, id, eid, v);
@@ -311,6 +379,7 @@ namespace compiler {
     Expect(TOKEN_LEFT_BRACE);
 
     Enum* e = new Enum(id);
+    generator->descriptor->PushContextVariable(e);
 
     do {
       e->properties.push_back(ConsumeEnumProperty());

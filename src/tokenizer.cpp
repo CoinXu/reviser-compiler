@@ -44,7 +44,7 @@ CHARACTER_CLASS(CharQuote, c == TOKEN_QUOTE);
 #undef CHARACTER_CLASS
 
 
-std::map<TokenType, std::string> TokenTypeNameMap = {
+map<TokenType, string> TokenTypeNameMap = {
   { TOKEN_DATA_TYPE, "data type" },
   { TOKEN_DECORATER, "decorater" },
   { TOKEN_STRUCT, "struct" },
@@ -63,7 +63,7 @@ std::map<TokenType, std::string> TokenTypeNameMap = {
   { TOKEN_QUOTE, "quote" }
 };
 
-std::map<ReservedWord, std::string> ReservedWordMap = {
+map<ReservedWord, string> ReservedWordMap = {
   { RESERVED_STRUCT, "struct" },
   { RESERVED_ENUM, "enum" },
 
@@ -78,12 +78,13 @@ std::map<ReservedWord, std::string> ReservedWordMap = {
   { RESERVED_UINT32, "uint32" },
   { RESERVED_UINT64, "uint64" },
   { RESERVED_STRING, "string" },
+  { RESERVED_NULL, "null" },
 
   { RESERVED_OPTIONAL, "optional" },
   { RESERVED_REQUIRED, "required" }
 };
 
-std::map<DataType, std::string> DataTypeName = {
+map<DataType, string> DataTypeName = {
   { TYPE_BOOL, ReservedWordMap[RESERVED_BOOL] },
   { TYPE_FLOAT, ReservedWordMap[RESERVED_FLOAT] },
   { TYPE_DOUBLE, ReservedWordMap[RESERVED_DOUBLE] },
@@ -94,7 +95,7 @@ std::map<DataType, std::string> DataTypeName = {
   { TYPE_STRING, ReservedWordMap[RESERVED_STRING] }
 };
 
-std::map<std::string, DataType> DataTypeValue {
+map<string, DataType> DataTypeValue {
   { ReservedWordMap[RESERVED_BOOL], TYPE_BOOL },
   { ReservedWordMap[RESERVED_FLOAT], TYPE_FLOAT },
   { ReservedWordMap[RESERVED_DOUBLE], TYPE_DOUBLE },
@@ -102,10 +103,11 @@ std::map<std::string, DataType> DataTypeValue {
   { ReservedWordMap[RESERVED_INT64], TYPE_INT64 },
   { ReservedWordMap[RESERVED_UINT32], TYPE_UINT32 },
   { ReservedWordMap[RESERVED_UINT64], TYPE_UINT64 },
-  { ReservedWordMap[RESERVED_STRING], TYPE_STRING }
+  { ReservedWordMap[RESERVED_STRING], TYPE_STRING },
+  { ReservedWordMap[RESERVED_NULL], TYPE_NULL }
 };
 
-Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
+Tokenizer::Tokenizer(string input): input(input), message("tokenizer") {
   peek = input.at(0);
   pos = 0;
   line = 1;
@@ -128,6 +130,7 @@ Tokenizer::Tokenizer(std::string input): input(input), message("tokenizer") {
   type.push_back(ReservedWordMap[RESERVED_UINT32]);
   type.push_back(ReservedWordMap[RESERVED_UINT64]);
   type.push_back(ReservedWordMap[RESERVED_STRING]);
+  type.push_back(ReservedWordMap[RESERVED_NULL]);
 
   decorater.push_back(ReservedWordMap[RESERVED_OPTIONAL]);
   decorater.push_back(ReservedWordMap[RESERVED_REQUIRED]);
@@ -162,14 +165,14 @@ bool Tokenizer::TryConsume(char c) {
   return false;
 }
 
-bool Tokenizer::TypeIdentifier(const std::string id) {
-  auto result = std::find(std::begin(type), std::end(type), id);
-  return result != std::end(type);
+bool Tokenizer::TypeIdentifier(const string id) {
+  auto result = find(begin(type), end(type), id);
+  return result != end(type);
 }
 
-bool Tokenizer::DecoraterIdentifier(const std::string id) {
-  auto result = std::find(std::begin(decorater), std::end(decorater), id);
-  return result != std::end(decorater);
+bool Tokenizer::DecoraterIdentifier(const string id) {
+  auto result = find(begin(decorater), end(decorater), id);
+  return result != end(decorater);
 }
 
 void Tokenizer::ConsumeComment() {
@@ -222,16 +225,16 @@ void Tokenizer::Printf(const Token* token) {
   message.SetLine(token->start_line);
   message.SetColumn(token->column_start);
   message.Debug("-------------------------------------------");
-  message.Debug("token.type: " + std::to_string(token->type));
+  message.Debug("token.type: " + to_string(token->type));
   message.Debug("token.name: " + TokenTypeNameMap.at(token->type));
   message.Debug("token.text: " + token->text);
 }
 
-void Tokenizer::PrintPoint(const std::string mark) {
+void Tokenizer::PrintPoint(const string mark) {
   message.SetLine(line);
   message.SetColumn(column);
-  message.Debug("pos: " + std::to_string(pos));
-  message.Debug("char: " + std::to_string(peek));
+  message.Debug("pos: " + to_string(pos));
+  message.Debug("char: " + to_string(peek));
 }
 
 void Tokenizer::NextChar() {
@@ -319,7 +322,7 @@ bool Tokenizer::Next() {
         }
       } else {
         TryConsumeCharacters<NewLine>();
-        const std::string content = input.substr(start_pos - 1,  pos - start_pos);
+        const string content = input.substr(start_pos - 1,  pos - start_pos);
         message.Runtime("unkown token error: \n  " + content + "\n  ^");
       }
   }

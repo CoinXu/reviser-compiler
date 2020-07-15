@@ -20,6 +20,8 @@ struct Bar {
     Double
   }
 
+  struct Foo {}
+
   struct Baz {
     enum DataType {
       Int32,
@@ -41,6 +43,8 @@ struct Bar {
       required Language second_lang = Language.TypeScript; 
       optional DataType type = DataType.String;
     }
+
+    required Foo foo = null;
   }
 
   optional Numberic num = Numberic.Int32;

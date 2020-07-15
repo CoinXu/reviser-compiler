@@ -59,6 +59,8 @@ namespace typescript {
     } else if (node->type == TYPE_ENUM) {
       TypeScriptEnumValue ev(node->ev);
       value = ev.Generate();
+    } else if (node->type == TYPE_STRUCT) {
+      value = node->sv->value ? node->sv->value->text : ReservedWordMap[RESERVED_NULL];
     } else {
       TypeScriptRightValue rv(node->dv);
       value = rv.Generate();
@@ -68,7 +70,7 @@ namespace typescript {
     if (node->type == TYPE_ENUM) {
       type = node->ev->id->text;
     } else if (node->type == TYPE_STRUCT) {
-      // TODO
+      type = node->sv->id->text;
     } else if (node->type == TYPE_ARRAY_STRUCT) {
       // TODO
     } else if (TypeScriptDataTypeMap.find(node->type) != TypeScriptDataTypeMap.end()) {

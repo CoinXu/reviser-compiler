@@ -23,8 +23,9 @@ declare -> "bool" id ["=" bool]
          | "uint64" id ["=" uint64]
          | "string" id ["=" string]
          | id id "=" id "." id        # enum
-         | type "[]" id ["=" type[]]
-         | id "[]" id ["=" id[]]      # enum or struct
+         | id id ["=" "null"]         # struct
+         | type "[]" id ["=" type[]]  # type array
+         | id "[]" id ["=" id[]]      # enum or struct array
 id      -> letter (letter | digit)*
 letter  -> a | ... | z | A | ... | Z | _
 digit   -> 0 | ... | 9
