@@ -55,7 +55,7 @@
       "patterns": [
         {
           "name": "keyword.other",
-          "match": "\\b(required|optional)\\b"
+          "match": "\\b(required)\\b"
         }
       ]
     },

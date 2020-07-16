@@ -19,12 +19,13 @@ namespace typescript {
   string TypeScriptRightValue::Generate() {
     if (node->array_type) {
       switch (node->type) {
-        case TYPE_ENUM:
+        case TYPE_ENUM: {
           vector<string> values;
           for (EnumValue* v : node->evs) {
             values.push_back(TypeScriptEnumValue(v).Generate());
           }
           return "[" + TypeScriptCommon::JoinVector(values, ", ") + "]";
+        }
 
         case TYPE_STRUCT:
           return TypeScriptStructValue(node->sv).Generate();
@@ -35,19 +36,21 @@ namespace typescript {
         case TYPE_INT32:
         case TYPE_INT64:
         case TYPE_UINT32:
-        case TYPE_UINT64:
+        case TYPE_UINT64: {
           vector<string> values;
           for (Token* t : node->dvs) {
             values.push_back(t->text);
           }
           return "[" + TypeScriptCommon::JoinVector(values, ", ") + "]";
+        }
 
-        case TYPE_STRING:
+        case TYPE_STRING: {
           vector<string> values;
           for (Token* t : node->dvs) {
             values.push_back("\"" + t->text + "\"");
           }
           return "[" + TypeScriptCommon::JoinVector(values, ", ") + "]";
+        }
 
         default:
           return "";
@@ -157,7 +160,7 @@ namespace typescript {
       case TYPE_UINT32:
       case TYPE_UINT64:
       case TYPE_STRING:
-        type = TypeScriptDataTypeMap[node->type];
+        type = TypeScriptBuildInDataTypeMap[node->type];
         break;
 
       default:

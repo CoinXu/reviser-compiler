@@ -11,7 +11,7 @@
 
 namespace reviser {
 namespace typescript {
-  std::map<DataType, string> TypeScriptDataTypeMap = {
+  std::map<DataType, string> TypeScriptBuildInDataTypeMap = {
     { TYPE_BOOL, "boolean" },
     { TYPE_FLOAT, "number" },
     { TYPE_DOUBLE, "number" },
@@ -22,6 +22,10 @@ namespace typescript {
     { TYPE_STRING, "string" }
   };
 
+  std::map<DataType, vector<ReviserType>> TypeScriptDataTypeReviserMap = {
+    // { TYPE_BOOL, { REVISER_TYPE_BOOL, REVISER_TO_BOOLEAN } }
+  };
+
   TypeScriptGenerator::TypeScriptGenerator(): CodeGenerator(), message("typescript") {}
 
   TypeScriptGenerator::~TypeScriptGenerator() {}
@@ -30,48 +34,46 @@ namespace typescript {
   // private
   string TypeScriptGenerator::Import() {
     // decorators
-    string code_decorator(
-      "import { Reviser } from \"data-reviser\";\n"
-      "import {"
-    );
+    vector<string> deco(descriptor->Decorators());
+    vector<string> decorators;
 
-    vector<string> decorators(descriptor->Decorators());
-
-    for (vector<string>::iterator it = begin(decorators); it != end(decorators); it++ ) {
-      if (DecoraterSyntaxBuildIn.find(*it) == DecoraterSyntaxBuildIn.end()) {
+    for (vector<string>::iterator it = begin(deco); it != end(deco); it++ ) {
+      if (ReviserSyntaxBuildIn.find(*it) == ReviserSyntaxBuildIn.end()) {
         message.Runtime("undefined error: " + *it + " not defined in decorators.");
       }
-      code_decorator += " "
-        + TypeScriptCommon::ImportId(DecoraterSyntaxBuildIn.at(*it))
-        + (next(it) == end(decorators) ? "" : ",");
+      decorators.push_back(TypeScriptCommon::ImportId(ReviserSyntaxBuildIn.at(*it)));
     }
-    code_decorator += " } from \"data-reviser\";";
+
+    string code_decorator(
+    );
 
     // data type
+    vector<string> revisers;
     vector<DataType> types = descriptor->DataTypes();
-    string code_data_type = "import {";
+    map<string, int> unique;
 
-    // if (IncludeArrayType()) {
-    //   code_data_type += " " + TypeScriptCommon::ImportId(DecoraterSyntaxDataType[TYPE_ARRAY]);
-    // }
-
-    for (vector<DataType>::iterator it = begin(types); it != end(types); it++) {
-      if (DecoraterSyntaxDataType.find(*it) == DecoraterSyntaxDataType.end()) {
-        message.Runtime("undefined error: " + DataTypeName.at(*it) + " not defined in data types.");
-      }
-
-      if (DecoraterSyntaxTranslator.find(*it) != DecoraterSyntaxTranslator.end()) {
-        code_data_type += " " + TypeScriptCommon::ImportId(DecoraterSyntaxTranslator.at(*it)) + ",";
-      }
-
-      code_data_type += " " + TypeScriptCommon::ImportId(DecoraterSyntaxDataType.at(*it))
-        + (next(it) == end(types) ? "" : ",");
+    if (descriptor->include_type_array) {
+      revisers.push_back(TypeScriptCommon::ImportId(ReviserMethodMap[REVISER_TYPE_ARRAY]));
     }
 
-    code_data_type += " } from \"data-reviser\";";
+    if (descriptor->include_struct_array) {
+      revisers.push_back(TypeScriptCommon::ImportId(ReviserMethodMap[REVISER_TYPE_ARRAY_STRUCT]));
+    }
 
+    for (vector<DataType>::iterator it = begin(types); it != end(types); it++) {
+      vector<ReviserSyntaxDefinition> defs = TypeScriptCommon::FindReviserSyntaxDefinitionByDataType(*it);
+      for (ReviserSyntaxDefinition d : defs) {
+        string id = TypeScriptCommon::ImportId(d);
+        if (unique.find(id) == unique.end()) {
+          unique[id] = 0;
+          revisers.push_back(id);
+        }
+      }
+    }
 
-    return code_decorator + "\n" + code_data_type;
+    return "import { Reviser } from \"data-reviser\";\n"
+      "import { " + TypeScriptCommon::JoinVector(decorators, ", ") + " } from \"data-reviser\";"
+      "import { " + TypeScriptCommon::JoinVector(revisers, ", ") + " } from \"data-reviser\";";
   }
 
   string TypeScriptGenerator::Export() {

@@ -80,7 +80,6 @@ map<ReservedWord, string> ReservedWordMap = {
   { RESERVED_STRING, "string" },
   { RESERVED_NULL, "null" },
 
-  { RESERVED_OPTIONAL, "optional" },
   { RESERVED_REQUIRED, "required" }
 };
 

@@ -31,8 +31,7 @@ namespace typescript {
   string TypeScriptEnum::Generate() {
     string code;
 
-    code = TypeScriptCommon::Indent(node->level)
-      + "enum " + node->id->text + " {\n";
+    code = TypeScriptCommon::Indent(node->level) + "enum " + node->id->text + " {\n";
 
     size_t counter = 0;
     size_t total = node->properties.size();

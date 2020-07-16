@@ -167,6 +167,7 @@ namespace compiler {
 
   // expr
   Declare* Parser::ConsumeDeclare() {
+    // data type & data type array
     if (Accept(TOKEN_DATA_TYPE)) {
       const string type = PreviousText();
       if (Accept(TOKEN_LEFT_BRACKET)) {
@@ -175,6 +176,8 @@ namespace compiler {
       return ConsumeDataTypeDeclare();
     }
 
+    // struct & struct array
+    // enum & enum array
     if (Accept(TOKEN_ID)) {
       // TODO support struct array type
       const Token& type_id = tokenizer->Previous();
@@ -228,10 +231,13 @@ namespace compiler {
     // TODO support initial values
     Expect(TOKEN_RIGHT_BRACKET);
 
-    generator->descriptor->AddDataTypes(TYPE_ARRAY);
-    generator->descriptor->AddDataTypes(DataTypeValue[type_string]);
+    DataType type = DataTypeValue.at(type_string);
 
-    return new Declare(DataTypeValue[type_string], CloneToken(id));
+    generator->descriptor->include_type_array = true;
+    generator->descriptor->AddDataTypes(type);
+
+    RightValue* rv = new RightValue(type, CloneToken(token));
+    return new Declare(type, CloneToken(id), rv, true);
   }
 
   Declare* Parser::ConsumeDataTypeDeclare() {
@@ -344,8 +350,8 @@ namespace compiler {
       RuntimeError("undefined property [" + ep->text + "] in enum [" + ei->text + "]");
     }
 
-    EnumValue* v = new EnumValue(ei, ep);
-    Declare* declare = new Declare(TYPE_ENUM, id, eid, v);
+    EnumValue* ev = new EnumValue(ei, ep);
+    Declare* declare = new Declare(eid, ev);
     return declare;
   }
 
@@ -372,6 +378,7 @@ namespace compiler {
       sv = new StructValue(sid, nullptr);
     }
 
+    generator->descriptor->include_struct_array = true;
     return new Declare(id, sv, true);
   }
 
@@ -383,6 +390,8 @@ namespace compiler {
 
     Token* eid = CloneToken(enum_id);
     Token* id = CloneToken(token);
+
+    generator->descriptor->include_enum_array = true;
 
     return nullptr;
   }

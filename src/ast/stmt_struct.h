@@ -21,7 +21,7 @@ namespace reviser {
 namespace ast {
   //
   // Decorater
-  // required | optional
+  // required
   class Decorater: public Stmt {
   public:
     Token* id = nullptr;

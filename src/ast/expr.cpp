@@ -13,7 +13,7 @@ namespace reviser {
 namespace ast {
 
   // RightValue
-  RightValue::RightValue(DataType type, Token* id, bool array_type = false)
+  RightValue::RightValue(DataType type, Token* id, bool array_type)
     : type(type), id(id), array_type(array_type) {}
 
   RightValue::RightValue(StructValue* sv, bool array_type)

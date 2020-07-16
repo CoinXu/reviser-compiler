@@ -56,7 +56,7 @@ namespace javascript {
       JavaScriptEnumValue ev(node->ev);
       value = ev.Generate();
     } else {
-      JavaScriptRightValue rv(node->dv);
+      JavaScriptRightValue rv(node->rv);
       value = rv.Generate();
     }
 
