@@ -126,30 +126,13 @@ namespace typescript {
   }
 
   string TypeScriptDeclare::Generate() {
-  //   string value;
-
-  //   // TODO support initial values
-  //   if (node->array_type) {
-  //     value = "[]";
-  //   } else if (node->type == TYPE_ENUM) {
-  //     TypeScriptEnumValue ev(node->ev);
-  //     value = ev.Generate();
-  //   } else if (node->type == TYPE_STRUCT) {
-  //     value = node->sv->value ? node->sv->value->text : ReservedWordMap[RESERVED_NULL];
-  //   } else {
-  //     TypeScriptRightValue rv(node->dv);
-  //     value = rv.Generate();
-  //   }
-
     string type;
+    string value;
 
     switch (node->type) {
       case TYPE_ENUM:
-        type = node->ev->id->text;
-        break;
-
       case TYPE_STRUCT:
-        type = node->sv->id->text;
+        type = node->type_id->text;
         break;
 
       case TYPE_BOOL:

@@ -62,7 +62,7 @@ namespace ast {
     StructValue* sv;
     EnumValue* ev;
 
-    RightValue(DataType type, Token* id, bool array_type = false);
+    RightValue(DataType type, Token* id, bool = false);
     RightValue(StructValue*, bool = false);
     RightValue(EnumValue*, bool = false);
     ~RightValue();
@@ -91,15 +91,11 @@ namespace ast {
     bool array_type = false;
 
     Token* id = nullptr;
-    Token* eid = nullptr;
+    Token* type_id = nullptr;
     RightValue* rv = nullptr;
-    EnumValue* ev = nullptr;
-    StructValue* sv = nullptr;
-    vector<string> values;
 
     Declare(DataType type, Token* id, RightValue* rv, bool array_type = false);
-    Declare(Token* id, StructValue* sv, bool array_type = false);
-    Declare(Token* id, EnumValue* ev, bool array_type = false);
+    Declare(DataType type, Token* id, Token* type_id, RightValue* rv, bool array_type = false);
 
     ~Declare();
   };

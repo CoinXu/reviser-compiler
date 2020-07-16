@@ -180,7 +180,7 @@ namespace compiler {
     // enum & enum array
     if (Accept(TOKEN_ID)) {
       // TODO support struct array type
-      const Token& type_id = tokenizer->Previous();
+      const Token type_id = tokenizer->Previous();
       const string id = type_id.text;
       DeclareType type = generator->descriptor->FindContextVariableTypeById(id);
 
@@ -236,7 +236,7 @@ namespace compiler {
     generator->descriptor->include_type_array = true;
     generator->descriptor->AddDataTypes(type);
 
-    RightValue* rv = new RightValue(type, CloneToken(token));
+    RightValue* rv = new RightValue(type, CloneToken(token), true);
     return new Declare(type, CloneToken(id), rv, true);
   }
 
@@ -284,8 +284,8 @@ namespace compiler {
         break;
     }
 
-    RightValue* dv = new RightValue(data_type, dvt);
-    Declare* declare = new Declare(data_type, id, dv);
+    RightValue* rv = new RightValue(data_type, dvt);
+    Declare* declare = new Declare(data_type, id, rv);
     return declare;
   }
 
@@ -314,7 +314,8 @@ namespace compiler {
     }
 
     generator->descriptor->AddDataTypes(TYPE_STRUCT);
-    Declare* declare = new Declare(sid, sv);
+    RightValue* rv = new RightValue(sv);
+    Declare* declare = new Declare(TYPE_STRUCT, id, sid, rv);
     return declare;
   }
 
@@ -351,7 +352,8 @@ namespace compiler {
     }
 
     EnumValue* ev = new EnumValue(ei, ep);
-    Declare* declare = new Declare(eid, ev);
+    RightValue* rv = new RightValue(ev);
+    Declare* declare = new Declare(TYPE_ENUM, id, eid, rv);
     return declare;
   }
 
@@ -379,7 +381,8 @@ namespace compiler {
     }
 
     generator->descriptor->include_struct_array = true;
-    return new Declare(id, sv, true);
+    RightValue* rv = new RightValue(sv, true);
+    return new Declare(TYPE_STRUCT, id, sid, rv, true);
   }
 
   // Color[] color = [];

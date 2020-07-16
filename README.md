@@ -38,7 +38,7 @@ make uninstall
 + [x] compile to javascript.
 + [x] compile to typescript.
 + [x] support `struct` types.
-+ [ ] support `array<struct>` types.
++ [x] support `array<struct>` types.
 + [x] support `enum`, `array<T>` types.
 + [ ] ~~`decorator` allow parameters.~~
 + [x] check data type.

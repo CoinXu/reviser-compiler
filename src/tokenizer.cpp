@@ -296,7 +296,7 @@ bool Tokenizer::Next() {
       NextChar();
       TryConsumeCharacters<CharQuote>();
       NextChar();
-      current.text = input.substr(start_pos - 1, pos - start_pos);
+      current.text = input.substr(start_pos, pos - start_pos - 2);
       break;
 
     default:

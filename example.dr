@@ -13,6 +13,9 @@ enum Color /* 11 */ {
   /* foo */
 }
 
+struct Foo {}
+struct Baz {}
+
 struct Bar {
   enum Numberic {
     Int32,
@@ -20,7 +23,11 @@ struct Bar {
     Double
   }
 
-  struct Foo {}
+  struct Foo {
+    bool[] b = [];
+    Bar[] bar = [];
+    Bar ba;
+  }
 
   struct Baz {
     enum DataType {
@@ -46,6 +53,9 @@ struct Bar {
 
     required Foo foo = null;
   }
+
+  Baz baz;
+  Baz[] bazs = [];
 
   Numberic num = Numberic.Int32;
   required string s = "string";

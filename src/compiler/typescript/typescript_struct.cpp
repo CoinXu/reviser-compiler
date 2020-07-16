@@ -113,7 +113,7 @@ namespace typescript {
           break;
 
         case TYPE_STRUCT: {
-          vector<DecoraterArg> v({{ ARG_STRING, vector<string>({ node->declare->sv->id->text }) }});
+          vector<DecoraterArg> v({{ ARG_STRING, vector<string>({ node->declare->type_id->text }) }});
           revisers.push_back(TypeScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_ARRAY_STRUCT], &v));
           break;
         }
@@ -137,7 +137,7 @@ namespace typescript {
           break;
 
         case TYPE_STRUCT: {
-          vector<DecoraterArg> v({{ ARG_STRING, vector<string>({ node->declare->sv->id->text }) }});
+          vector<DecoraterArg> v({{ ARG_STRING, vector<string>({ node->declare->type_id->text }) }});
           revisers.push_back(TypeScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_STRUCT], &v));
           break;
         }
@@ -145,7 +145,11 @@ namespace typescript {
     }
 
     string indent = TypeScriptCommon::Indent(node->level + 1);
-    return indent + TypeScriptCommon::JoinVector(revisers, "\n" + indent)
+    return (
+        revisers.size() > 0
+        ? indent + ("@" + TypeScriptCommon::JoinVector(revisers, "\n" + indent + "@") + "\n")
+        : ""
+      )
       + code_decorater + indent + TypeScriptDeclare(node->declare).Generate() + ";";
   }
 
@@ -161,8 +165,8 @@ namespace typescript {
   string TypeScriptStructInterfaceProperty::Generate() {
     if (node->declare->type == TYPE_ENUM) {
       return TypeScriptCommon::Indent(node->level)
-        + node->declare->id->text + ": " + node->declare->eid->text
-        + "; /* enum " + node->declare->eid->text + " */";
+        + node->declare->id->text + ": " + node->declare->type_id->text
+        + "; /* enum " + node->declare->type_id->text + " */";
     }
 
     string type;

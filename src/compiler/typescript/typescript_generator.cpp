@@ -23,7 +23,14 @@ namespace typescript {
   };
 
   std::map<DataType, vector<ReviserType>> TypeScriptDataTypeReviserMap = {
-    // { TYPE_BOOL, { REVISER_TYPE_BOOL, REVISER_TO_BOOLEAN } }
+    { TYPE_BOOL, { REVISER_TYPE_BOOL, REVISER_TO_BOOL } },
+    { TYPE_FLOAT, { REVISER_TYPE_FLOAT, REVISER_TO_FLOAT } },
+    { TYPE_DOUBLE, { REVISER_TYPE_DOUBLE, REVISER_TO_DOUBLE } },
+    { TYPE_INT32, { REVISER_TYPE_INT32, REVISER_TO_INT32 } },
+    { TYPE_INT64, { REVISER_TYPE_INT64, REVISER_TO_INT64 } },
+    { TYPE_UINT32, { REVISER_TYPE_UINT32, REVISER_TO_UINT32 } },
+    { TYPE_UINT64, { REVISER_TYPE_UINT64, REVISER_TO_UINT64 } },
+    { TYPE_STRING, { REVISER_TYPE_STRING, REVISER_TO_STRING } }
   };
 
   TypeScriptGenerator::TypeScriptGenerator(): CodeGenerator(), message("typescript") {}
@@ -44,10 +51,6 @@ namespace typescript {
       decorators.push_back(TypeScriptCommon::ImportId(ReviserSyntaxBuildIn.at(*it)));
     }
 
-    string code_decorator(
-    );
-
-    // data type
     vector<string> revisers;
     vector<DataType> types = descriptor->DataTypes();
     map<string, int> unique;
@@ -72,7 +75,7 @@ namespace typescript {
     }
 
     return "import { Reviser } from \"data-reviser\";\n"
-      "import { " + TypeScriptCommon::JoinVector(decorators, ", ") + " } from \"data-reviser\";"
+      "import { " + TypeScriptCommon::JoinVector(decorators, ", ") + " } from \"data-reviser\";\n"
       "import { " + TypeScriptCommon::JoinVector(revisers, ", ") + " } from \"data-reviser\";";
   }
 

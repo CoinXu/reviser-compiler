@@ -45,13 +45,10 @@ namespace ast {
 
   // Declare
   Declare::Declare(DataType type, Token* id, RightValue* rv, bool array_type)
-    :  type(type), id(id), rv(rv), array_type(array_type) {}
+    : type(type), id(id), rv(rv), array_type(array_type) {}
 
-  Declare::Declare(Token* id, StructValue* sv, bool array_type)
-    : id(id), type(TYPE_STRUCT), sv(sv), array_type(array_type) {}
-
-  Declare::Declare(Token* id, EnumValue* ev, bool array_type)
-    : id(id), type(TYPE_ENUM), ev(ev), array_type(array_type) {}
+  Declare::Declare(DataType type, Token* id, Token* type_id, RightValue* rv, bool array_type)
+    : type(type), id(id), type_id(type_id), rv(rv), array_type(array_type) {}
 
   Declare::~Declare() {
   }

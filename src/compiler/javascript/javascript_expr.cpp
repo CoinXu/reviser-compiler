@@ -50,17 +50,7 @@ namespace javascript {
   }
 
   string JavaScriptDeclare::Generate() {
-    string value;
-
-    if (node->type == TYPE_ENUM) {
-      JavaScriptEnumValue ev(node->ev);
-      value = ev.Generate();
-    } else {
-      JavaScriptRightValue rv(node->rv);
-      value = rv.Generate();
-    }
-
-    return node->id->text + " = " + value;
+    return node->id->text + " = " + JavaScriptRightValue(node->rv).Generate();
   }
 }; // reviser
 }; // compiler
