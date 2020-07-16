@@ -73,10 +73,9 @@ namespace compiler {
     TYPE_UINT64,
     TYPE_STRING,
     TYPE_NULL,
+
     TYPE_ENUM,
-    TYPE_STRUCT,
-    TYPE_ARRAY,
-    TYPE_ARRAY_STRUCT
+    TYPE_STRUCT
   };
 
   struct Token {

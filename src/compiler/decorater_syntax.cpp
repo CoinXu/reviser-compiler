@@ -11,44 +11,50 @@ namespace compiler {
   std::map<std::string, DecoraterSyntaxDefinition> DecoraterSyntaxBuildIn = {
     {
       ReservedWordMap[RESERVED_OPTIONAL],
-      { "Optional", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) }
+      { "Optional", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) }
     },
     {
       ReservedWordMap[RESERVED_REQUIRED],
-      { "Required", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) }
+      { "Required", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) }
     }
   };
 
   std::map<DataType, DecoraterSyntaxDefinition> DecoraterSyntaxDataType = {
-    { TYPE_BOOL, { "TypeBoolean", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
-    { TYPE_FLOAT, { "TypeFloat", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
-    { TYPE_DOUBLE, { "TypeDouble", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
-    { TYPE_INT32, { "TypeInt32", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
-    { TYPE_INT64, { "TypeInt64", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
-    { TYPE_UINT32, { "TypeUnInt32", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
-    { TYPE_UINT64, { "TypeUnInt64", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
-    { TYPE_STRING, { "TypeString", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } },
+    { TYPE_BOOL, { "TypeBoolean", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) } },
+    { TYPE_FLOAT, { "TypeFloat", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) } },
+    { TYPE_DOUBLE, { "TypeDouble", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) } },
+    { TYPE_INT32, { "TypeInt32", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) } },
+    { TYPE_INT64, { "TypeInt64", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) } },
+    { TYPE_UINT32, { "TypeUnInt32", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) } },
+    { TYPE_UINT64, { "TypeUnInt64", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) } },
+    { TYPE_STRING, { "TypeString", SYNTAX_CALLABLE, vector<DecoraterArgDef>({ { ARG_STRING, true } }) } },
     {
       TYPE_STRUCT,
       {
         "TypeStruct",
         SYNTAX_CALLABLE,
-        vector<DecoraterArgDef>({
-          { "Clazz", ARG_STRING, false }
-        })
+        vector<DecoraterArgDef>({ { ARG_STRUCT, false } })
       }
     },
     {
       TYPE_ARRAY,
       {
         "TypeArray",
-        SYNTAX_CALLABLE, vector<DecoraterArgDef>({
-          { "decorators", ARG_ARRAY, true },
-          { "template", ARG_STRING, true }
+        SYNTAX_CALLABLE,
+        vector<DecoraterArgDef>({
+          { ARG_ARRAY, true },
+          { ARG_STRING, true }
         })
       }
     },
-    { TYPE_ARRAY_STRUCT, { "TypeArrayStruct", SYNTAX_CALLABLE, vector<DecoraterArgDef>({}) } }
+    {
+      TYPE_ARRAY_STRUCT,
+      {
+        "TypeArrayStruct",
+        SYNTAX_CALLABLE,
+        vector<DecoraterArgDef>({ { ARG_STRUCT, false }, { ARG_STRING, true } })
+      }
+    }
   };
 
   std::map<DataType, DecoraterSyntaxDefinition> DecoraterSyntaxTranslator = {

@@ -28,7 +28,6 @@ namespace compiler {
   };
 
   struct DecoraterArgDef {
-    string name;
     DecoraterSyntaxArgType type;
     bool optional;
   };

@@ -13,8 +13,14 @@ namespace reviser {
 namespace ast {
 
   // RightValue
-  RightValue::RightValue(DataType type, Token* id)
-    : type(type), id(id) {}
+  RightValue::RightValue(DataType type, Token* id, bool array_type = false)
+    : type(type), id(id), array_type(array_type) {}
+
+  RightValue::RightValue(StructValue* sv, bool array_type)
+    : sv(sv), type(TYPE_STRUCT), array_type(array_type) {}
+
+  RightValue::RightValue(EnumValue* ev, bool array_type)
+    : ev(ev), type(TYPE_ENUM), array_type(array_type) {}
 
   RightValue::~RightValue() {
   }
@@ -38,16 +44,14 @@ namespace ast {
   }
 
   // Declare
-  Declare::Declare(DataType type, Token* id, RightValue* dv)
-    : type(type), id(id), eid(nullptr), dv(dv), ev(nullptr) {}
+  Declare::Declare(DataType type, Token* id, RightValue* rv, bool array_type)
+    :  type(type), id(id), rv(rv), array_type(array_type) {}
 
-  Declare::Declare(DataType type, Token* id, Token* eid, EnumValue* ev)
-    : type(type), id(id), eid(eid), dv(nullptr), ev(ev) {}
+  Declare::Declare(Token* id, StructValue* sv, bool array_type)
+    : id(id), type(TYPE_STRUCT), sv(sv), array_type(array_type) {}
 
-  Declare::Declare(DataType type, Token* id)
-    : type(type), id(id), array_type(true) {}
-
-  Declare::Declare(Token* id, StructValue* sv): id(id), type(TYPE_STRUCT), sv(sv) {}
+  Declare::Declare(Token* id, EnumValue* ev, bool array_type)
+    : id(id), type(TYPE_ENUM), ev(ev), array_type(array_type) {}
 
   Declare::~Declare() {
   }

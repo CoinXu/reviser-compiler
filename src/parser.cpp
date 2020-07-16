@@ -177,13 +177,22 @@ namespace compiler {
 
     if (Accept(TOKEN_ID)) {
       // TODO support struct array type
-      const string id = PreviousText();
+      const Token& type_id = tokenizer->Previous();
+      const string id = type_id.text;
+      DeclareType type = generator->descriptor->FindContextVariableTypeById(id);
 
       if (Accept(TOKEN_LEFT_BRACKET)) {
-        return ConsumeEnumArrayDeclare(id);
+        if (type == DECLARE_STRUCT) {
+          return ConsumeStructArrayDeclare(type_id);
+        }
+
+        if (type == DECLARE_ENUM) {
+          return ConsumeEnumArrayDeclare(type_id);
+        }
+
+        RuntimeError("unknow array type [" + id + "]");
       }
 
-      DeclareType type = generator->descriptor->FindContextVariableTypeById(id);
       if (type == DECLARE_STRUCT) {
         return ConsumeStructDeclare();
       }
@@ -195,6 +204,8 @@ namespace compiler {
       if (type == DECLARE_UNDEFINED) {
         RuntimeError("undefined type [" + id + "]");
       }
+
+      RuntimeError("unknow type [" + id + "]");
     }
 
     RuntimeError("unexpected token");
@@ -235,52 +246,36 @@ namespace compiler {
 
     Token* dvt = CloneToken(tokenizer->Current());
     string value = CurrentText();
-    DataType data_type;
+    DataType data_type = DataTypeValue.at(type);
 
-    if (type == ReservedWordMap[RESERVED_BOOL]) {
-      data_type = TYPE_BOOL;
-      if (value != ReservedWordMap[RESERVED_FALSE]
-        && value != ReservedWordMap[RESERVED_TRUE]) {
-        RuntimeError("expect true or false");
-      } else {
-        generator->descriptor->AddDataTypes(TYPE_BOOL);
-        Next();
-      }
-    } else if (type == ReservedWordMap[RESERVED_FLOAT]) {
-      data_type = TYPE_FLOAT;
-      generator->descriptor->AddDataTypes(TYPE_FLOAT);
+    switch (data_type) {
+      case TYPE_BOOL:
+        if (value != ReservedWordMap[RESERVED_FALSE] && value != ReservedWordMap[RESERVED_TRUE]) {
+          RuntimeError("expect true or false");
+        } else {
+          generator->descriptor->AddDataTypes(TYPE_BOOL);
+          Next();
+        }
+        break;
 
-      Expect(TOKEN_DIGIT);
-    } else if (type == ReservedWordMap[RESERVED_DOUBLE]) {
-      data_type = TYPE_DOUBLE;
-      generator->descriptor->AddDataTypes(TYPE_DOUBLE);
+      case TYPE_FLOAT:
+      case TYPE_DOUBLE:
+      case TYPE_INT32:
+      case TYPE_INT64:
+      case TYPE_UINT32:
+      case TYPE_UINT64:
+        generator->descriptor->AddDataTypes(TYPE_FLOAT);
+        Expect(TOKEN_DIGIT);
+        break;
 
-      Expect(TOKEN_DIGIT);
-    } else if (type == ReservedWordMap[RESERVED_INT32]) {
-      data_type = TYPE_INT32;
-      generator->descriptor->AddDataTypes(TYPE_INT32);
+      case TYPE_STRING:
+        generator->descriptor->AddDataTypes(TYPE_STRING);
+        Expect(TOKEN_LETTER);
+        break;
 
-      Expect(TOKEN_DIGIT);
-    } else if (type == ReservedWordMap[RESERVED_INT64]) {
-      data_type = TYPE_INT64;
-      generator->descriptor->AddDataTypes(TYPE_INT64);
-
-      Expect(TOKEN_DIGIT);
-    } else if (type == ReservedWordMap[RESERVED_UINT32]) {
-      data_type = TYPE_UINT32;
-      generator->descriptor->AddDataTypes(TYPE_UINT32);
-
-      Expect(TOKEN_DIGIT);
-    } else if (type == ReservedWordMap[RESERVED_UINT64]) {
-      data_type = TYPE_UINT64;
-      generator->descriptor->AddDataTypes(TYPE_UINT64);
-
-      Expect(TOKEN_DIGIT);
-    } else if (type == ReservedWordMap[RESERVED_STRING]) {
-      data_type = TYPE_STRING;
-      generator->descriptor->AddDataTypes(TYPE_STRING);
-
-      Expect(TOKEN_LETTER);
+      default:
+        RuntimeError("unknow data type [" + type + "]");
+        break;
     }
 
     RightValue* dv = new RightValue(data_type, dvt);
@@ -288,10 +283,11 @@ namespace compiler {
     return declare;
   }
 
+  // Foo foo = null
   Declare* Parser::ConsumeStructDeclare() {
     Token* sid = CloneToken(tokenizer->Previous());
 
-    // enum type id
+    // struct type id
     if (!generator->descriptor->FindStructContextById(sid->text)) {
       RuntimeError("undefined struct [" + sid->text + "] in current scope");
     }
@@ -304,7 +300,7 @@ namespace compiler {
     if (Accept(TOKEN_ASSIGN)) {
       Expect(TOKEN_DATA_TYPE);
       sv = new StructValue(sid, CloneToken(token));
-      if (PreviousText() != ReservedWordMap[RESERVED_NULL]) {
+      if (token.text != ReservedWordMap[RESERVED_NULL]) {
         RuntimeError("struct only allow null to default value");
       }
     } else {
@@ -353,7 +349,41 @@ namespace compiler {
     return declare;
   }
 
-  Declare* Parser::ConsumeEnumArrayDeclare(string id) {
+  // Foo[] foo = [];
+  // Foo foo;
+  Declare* Parser::ConsumeStructArrayDeclare(const Token& struct_id) {
+    Expect(TOKEN_RIGHT_BRACKET);
+    Expect(TOKEN_ID);
+    Token* sid = CloneToken(struct_id);
+    Token* id = CloneToken(token);
+    StructValue* sv;
+
+    if (Accept(TOKEN_ASSIGN)) {
+      if (Accept(TOKEN_LEFT_BRACKET)) {
+        Expect(TOKEN_RIGHT_BRACKET);
+        // TODO make TYPE_EMPTY_ARRAY type for data type
+        sv = new StructValue(sid, CloneToken(token));
+      } else {
+        delete sid;
+        delete id;
+        RuntimeError("unknow struct array default value");
+      }
+    } else {
+      sv = new StructValue(sid, nullptr);
+    }
+
+    return new Declare(id, sv, true);
+  }
+
+  // Color[] color = [];
+  // Color[] color;
+  Declare* Parser::ConsumeEnumArrayDeclare(const Token& enum_id) {
+    Expect(TOKEN_RIGHT_BRACKET);
+    Expect(TOKEN_ID);
+
+    Token* eid = CloneToken(enum_id);
+    Token* id = CloneToken(token);
+
     return nullptr;
   }
 

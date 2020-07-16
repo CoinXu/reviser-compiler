@@ -37,14 +37,10 @@ make uninstall
 + [x] support comment.
 + [x] compile to javascript.
 + [x] compile to typescript.
-<<<<<<< HEAD
 + [x] support `struct` types.
-+ [x] support `array<struct>` types.
-=======
-+ [ ] support `struct` types.
->>>>>>> 17701809e18e9e41a15f7bb7a2861df8a3e2e4b2
++ [ ] support `array<struct>` types.
 + [x] support `enum`, `array<T>` types.
-+ [ ] `decorator` allow parameters.
++ [ ] ~~`decorator` allow parameters.~~
 + [x] check data type.
 + [x] support nested statement
 + [x] support scope.

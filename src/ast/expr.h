@@ -22,19 +22,6 @@ namespace ast {
   };
 
   //
-  // RightValue
-  // 0
-  // "foo"
-  class RightValue : public Expr {
-  public:
-    DataType type;
-    Token* id;
-
-    RightValue(DataType type, Token* id);
-    ~RightValue();
-  };
-
-  //
   // Foo.Bar
   class EnumValue : public Expr {
   public:
@@ -45,6 +32,10 @@ namespace ast {
     ~EnumValue();
   };
 
+  //
+  // Foo foo = null
+  // Foo foo = []
+  // id -> type
   class StructValue : public Expr {
   public:
     Token* id;
@@ -52,6 +43,31 @@ namespace ast {
     StructValue(Token* id, Token* value);
     ~StructValue();
   };
+
+  //
+  // RightValue
+  // 0
+  // 0.123
+  // "foo"
+  // [123, 0.456]
+  // [Color.A, Color.B]
+  // null
+  class RightValue : public Expr {
+  public:
+    DataType type;
+    Token* id;
+    bool array_type = false;
+    vector<Token*> dvs;
+    vector<EnumValue*> evs;
+    StructValue* sv;
+    EnumValue* ev;
+
+    RightValue(DataType type, Token* id, bool array_type = false);
+    RightValue(StructValue*, bool = false);
+    RightValue(EnumValue*, bool = false);
+    ~RightValue();
+  };
+
 
   //
   // Assign
@@ -73,17 +89,18 @@ namespace ast {
   public:
     DataType type;
     bool array_type = false;
+
     Token* id = nullptr;
     Token* eid = nullptr;
-    RightValue* dv = nullptr;
+    RightValue* rv = nullptr;
     EnumValue* ev = nullptr;
     StructValue* sv = nullptr;
     vector<string> values;
 
-    Declare(DataType type, Token* id, RightValue* dv);
-    Declare(DataType type, Token* id, Token* eid, EnumValue* ev);
-    Declare(DataType type, Token* id);
-    Declare(Token* id, StructValue* sv);
+    Declare(DataType type, Token* id, RightValue* rv, bool array_type = false);
+    Declare(Token* id, StructValue* sv, bool array_type = false);
+    Declare(Token* id, EnumValue* ev, bool array_type = false);
+
     ~Declare();
   };
 
