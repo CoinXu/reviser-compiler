@@ -87,55 +87,70 @@ namespace typescript {
       code_decorater += decorater.Generate();
     }
 
-    string code_type;
-    if (DecoraterSyntaxTranslator.find(node->declare->type) != DecoraterSyntaxTranslator.end()) {
-      // 如果是数组类型数据，将translator放在TypeArray装饰器中
-      if (!node->declare->array_type) {
-        code_type += TypeScriptCommon::Indent(node->level + 1)
-          + "@"
-          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator.at(node->declare->type))
-          + "\n";
+    vector<string> revisers;
+    vector<ReviserSyntaxDefinition> defs = TypeScriptCommon::FindReviserSyntaxDefinitionByDataType(node->declare->type);
+
+    // 如果是数组类型数据，将translator放在TypeArray装饰器中
+    if (node->declare->array_type) {
+      switch (node->declare->type) {
+        case TYPE_BOOL:
+        case TYPE_FLOAT:
+        case TYPE_DOUBLE:
+        case TYPE_INT32:
+        case TYPE_INT64:
+        case TYPE_UINT32:
+        case TYPE_UINT64: {
+          vector<string> args;
+          for (ReviserSyntaxDefinition d : defs) {
+            args.push_back(TypeScriptCommon::DecoraterDefinition(d));
+          }
+          vector<DecoraterArg> v({{ ARG_ARRAY, args }});
+          revisers.push_back(TypeScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_ARRAY], &v));
+          break;
+        }
+
+        case TYPE_ENUM:
+          break;
+
+        case TYPE_STRUCT: {
+          vector<DecoraterArg> v({{ ARG_STRING, vector<string>({ node->declare->type_id->text }) }});
+          revisers.push_back(TypeScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_ARRAY_STRUCT], &v));
+          break;
+        }
+      }
+    } else {
+      switch (node->declare->type) {
+        case TYPE_BOOL:
+        case TYPE_FLOAT:
+        case TYPE_DOUBLE:
+        case TYPE_INT32:
+        case TYPE_INT64:
+        case TYPE_UINT32:
+        case TYPE_UINT64: {
+          for (ReviserSyntaxDefinition d : defs) {
+            revisers.push_back(TypeScriptCommon::DecoraterDefinition(d));
+          }
+          break;
+        }
+
+        case TYPE_ENUM:
+          break;
+
+        case TYPE_STRUCT: {
+          vector<DecoraterArg> v({{ ARG_STRING, vector<string>({ node->declare->type_id->text }) }});
+          revisers.push_back(TypeScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_STRUCT], &v));
+          break;
+        }
       }
     }
 
-    if (DecoraterSyntaxDataType.find(node->declare->type) != DecoraterSyntaxDataType.end()) {
-      if (node->declare->array_type) {
-        vector<DecoraterArg> args({
-          {
-            ARG_ARRAY,
-            vector<string>({
-              TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[node->declare->type]),
-              TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxTranslator[node->declare->type])
-            })
-          }
-        });
-
-        code_type += TypeScriptCommon::Indent(node->level + 1)
-          + "@"
-          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[TYPE_ARRAY], &args)
-          + "\n";
-      } else if (node->declare->type == TYPE_STRUCT) {
-        vector<DecoraterArg> args({
-          {
-            ARG_STRING,
-            vector<string>({ node->declare->sv->id->text })
-          }
-        });
-
-        code_type += TypeScriptCommon::Indent(node->level + 1)
-          + "@"
-          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType[TYPE_STRUCT], &args)
-          + "\n";
-      } else {
-        code_type += TypeScriptCommon::Indent(node->level + 1)
-          + "@"
-          + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxDataType.at(node->declare->type))
-          + "\n";
-      }
-   }
-
-    TypeScriptDeclare declare(node->declare);
-    return code_type + code_decorater + TypeScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
+    string indent = TypeScriptCommon::Indent(node->level + 1);
+    return (
+        revisers.size() > 0
+        ? indent + ("@" + TypeScriptCommon::JoinVector(revisers, "\n" + indent + "@") + "\n")
+        : ""
+      )
+      + code_decorater + indent + TypeScriptDeclare(node->declare).Generate() + ";";
   }
 
   //
@@ -150,15 +165,15 @@ namespace typescript {
   string TypeScriptStructInterfaceProperty::Generate() {
     if (node->declare->type == TYPE_ENUM) {
       return TypeScriptCommon::Indent(node->level)
-        + node->declare->id->text + ": " + node->declare->eid->text
-        + "; /* enum " + node->declare->eid->text + " */";
+        + node->declare->id->text + ": " + node->declare->type_id->text
+        + "; /* enum " + node->declare->type_id->text + " */";
     }
 
     string type;
-    if (TypeScriptDataTypeMap.find(node->declare->type) == TypeScriptDataTypeMap.end()) {
+    if (TypeScriptBuildInDataTypeMap.find(node->declare->type) == TypeScriptBuildInDataTypeMap.end()) {
       type = "any";
     } else {
-      type = TypeScriptDataTypeMap.at(node->declare->type);
+      type = TypeScriptBuildInDataTypeMap.at(node->declare->type);
     }
 
     return TypeScriptCommon::Indent(node->level)
@@ -177,13 +192,13 @@ namespace typescript {
   }
 
   string TypeScriptDecorater::Generate() {
-    if (DecoraterSyntaxBuildIn.find(node->id->text) == DecoraterSyntaxBuildIn.end()) {
+    if (ReviserSyntaxBuildIn.find(node->id->text) == ReviserSyntaxBuildIn.end()) {
       return "";
     }
 
     return TypeScriptCommon::Indent(node->level + 1)
       + "@"
-      + TypeScriptCommon::DecoraterDefinition(DecoraterSyntaxBuildIn.at(node->id->text))
+      + TypeScriptCommon::DecoraterDefinition(ReviserSyntaxBuildIn.at(node->id->text))
       + "\n";
   }
 

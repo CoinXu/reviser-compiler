@@ -80,7 +80,6 @@ map<ReservedWord, string> ReservedWordMap = {
   { RESERVED_STRING, "string" },
   { RESERVED_NULL, "null" },
 
-  { RESERVED_OPTIONAL, "optional" },
   { RESERVED_REQUIRED, "required" }
 };
 
@@ -297,7 +296,7 @@ bool Tokenizer::Next() {
       NextChar();
       TryConsumeCharacters<CharQuote>();
       NextChar();
-      current.text = input.substr(start_pos - 1, pos - start_pos);
+      current.text = input.substr(start_pos, pos - start_pos - 2);
       break;
 
     default:

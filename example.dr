@@ -13,6 +13,9 @@ enum Color /* 11 */ {
   /* foo */
 }
 
+struct Foo {}
+struct Baz {}
+
 struct Bar {
   enum Numberic {
     Int32,
@@ -20,7 +23,11 @@ struct Bar {
     Double
   }
 
-  struct Foo {}
+  struct Foo {
+    bool[] b = [];
+    Bar[] bar = [];
+    Bar ba;
+  }
 
   struct Baz {
     enum DataType {
@@ -29,8 +36,8 @@ struct Bar {
       String
     }
 
-    optional DataType type = DataType.Int32;
-    optional Numberic num = Numberic.Double;
+    DataType type = DataType.Int32;
+    Numberic num = Numberic.Double;
 
     struct Foo {
       enum Language {
@@ -39,21 +46,24 @@ struct Bar {
         JavaScript
       }
 
-      required Language lang = Language.Cpp; 
-      required Language second_lang = Language.TypeScript; 
-      optional DataType type = DataType.String;
+      required Language lang = Language.Cpp;
+      required Language second_lang = Language.TypeScript;
+      DataType type = DataType.String;
     }
 
     required Foo foo = null;
   }
 
-  optional Numberic num = Numberic.Int32;
+  Baz baz;
+  Baz[] bazs = [];
+
+  Numberic num = Numberic.Int32;
   required string s = "string";
   required int32 i32 = 1;
   double[] doub = [];
   float[] f = [];
-  optional int64[] i64 = [];
-  required uint32[] ui32 = []; 
+  int64[] i64 = [];
+  required uint32[] ui32 = [];
 }
 
 //

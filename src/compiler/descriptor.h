@@ -49,6 +49,9 @@ namespace compiler {
 
   public:
     vector<vector<ContextVariable>> context;
+    bool include_type_array = false;
+    bool include_struct_array = false;
+    bool include_enum_array = false;
 
     void PushNewContext();
     void PopBackContext();

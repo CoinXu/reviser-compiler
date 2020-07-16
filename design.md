@@ -8,7 +8,7 @@ source code -> lexer -> token stream -> parser -> AST -> code generation
 ```
 DATA_TYPES = ["bool", "float", "double", "int32", "int64", "string", "uint32", "uint64"]
 DATA_STRUCT = ["struct", "enum"]
-DECORATOR = ["optional", "required", "maxlen", "minlen", "range", "max", "min", "interval"]
+DECORATOR = ["required"]
 OPERATOR = ["import", "package", "extends"]
 
 BLOCK_START = "{"

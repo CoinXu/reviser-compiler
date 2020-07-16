@@ -16,11 +16,10 @@ using namespace reviser::compiler;
 
 namespace reviser {
 namespace typescript {
-  extern std::map<DataType, string> TypeScriptDataTypeMap;
+  extern std::map<DataType, string> TypeScriptBuildInDataTypeMap;
+  extern std::map<DataType, vector<ReviserType>> TypeScriptDataTypeReviserMap;
 
   class TypeScriptCommon {
-  
-
   public:
     const static int IndentSize = 2;
 
@@ -30,6 +29,22 @@ namespace typescript {
         s = s + " ";
       }
       return s;
+    }
+
+    const static vector<ReviserSyntaxDefinition> FindReviserSyntaxDefinitionByDataType(DataType type) {
+      vector<ReviserSyntaxDefinition> defs;
+
+      if (TypeScriptDataTypeReviserMap.find(type) == TypeScriptDataTypeReviserMap.end()) {
+        return defs;
+      }
+
+      for (ReviserType t : TypeScriptDataTypeReviserMap.at(type)) {
+        if (ReviserMethodMap.find(t) != ReviserMethodMap.end()) {
+          defs.push_back(ReviserMethodMap.at(t));
+        }
+      }
+
+      return defs;
     }
 
     const static string JoinVector(vector<string> v, string separator) {
@@ -43,9 +58,9 @@ namespace typescript {
       }
 
       return result;
-    } 
+    }
 
-    const static string DecoraterSyntaxCallable(DecoraterSyntaxDefinition def, vector<DecoraterArg>* args) {
+    const static string DecoraterSyntaxCallable(ReviserSyntaxDefinition def, vector<DecoraterArg>* args) {
       vector<string> result;
 
       if (args) {
@@ -70,7 +85,7 @@ namespace typescript {
       return def.name + "(" + JoinVector(result, ", ") + ")";
     }
 
-    const static string DecoraterDefinition(DecoraterSyntaxDefinition def, vector<DecoraterArg>* args = nullptr) {
+    const static string DecoraterDefinition(ReviserSyntaxDefinition def, vector<DecoraterArg>* args = nullptr) {
       switch (def.type) {
         case SYNTAX_FUNCTION:
           return def.name;
@@ -83,7 +98,7 @@ namespace typescript {
       }
     }
 
-    const static string ImportId(DecoraterSyntaxDefinition def) {
+    const static string ImportId(ReviserSyntaxDefinition def) {
       return def.name;
     }
   };

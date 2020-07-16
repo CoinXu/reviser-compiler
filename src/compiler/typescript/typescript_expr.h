@@ -20,17 +20,6 @@ namespace typescript {
   };
 
   //
-  // RightValue
-  class TypeScriptRightValue : public TypeScriptExpr {
-  public:
-    RightValue* node = nullptr;
-
-    string Generate();
-    TypeScriptRightValue(RightValue* node);
-    ~TypeScriptRightValue();
-  };
-
-  //
   // EnumValue
   class TypeScriptEnumValue : public TypeScriptExpr {
   public:
@@ -39,6 +28,28 @@ namespace typescript {
     string Generate();
     TypeScriptEnumValue(EnumValue* node);
     ~TypeScriptEnumValue();
+  };
+
+  //
+  // StructValue
+  class TypeScriptStructValue : public TypeScriptExpr {
+  public:
+    StructValue* node = nullptr;
+
+    string Generate();
+    TypeScriptStructValue(StructValue* node);
+    ~TypeScriptStructValue();
+  };
+
+  //
+  // RightValue
+  class TypeScriptRightValue : public TypeScriptExpr {
+  public:
+    RightValue* node = nullptr;
+
+    string Generate();
+    TypeScriptRightValue(RightValue* node);
+    ~TypeScriptRightValue();
   };
 
   //
