@@ -4,11 +4,11 @@
 //  @description 输出到终端
 //
 
-#include <compiler/printer_terminal.h>
+#include <io/printer_terminal.h>
 #include <iostream>
 
 namespace reviser {
-namespace compiler {
+namespace io {
   PrinterTerminal::PrinterTerminal() {}
   PrinterTerminal::~PrinterTerminal() {}
 

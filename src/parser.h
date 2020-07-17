@@ -19,11 +19,12 @@
 #include <compiler/javascript/javascript_generator.h>
 #include <compiler/typescript/typescript_generator.h>
 #include <compiler/descriptor.h>
-#include <compiler/printer.h>
+#include <io/printer.h>
 
 using namespace std;
 using namespace reviser::message;
 using namespace reviser::ast;
+using namespace reviser::io;
 
 namespace reviser {
 namespace compiler {

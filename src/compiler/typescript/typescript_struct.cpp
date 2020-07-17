@@ -99,7 +99,8 @@ namespace typescript {
         case TYPE_INT32:
         case TYPE_INT64:
         case TYPE_UINT32:
-        case TYPE_UINT64: {
+        case TYPE_UINT64:
+        case TYPE_STRING: {
           vector<string> args;
           for (ReviserSyntaxDefinition d : defs) {
             args.push_back(TypeScriptCommon::DecoraterDefinition(d));
@@ -117,6 +118,9 @@ namespace typescript {
           revisers.push_back(TypeScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_ARRAY_STRUCT], &v));
           break;
         }
+
+        default:
+          break;
       }
     } else {
       switch (node->declare->type) {
@@ -126,7 +130,8 @@ namespace typescript {
         case TYPE_INT32:
         case TYPE_INT64:
         case TYPE_UINT32:
-        case TYPE_UINT64: {
+        case TYPE_UINT64:
+        case TYPE_STRING: {
           for (ReviserSyntaxDefinition d : defs) {
             revisers.push_back(TypeScriptCommon::DecoraterDefinition(d));
           }
@@ -141,6 +146,9 @@ namespace typescript {
           revisers.push_back(TypeScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_STRUCT], &v));
           break;
         }
+
+        default:
+          break;
       }
     }
 

@@ -4,13 +4,13 @@
 //  @description 输出接口
 //
 
-#ifndef REVISER_COMPILER_PRINTER
-#define REVISER_COMPILER_PRINTER
+#ifndef REVISER_IO_PRINTER
+#define REVISER_IO_PRINTER
 
 #include <string>
 
 namespace reviser {
-namespace compiler {
+namespace io {
   class Printer {
   public:
     virtual bool Print(std::string message) = 0;

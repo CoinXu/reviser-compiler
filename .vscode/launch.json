@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/build/reviserc",
-            "args": ["--ts-output=ts", "example.dr"],
+            "args": ["--printer=fs", "--ts-output=ts", "example.dr"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

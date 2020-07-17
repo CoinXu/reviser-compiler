@@ -9,7 +9,7 @@
 using namespace std;
 
 namespace reviser {
-namespace path {
+namespace io {
   // 组合两个字符为一个合法的文件路径
   string join(const string&, const string&);
 
@@ -18,5 +18,11 @@ namespace path {
 
   // 修正非法路径，将多个/换成一个
   string normalize(const string&);
+
+  string basename(const string&);
+
+  bool is_dir(const string&);
+
+  bool mkdir_parents(const string&, int mode = 0755);
 };
 };

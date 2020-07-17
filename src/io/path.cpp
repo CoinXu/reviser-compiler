@@ -4,12 +4,15 @@
 // @description
 //
 
-#include <path.h>
+#include <regex>
+#include <io/path.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 using namespace std;
 
 namespace reviser {
-namespace path {
+namespace io {
   const char separator = '/';
 
   //
@@ -59,6 +62,42 @@ namespace path {
     }
 
     return result;
+  }
+
+  string basename(const string& path) {
+    std::regex reg("\\..*?$");
+    return std::regex_replace(path, reg, "");
+  }
+
+  bool is_dir(const string& path) {
+    if (path.size() == 0) {
+      return false;
+    }
+
+    struct stat s;
+    if (stat(path.c_str(), &s) == -1) {
+      return false;
+    }
+
+    return s.st_mode & S_IFDIR;
+  }
+
+  bool mkdir_parents(const string& path, int mode) {
+    int size = 0;
+    string current;
+
+    while (size < path.size()) {
+      current.push_back(path[size++]);
+      if (current.back() == separator) {
+        if (!is_dir(current)) {
+          if (mkdir(current.c_str(), mode) == -1) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
   }
 };
 };

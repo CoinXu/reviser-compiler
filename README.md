@@ -15,6 +15,11 @@ make install
 make uninstall
 ```
 
+# CLI Args
++ --ts-output={path} - specify typescript code output directory, may be a absolute path or relative path base on `pwd`
++ --js-output={path} - same as `--ts-output`, but for javascript code.
++ --printer={fs|terminal} - specify output type, `fs` will write code to a file on disk.  default `terminal`
+
 # Example
 1. create `example.dr` then type below:
    ```
@@ -33,6 +38,9 @@ make uninstall
    ```
 2. execute `reviserc --ts-output=tsoutput example.dr` will output code to the terminal.
 
+# Grammer
+see [grammer.md](./grammer.md)
+
 # TODO
 + [x] support comment.
 + [x] compile to javascript.
@@ -40,10 +48,11 @@ make uninstall
 + [x] support `struct` types.
 + [x] support `array<struct>` types.
 + [x] support `enum`, `array<T>` types.
-+ [ ] ~~`decorator` allow parameters.~~
++ [x] ~~`decorator` allow parameters.~~
 + [x] check data type.
 + [x] support nested statement
 + [x] support scope.
++ [x] support write to file.
 + [ ] support package & import.
 + [x] syntax highligth for editor.
 + [ ] delete unused ast pointer.

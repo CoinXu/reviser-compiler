@@ -27,33 +27,15 @@ namespace compiler {
     { REVISER_TYPE_STRING, { "TypeString", SYNTAX_CALLABLE, { { ARG_STRING, true } } } },
     {
       REVISER_TYPE_STRUCT,
-      {
-        "TypeStruct",
-        SYNTAX_CALLABLE,
-        { { ARG_STRUCT, false } }
-      }
+      { "TypeStruct", SYNTAX_CALLABLE, { { ARG_STRUCT, false } } }
     },
     {
       REVISER_TYPE_ARRAY,
-      {
-        "TypeArray",
-        SYNTAX_CALLABLE,
-        {
-          { ARG_ARRAY, true },
-          { ARG_STRING, true }
-        }
-      }
+      { "TypeArray", SYNTAX_CALLABLE, { { ARG_ARRAY, true }, { ARG_STRING, true } } }
     },
     {
       REVISER_TYPE_ARRAY_STRUCT,
-      {
-        "TypeArrayStruct",
-        SYNTAX_CALLABLE,
-        {
-          { ARG_STRUCT, false },
-          { ARG_STRING, true }
-        }
-      }
+      { "TypeArrayStruct", SYNTAX_CALLABLE, { { ARG_STRUCT, false }, { ARG_STRING, true } } }
     },
     { REVISER_TO_BOOL, { "ToBoolean", SYNTAX_FUNCTION, {} } },
     { REVISER_TO_FLOAT, { "ToFloat", SYNTAX_FUNCTION, {} } },

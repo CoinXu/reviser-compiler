@@ -4,10 +4,10 @@
 //  @description 输出到终端
 //
 
-#include <compiler/printer.h>
+#include <io/printer.h>
 
 namespace reviser {
-namespace compiler {
+namespace io {
   class PrinterTerminal : public Printer {
   public:
     bool Print(std::string message);
