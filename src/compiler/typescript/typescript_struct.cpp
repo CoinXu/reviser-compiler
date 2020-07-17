@@ -132,6 +132,7 @@ namespace typescript {
         case TYPE_UINT32:
         case TYPE_UINT64:
         case TYPE_STRING: {
+          // TODO reserved it
           for (ReviserSyntaxDefinition d : defs) {
             revisers.push_back(TypeScriptCommon::DecoraterDefinition(d));
           }
