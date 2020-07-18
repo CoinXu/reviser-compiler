@@ -57,12 +57,18 @@ namespace compiler {
     void PopBackContext();
     void PushContextVariable(Enum*);
     void PushContextVariable(Struct*);
+
+    ContextVariable* FindContextVariableById(string);
+    ContextVariable* FindCurrentContextVariableById(string);
+    DeclareType FindContextVariableTypeById(string);
+
+    Enum* FindEnumContextById(string);
     bool EnumInlcudeProperty(Enum*, string);
     bool FindContextVariableEnumProperty(string, string);
-    Enum* FindEnumContextById(string);
+
     Struct* FindStructContextById(string);
-    ContextVariable* FindContextVariableById(string);
-    DeclareType FindContextVariableTypeById(string);
+    bool StructIncludeProperty(Struct*, string);
+    bool FindContextVariableStructProperty(string, string);
 
     vector<string> Decorators();
     vector<VariableDeclare> GlobalVariables();

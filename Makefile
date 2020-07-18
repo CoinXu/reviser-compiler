@@ -16,6 +16,7 @@ SRC = $(wildcard $(SOURCES_DIR)/*.cpp)  \
 	$(COMPILE_CMD) $<
 
 $(LIB_NAME): $(SRC)
+	mkdir -p build
 	$(COMPILE_CMD) $^ -o build/$@
 
 install:
