@@ -8,16 +8,12 @@ enum Foo {
 }
 struct F {
   int32[] ia = [];
-  int32 i = 1;
   float f = 0.1;
 
   struct i {
     enum i { a, b }
-    int64 i = 1;
     struct k {
       int32[] f = [];
-      int32 f = 1;
     }
   }
-  enum f {}
 }

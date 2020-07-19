@@ -62,11 +62,11 @@ namespace compiler {
     ContextVariable* FindCurrentContextVariableById(string);
     DeclareType FindContextVariableTypeById(string);
 
-    Enum* FindEnumContextById(string);
+    Enum* FindEnumContextVariableById(string);
     bool EnumInlcudeProperty(Enum*, string);
     bool FindContextVariableEnumProperty(string, string);
 
-    Struct* FindStructContextById(string);
+    Struct* FindStructContextVariableById(string);
     bool StructIncludeProperty(Struct*, string);
     bool FindContextVariableStructProperty(string, string);
 
@@ -74,9 +74,9 @@ namespace compiler {
     vector<VariableDeclare> GlobalVariables();
     vector<DataType> DataTypes();
 
-    void AddDataTypes(DataType type);
-    void AddDecorator(string decorator);
-    void AddGlobalVariable(string variable, DeclareType type);
+    void AddDataTypesOnce(DataType type);
+    void AddDecoratorOnce(string decorator);
+    void AddGlobalVariableOnce(string variable, DeclareType type);
 
     Descriptor();
     ~Descriptor();

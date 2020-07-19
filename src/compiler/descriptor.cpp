@@ -84,7 +84,7 @@ namespace compiler {
     return variable->type;
   }
 
-  Enum* Descriptor::FindEnumContextById(string id) {
+  Enum* Descriptor::FindEnumContextVariableById(string id) {
     ContextVariable* variable = FindContextVariableById(id);
 
     if (!variable) {
@@ -113,10 +113,10 @@ namespace compiler {
   }
 
   bool Descriptor::FindContextVariableEnumProperty(string id, string property) {
-    return EnumInlcudeProperty(FindEnumContextById(id), property);
+    return EnumInlcudeProperty(FindEnumContextVariableById(id), property);
   }
 
-  Struct* Descriptor::FindStructContextById(string id) {
+  Struct* Descriptor::FindStructContextVariableById(string id) {
     ContextVariable* variable = FindContextVariableById(id);
 
     if (!variable) {
@@ -145,7 +145,7 @@ namespace compiler {
   }
 
   bool Descriptor::FindContextVariableStructProperty(string id, string propery) {
-    return StructIncludeProperty(FindStructContextById(id), propery);
+    return StructIncludeProperty(FindStructContextVariableById(id), propery);
   }
 
   vector<string> Descriptor::Decorators() {
@@ -160,13 +160,13 @@ namespace compiler {
     return data_types_;
   }
 
-  void Descriptor::AddDecorator(string decorator) {
+  void Descriptor::AddDecoratorOnce(string decorator) {
     if (!VectorIncludeItem<string>(&decorators_, &decorator)) {
       decorators_.push_back(decorator);
     }
   }
 
-  void Descriptor::AddGlobalVariable(string variable, DeclareType type) {
+  void Descriptor::AddGlobalVariableOnce(string variable, DeclareType type) {
     for (auto it: global_variables_) {
       if (it.id == variable) {
         return;
@@ -175,7 +175,7 @@ namespace compiler {
     global_variables_.push_back({ variable, type });
   }
 
-  void Descriptor::AddDataTypes(DataType type) {
+  void Descriptor::AddDataTypesOnce(DataType type) {
     if (!VectorIncludeItem<DataType>(&data_types_, &type)) {
       data_types_.push_back(type);
     }
