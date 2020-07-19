@@ -1,15 +1,59 @@
-enum al {}
-enum a { a }
-enum b { a, b }
-enum c { a, b, c, }
-struct F {
-  int32[] ia = [];
-  float f = 0.1;
+// sigle line comment
+/*
+ *
+ * block comment
+ */
 
-  struct i {
-    enum i { a, }
-    struct k {
-      int32[] f = [];
-    }
-  }
+enum Color /* 11 */ {
+  // Red
+  Red,
+  Pink = 100,
+  // Pink
+  Blue = 200 // blue
+  /* foo */
 }
+
+struct Bar {
+  enum Numberic {
+    Int32,
+    Float,
+    Double
+  }
+
+  struct Foo {}
+
+  struct Baz {
+    enum DataType {
+      Int32,
+      Int64,
+      String
+    }
+
+    required DataType type = DataType.Int32;
+    required Numberic num = Numberic.Double;
+
+    struct Foo {
+      enum Language {
+        Cpp,
+        TypeScript,
+        JavaScript
+      }
+
+      required Language lang = Language.Cpp; 
+      required Language second_lang = Language.TypeScript; 
+      required DataType type = DataType.String;
+    }
+
+    required Foo foo = null;
+  }
+
+  Numberic num = Numberic.Int32;
+  required string s = "string";
+  required int32 i32 = 1;
+  double[] doub = [];
+  float[] f = [];
+  required int64[] i64 = [];
+  required uint32[] ui32 = []; 
+}
+
+//

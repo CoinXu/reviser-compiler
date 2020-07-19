@@ -81,20 +81,85 @@ namespace javascript {
   }
 
   string JavaScriptStructProperty::Generate() {
-    string code;
-
+    string code_decorater;
     for (Decorater* d: node->decoraters) {
       JavaScriptDecorater decorater(d, parent);
-      code = code + decorater.Generate();
+      code_decorater += decorater.Generate();
     }
 
-    string type;
-    if (JavaScriptDataTypeDecoraterNameMap.find(node->declare->type) != JavaScriptDataTypeDecoraterNameMap.end()) {
-      type += JavaScriptCommon::Indent(node->level + 1) + "@" + JavaScriptDataTypeDecoraterNameMap.at(node->declare->type) + "\n";
+    vector<string> revisers;
+    vector<ReviserSyntaxDefinition> defs = JavaScriptCommon::FindReviserSyntaxDefinitionByDataType(node->declare->type);
+
+    // 如果是数组类型数据，将translator放在TypeArray装饰器中
+    if (node->declare->array_type) {
+      switch (node->declare->type) {
+        case TYPE_BOOL:
+        case TYPE_FLOAT:
+        case TYPE_DOUBLE:
+        case TYPE_INT32:
+        case TYPE_INT64:
+        case TYPE_UINT32:
+        case TYPE_UINT64:
+        case TYPE_STRING: {
+          vector<string> args;
+          for (ReviserSyntaxDefinition d : defs) {
+            args.push_back(JavaScriptCommon::DecoraterDefinition(d));
+          }
+          vector<DecoraterArg> v({{ ARG_ARRAY, args }});
+          revisers.push_back(JavaScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_ARRAY], &v));
+          break;
+        }
+
+        case TYPE_ENUM:
+          break;
+
+        case TYPE_STRUCT: {
+          vector<DecoraterArg> v({{ ARG_STRING, vector<string>({ node->declare->type_id->text }) }});
+          revisers.push_back(JavaScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_ARRAY_STRUCT], &v));
+          break;
+        }
+
+        default:
+          break;
+      }
+    } else {
+      switch (node->declare->type) {
+        case TYPE_BOOL:
+        case TYPE_FLOAT:
+        case TYPE_DOUBLE:
+        case TYPE_INT32:
+        case TYPE_INT64:
+        case TYPE_UINT32:
+        case TYPE_UINT64:
+        case TYPE_STRING: {
+          for (int i = defs.size() - 1; i >= 0; i--) {
+            revisers.push_back(JavaScriptCommon::DecoraterDefinition(defs.at(i)));
+          }
+          break;
+        }
+
+        case TYPE_ENUM:
+          break;
+
+        case TYPE_STRUCT: {
+          vector<DecoraterArg> v({{ ARG_STRING, vector<string>({ node->declare->type_id->text }) }});
+          revisers.push_back(JavaScriptCommon::DecoraterDefinition(ReviserMethodMap[REVISER_TYPE_STRUCT], &v));
+          break;
+        }
+
+        default:
+          break;
+      }
     }
 
-    JavaScriptDeclare declare(node->declare);
-    return code + type + JavaScriptCommon::Indent(node->level + 1) + declare.Generate() + ";";
+    string indent = JavaScriptCommon::Indent(node->level + 1);
+    return (
+        revisers.size() > 0
+        ? indent + ("@" + JavaScriptCommon::JoinVector(revisers, "\n" + indent + "@") + "\n")
+        : ""
+      )
+      + code_decorater + indent + JavaScriptDeclare(node->declare).Generate() + ";";
+ 
   }
 
   //
@@ -108,12 +173,14 @@ namespace javascript {
   }
 
   string JavaScriptDecorater::Generate() {
-    if (JavaScriptDecoraterNameMap.find(node->id->text) == JavaScriptDecoraterNameMap.end()) {
+    if (ReviserSyntaxBuildIn.find(node->id->text) == ReviserSyntaxBuildIn.end()) {
       return "";
     }
 
     return JavaScriptCommon::Indent(node->level + 1)
-      + "@" + JavaScriptDecoraterNameMap.at(node->id->text) + "\n";
+      + "@"
+      + JavaScriptCommon::DecoraterDefinition(ReviserSyntaxBuildIn.at(node->id->text))
+      + "\n";
   }
 
 }; // reviser

@@ -159,5 +159,5 @@ namespace typescript {
       + ": " + type + " = "
       + TypeScriptRightValue(node->rv).Generate();
   }
+}; // typescript
 }; // reviser
-}; // compiler
