@@ -51,7 +51,7 @@ namespace compiler {
     string PreviousText();
 
     // stmt -> struct
-    Struct* ConsumeStruct();
+    Struct* ConsumeStruct(Struct* = nullptr);
     StructProperty* ConsumeStructProperty();
     Decorater* ConsumeDecorater();
 
@@ -68,8 +68,8 @@ namespace compiler {
     Declare* ConsumeStructArrayDeclare(const Token& type_id);
 
     // stmt -> enum
+    Enum* ConsumeEnum(Struct* = nullptr);
     EnumProperty* ConsumeEnumProperty();
-    Enum* ConsumeEnum();
 
   public:
     Parser(Tokenizer*, CodeGenerator*, Printer*);

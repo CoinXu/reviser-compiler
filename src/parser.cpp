@@ -114,11 +114,12 @@ namespace compiler {
   }
 
   // stmt -> struct
-  Struct* Parser::ConsumeStruct() {
+  Struct* Parser::ConsumeStruct(Struct* parent) {
     Expect(TOKEN_STRUCT);
     Expect(TOKEN_ID);
 
-    if (generator->descriptor->FindCurrentContextVariableById(token.text)) {
+    if (generator->descriptor->FindCurrentContextVariableById(token.text) 
+      || (parent && generator->descriptor->StructIncludeProperty(parent, token.text))) {
       RuntimeError("duplicate declare named [" + token.text + "]");
     }
 
@@ -131,17 +132,9 @@ namespace compiler {
 
     while (!Accept(TOKEN_RIGHT_BRACE)) {
       if (LookAtType(TOKEN_STRUCT)) {
-        Struct* sp = ConsumeStruct();
-        if (generator->descriptor->StructIncludeProperty(s, sp->id->text)) {
-          RuntimeError("duplicate declare [" + sp->id->text + "]");
-        }
-        s->AddStruct(sp);
+        s->AddStruct(ConsumeStruct(s));
       } else if (LookAtType(TOKEN_ENUM)) {
-        Enum* ep = ConsumeEnum();
-        if (generator->descriptor->StructIncludeProperty(s, ep->id->text)) {
-          RuntimeError("duplicate declare [" + ep->id->text + "]");
-        }
-        s->AddEnum(ep);
+        s->AddEnum(ConsumeEnum(s));
       } else {
         StructProperty* p = ConsumeStructProperty();
         if (generator->descriptor->StructIncludeProperty(s, p->declare->id->text)) {
@@ -436,27 +429,27 @@ namespace compiler {
     return property;
   }
 
-  Enum* Parser::ConsumeEnum () {
+  Enum* Parser::ConsumeEnum(Struct* parent) {
     Expect(TOKEN_ENUM);
     Expect(TOKEN_ID);
 
-    if (generator->descriptor->FindCurrentContextVariableById(token.text)) {
+    if (generator->descriptor->FindCurrentContextVariableById(token.text)
+      || (parent && generator->descriptor->StructIncludeProperty(parent, token.text))) {
       RuntimeError("duplicate declare named [" + token.text + "]");
     }
 
     Token* id = CloneToken(token);
-    Expect(TOKEN_LEFT_BRACE);
-
     Enum* e = new Enum(id);
     generator->descriptor->PushContextVariable(e);
-    bool no_property = false;
+
+    Expect(TOKEN_LEFT_BRACE);
+
+    // no property enum
+    if (Accept(TOKEN_RIGHT_BRACE)) {
+      return e;
+    }
 
     do {
-      if (Accept(TOKEN_RIGHT_BRACE)) {
-        no_property = true;
-        break;
-      }
-
       EnumProperty* property = ConsumeEnumProperty();
       if (generator->descriptor->EnumInlcudeProperty(e, property->id->text)) {
         RuntimeError("duplicate declare enum property named [" + property->id->text + "]");
@@ -465,9 +458,7 @@ namespace compiler {
       e->properties.push_back(property);
     } while (Accept(TOKEN_COMMA));
 
-    if (!no_property) {
-      Expect(TOKEN_RIGHT_BRACE);
-    }
+    Expect(TOKEN_RIGHT_BRACE);
 
     return e;
   }

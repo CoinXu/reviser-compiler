@@ -1,17 +1,13 @@
-enum Bar {
-  a
-}
-enum Foo {
-  a,
-  b,
-  c
-}
+enum al {}
+enum a { a }
+enum b { a, b }
+enum c { a, b, c, }
 struct F {
   int32[] ia = [];
   float f = 0.1;
 
   struct i {
-    enum i { a, b }
+    enum i { a, }
     struct k {
       int32[] f = [];
     }
