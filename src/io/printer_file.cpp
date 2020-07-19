@@ -19,6 +19,7 @@ namespace io {
   }
 
   PrinterFile::~PrinterFile() {
+    stream.flush();
     stream.close();
   }
 

@@ -29,11 +29,11 @@ namespace compiler {
     do {
       if (LookAtType(TOKEN_STRUCT)) {
         Struct* s = ConsumeStruct();
-        generator->descriptor->AddGlobalVariable(s->id->text, DECLARE_STRUCT);
+        generator->descriptor->AddGlobalVariableOnce(s->id->text, DECLARE_STRUCT);
         generator->AddStmtStruct(s);
       } else if (LookAtType(TOKEN_ENUM)) {
         Enum* s = ConsumeEnum();
-        generator->descriptor->AddGlobalVariable(s->id->text, DECLARE_ENUM);
+        generator->descriptor->AddGlobalVariableOnce(s->id->text, DECLARE_ENUM);
         generator->AddStmtEnum(s);
       } else {
         Next();
@@ -71,9 +71,9 @@ namespace compiler {
   }
 
   void Parser::RuntimeError(string msg = "syntax error") {
-    message.SetLine(tokenizer->Current().start_line);
-    message.SetColumn(tokenizer->Current().column_start);
-    message.Runtime(msg + ": " + tokenizer->Current().text);
+    message.SetLine(token.start_line);
+    message.SetColumn(token.column_start);
+    message.Runtime(msg + ": " + token.text);
   }
 
   void Parser::Expect(TokenType type) {
@@ -114,23 +114,36 @@ namespace compiler {
   }
 
   // stmt -> struct
-  Struct* Parser::ConsumeStruct() {
+  Struct* Parser::ConsumeStruct(Struct* parent) {
     Expect(TOKEN_STRUCT);
     Expect(TOKEN_ID);
 
+    if (generator->descriptor->FindCurrentContextVariableById(token.text) 
+      || (parent && generator->descriptor->StructIncludeProperty(parent, token.text))) {
+      RuntimeError("duplicate declare named [" + token.text + "]");
+    }
+
     Struct* s = new Struct(CloneToken(token));
-    generator->descriptor->PushContextVariable(s);
-    generator->descriptor->PushNewContext();
 
     Expect(TOKEN_LEFT_BRACE);
 
+    generator->descriptor->PushContextVariable(s);
+    generator->descriptor->PushNewContext();
+
     while (!Accept(TOKEN_RIGHT_BRACE)) {
       if (LookAtType(TOKEN_STRUCT)) {
-        s->AddStruct(ConsumeStruct());
+        s->AddStruct(ConsumeStruct(s));
       } else if (LookAtType(TOKEN_ENUM)) {
-        s->AddEnum(ConsumeEnum());
+        s->AddEnum(ConsumeEnum(s));
       } else {
-        s->AddProperty(ConsumeStructProperty());
+        StructProperty* p = ConsumeStructProperty();
+        if (generator->descriptor->StructIncludeProperty(s, p->declare->id->text)) {
+          RuntimeError("duplicate declare property named [" + p->declare->id->text + "]");
+        }
+        if (generator->descriptor->FindCurrentContextVariableById(p->declare->id->text)) {
+          RuntimeError("duplicate declare named [" + p->declare->id->text + "]");
+        }
+        s->AddProperty(p);
       }
     }
 
@@ -161,7 +174,7 @@ namespace compiler {
 
   Decorater* Parser::ConsumeDecorater() {
     Decorater* d = new Decorater(CloneToken(token));
-    generator->descriptor->AddDecorator(token.text);
+    generator->descriptor->AddDecoratorOnce(token.text);
     return d;
   }
 
@@ -234,7 +247,7 @@ namespace compiler {
     DataType type = DataTypeValue.at(type_string);
 
     generator->descriptor->include_type_array = true;
-    generator->descriptor->AddDataTypes(type);
+    generator->descriptor->AddDataTypesOnce(type);
 
     RightValue* rv = new RightValue(type, CloneToken(token), true);
     return new Declare(type, CloneToken(id), rv, true);
@@ -259,7 +272,7 @@ namespace compiler {
         if (value != ReservedWordMap[RESERVED_FALSE] && value != ReservedWordMap[RESERVED_TRUE]) {
           RuntimeError("expect true or false");
         } else {
-          generator->descriptor->AddDataTypes(TYPE_BOOL);
+          generator->descriptor->AddDataTypesOnce(TYPE_BOOL);
           Next();
         }
         break;
@@ -270,12 +283,12 @@ namespace compiler {
       case TYPE_INT64:
       case TYPE_UINT32:
       case TYPE_UINT64:
-        generator->descriptor->AddDataTypes(TYPE_FLOAT);
+        generator->descriptor->AddDataTypesOnce(TYPE_FLOAT);
         Expect(TOKEN_DIGIT);
         break;
 
       case TYPE_STRING:
-        generator->descriptor->AddDataTypes(TYPE_STRING);
+        generator->descriptor->AddDataTypesOnce(TYPE_STRING);
         Expect(TOKEN_LETTER);
         break;
 
@@ -294,7 +307,7 @@ namespace compiler {
     Token* sid = CloneToken(tokenizer->Previous());
 
     // struct type id
-    if (!generator->descriptor->FindStructContextById(sid->text)) {
+    if (!generator->descriptor->FindStructContextVariableById(sid->text)) {
       RuntimeError("undefined struct [" + sid->text + "] in current scope");
     }
 
@@ -313,7 +326,7 @@ namespace compiler {
       sv = new StructValue(sid, nullptr);
     }
 
-    generator->descriptor->AddDataTypes(TYPE_STRUCT);
+    generator->descriptor->AddDataTypesOnce(TYPE_STRUCT);
     RightValue* rv = new RightValue(sv);
     Declare* declare = new Declare(TYPE_STRUCT, id, sid, rv);
     return declare;
@@ -323,7 +336,7 @@ namespace compiler {
     Token* eid = CloneToken(tokenizer->Previous());
 
     // enum type id
-    if (!generator->descriptor->FindEnumContextById(eid->text)) {
+    if (!generator->descriptor->FindEnumContextVariableById(eid->text)) {
       RuntimeError("undefined enum [" + eid->text + "] in current scope");
     }
 
@@ -339,7 +352,7 @@ namespace compiler {
     }
 
     // enum variable id
-    if (!generator->descriptor->FindEnumContextById(ei->text)) {
+    if (!generator->descriptor->FindEnumContextVariableById(ei->text)) {
       RuntimeError("undefined enum [" + ei->text + "] in current scope");
     }
 
@@ -347,7 +360,7 @@ namespace compiler {
     Expect(TOKEN_ID);
     Token* ep = CloneToken(token);
 
-    if (!generator->descriptor->EnumInlcudeProperty(generator->descriptor->FindEnumContextById(ei->text), ep->text)) {
+    if (!generator->descriptor->EnumInlcudeProperty(generator->descriptor->FindEnumContextVariableById(ei->text), ep->text)) {
       RuntimeError("undefined property [" + ep->text + "] in enum [" + ei->text + "]");
     }
 
@@ -416,22 +429,39 @@ namespace compiler {
     return property;
   }
 
-  Enum* Parser::ConsumeEnum () {
+  Enum* Parser::ConsumeEnum(Struct* parent) {
     Expect(TOKEN_ENUM);
     Expect(TOKEN_ID);
-    Token* id = CloneToken(token);
-    Expect(TOKEN_LEFT_BRACE);
 
+    if (generator->descriptor->FindCurrentContextVariableById(token.text)
+      || (parent && generator->descriptor->StructIncludeProperty(parent, token.text))) {
+      RuntimeError("duplicate declare named [" + token.text + "]");
+    }
+
+    Token* id = CloneToken(token);
     Enum* e = new Enum(id);
     generator->descriptor->PushContextVariable(e);
 
+    Expect(TOKEN_LEFT_BRACE);
+
+    // no property enum
+    if (Accept(TOKEN_RIGHT_BRACE)) {
+      return e;
+    }
+
     do {
-      e->properties.push_back(ConsumeEnumProperty());
+      EnumProperty* property = ConsumeEnumProperty();
+      if (generator->descriptor->EnumInlcudeProperty(e, property->id->text)) {
+        RuntimeError("duplicate declare enum property named [" + property->id->text + "]");
+        break;
+      }
+      e->properties.push_back(property);
     } while (Accept(TOKEN_COMMA));
 
     Expect(TOKEN_RIGHT_BRACE);
 
     return e;
   }
+
 }; // compiler
 }; // reviser

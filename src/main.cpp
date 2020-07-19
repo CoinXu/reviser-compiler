@@ -72,7 +72,7 @@ int main(int args, char** argv, char** envp) {
 
   string javascript_output;
   string typescript_output;
-  string printer_type = "terminal";
+  string printer_type = CommandLineArgNameMap[CLI_PRINTER_TERMINAL];
   string original_source_file_name;
   string source_file_name;
 
