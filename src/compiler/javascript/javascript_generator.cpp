@@ -75,8 +75,8 @@ namespace javascript {
     }
 
     return "import { Reviser } from \"data-reviser\";\n"
-      "import { " + JavaScriptCommon::JoinVector(decorators, ", ") + " } from \"data-reviser\";\n"
-      "import { " + JavaScriptCommon::JoinVector(revisers, ", ") + " } from \"data-reviser\";";
+      + (decorators.size() > 0 ? ("import { " + JavaScriptCommon::JoinVector(decorators, ", ") + " } from \"data-reviser\";\n") : "")
+      + (revisers.size() > 0 ? ("import { " + JavaScriptCommon::JoinVector(revisers, ", ") + " } from \"data-reviser\";") : "");
   }
 
   string JavaScriptGenerator::Export() {

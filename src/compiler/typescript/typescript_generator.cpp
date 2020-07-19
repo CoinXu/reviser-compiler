@@ -75,8 +75,8 @@ namespace typescript {
     }
 
     return "import { Reviser } from \"data-reviser\";\n"
-      "import { " + TypeScriptCommon::JoinVector(decorators, ", ") + " } from \"data-reviser\";\n"
-      "import { " + TypeScriptCommon::JoinVector(revisers, ", ") + " } from \"data-reviser\";";
+      + (decorators.size() > 0 ? ("import { " + TypeScriptCommon::JoinVector(decorators, ", ") + " } from \"data-reviser\";\n") : "")
+      + (revisers.size() > 0 ? ("import { " + TypeScriptCommon::JoinVector(revisers, ", ") + " } from \"data-reviser\";") : "");
   }
 
   string TypeScriptGenerator::Export() {

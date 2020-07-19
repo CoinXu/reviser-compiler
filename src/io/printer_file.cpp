@@ -19,12 +19,12 @@ namespace io {
   }
 
   PrinterFile::~PrinterFile() {
-    stream.flush();
     stream.close();
   }
 
   bool PrinterFile::Print(std::string message) {
     stream << message;
+    stream.flush();
     return true;
   }
 };

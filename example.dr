@@ -21,39 +21,8 @@ struct Bar {
   }
 
   struct Foo {}
-
-  struct Baz {
-    enum DataType {
-      Int32,
-      Int64,
-      String
-    }
-
-    required DataType type = DataType.Int32;
-    required Numberic num = Numberic.Double;
-
-    struct Foo {
-      enum Language {
-        Cpp,
-        TypeScript,
-        JavaScript
-      }
-
-      required Language lang = Language.Cpp; 
-      required Language second_lang = Language.TypeScript; 
-      required DataType type = DataType.String;
-    }
-
-    required Foo foo = null;
-  }
-
-  Numberic num = Numberic.Int32;
-  required string s = "string";
-  required int32 i32 = 1;
-  double[] doub = [];
-  float[] f = [];
-  required int64[] i64 = [];
-  required uint32[] ui32 = []; 
+  double d = 1.2;
+  double[] d1 = [];
 }
 
 //
