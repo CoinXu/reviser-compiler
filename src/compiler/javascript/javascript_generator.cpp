@@ -11,20 +11,26 @@
 
 namespace reviser {
 namespace javascript {
-  std::map<string, string> JavaScriptDecoraterNameMap = {
-    { ReservedWordMap[RESERVED_OPTIONAL], "Optional" },
-    { ReservedWordMap[RESERVED_REQUIRED], "Required" }
+  std::map<DataType, string> JavaScriptBuildInDataTypeMap = {
+    { TYPE_BOOL, "boolean" },
+    { TYPE_FLOAT, "number" },
+    { TYPE_DOUBLE, "number" },
+    { TYPE_INT32, "number" },
+    { TYPE_INT64, "number" },
+    { TYPE_UINT32, "number" },
+    { TYPE_UINT64, "number" },
+    { TYPE_STRING, "string" }
   };
 
-  std::map<DataType, string> JavaScriptDataTypeDecoraterNameMap = {
-    { TYPE_BOOL, "TypeBoolean" },
-    { TYPE_FLOAT, "TypeFloat" },
-    { TYPE_DOUBLE, "TypeDouble" },
-    { TYPE_INT32, "TypeInt32" },
-    { TYPE_INT64, "TypeInt64" },
-    { TYPE_UINT32, "TypeUnInt32" },
-    { TYPE_UINT64, "TypeUnInt64" },
-    { TYPE_STRING, "TypeString" }
+  std::map<DataType, vector<ReviserType>> JavaScriptDataTypeReviserMap = {
+    { TYPE_BOOL, { REVISER_TYPE_BOOL, REVISER_TO_BOOL } },
+    { TYPE_FLOAT, { REVISER_TYPE_FLOAT, REVISER_TO_FLOAT } },
+    { TYPE_DOUBLE, { REVISER_TYPE_DOUBLE, REVISER_TO_DOUBLE } },
+    { TYPE_INT32, { REVISER_TYPE_INT32, REVISER_TO_INT32 } },
+    { TYPE_INT64, { REVISER_TYPE_INT64, REVISER_TO_INT64 } },
+    { TYPE_UINT32, { REVISER_TYPE_UINT32, REVISER_TO_UINT32 } },
+    { TYPE_UINT64, { REVISER_TYPE_UINT64, REVISER_TO_UINT64 } },
+    { TYPE_STRING, { REVISER_TYPE_STRING, REVISER_TO_STRING } }
   };
 
   JavaScriptGenerator::JavaScriptGenerator(): CodeGenerator(), message("javascript") {}
@@ -35,35 +41,42 @@ namespace javascript {
   // private
   string JavaScriptGenerator::Import() {
     // decorators
-    string code_decorator( 
-      "import { Reviser } from \"data-reviser\";\n"
-      "import {"
-    );
+    vector<string> deco(descriptor->Decorators());
+    vector<string> decorators;
 
-    vector<string> decorators(descriptor->Decorators());
-
-    for (vector<string>::iterator it = begin(decorators); it != end(decorators); it++ ) {
-      if (JavaScriptDecoraterNameMap.find(*it) == JavaScriptDecoraterNameMap.end()) {
+    for (vector<string>::iterator it = begin(deco); it != end(deco); it++ ) {
+      if (ReviserSyntaxBuildIn.find(*it) == ReviserSyntaxBuildIn.end()) {
         message.Runtime("undefined error: " + *it + " not defined in decorators.");
       }
-      code_decorator += " " + JavaScriptDecoraterNameMap.at(*it) + (next(it) == end(decorators) ? "" : ",");
+      decorators.push_back(JavaScriptCommon::ImportId(ReviserSyntaxBuildIn.at(*it)));
     }
-    code_decorator += " } from \"data-reviser\";";
 
-    // data type
-    string code_data_type = "import {";
+    vector<string> revisers;
     vector<DataType> types = descriptor->DataTypes();
-    for (vector<DataType>::iterator it = begin(types); it != end(types); it++) {
-      if (JavaScriptDataTypeDecoraterNameMap.find(*it) == JavaScriptDataTypeDecoraterNameMap.end()) {
-        message.Runtime("undefined error: " + DataTypeName.at(*it) + " not defined in data types.");
-      }
-      code_data_type += " " + JavaScriptDataTypeDecoraterNameMap.at(*it) + (next(it) == end(types) ? "" : ",");
+    map<string, int> unique;
+
+    if (descriptor->include_type_array) {
+      revisers.push_back(JavaScriptCommon::ImportId(ReviserMethodMap[REVISER_TYPE_ARRAY]));
     }
 
-    code_data_type += " } from \"data-reviser\";";
+    if (descriptor->include_struct_array) {
+      revisers.push_back(JavaScriptCommon::ImportId(ReviserMethodMap[REVISER_TYPE_ARRAY_STRUCT]));
+    }
 
+    for (vector<DataType>::iterator it = begin(types); it != end(types); it++) {
+      vector<ReviserSyntaxDefinition> defs = JavaScriptCommon::FindReviserSyntaxDefinitionByDataType(*it);
+      for (ReviserSyntaxDefinition d : defs) {
+        string id = JavaScriptCommon::ImportId(d);
+        if (unique.find(id) == unique.end()) {
+          unique[id] = 0;
+          revisers.push_back(id);
+        }
+      }
+    }
 
-    return code_decorator + "\n" + code_data_type;
+    return "import { Reviser } from \"data-reviser\";\n"
+      "import { " + JavaScriptCommon::JoinVector(decorators, ", ") + " } from \"data-reviser\";\n"
+      "import { " + JavaScriptCommon::JoinVector(revisers, ", ") + " } from \"data-reviser\";";
   }
 
   string JavaScriptGenerator::Export() {

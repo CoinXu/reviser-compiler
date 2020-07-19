@@ -5,6 +5,7 @@
  */
 
 #include <compiler/javascript/javascript_expr.h>
+#include <compiler/javascript/javascript_common.h>
 
 namespace reviser {
 namespace javascript {
@@ -16,7 +17,82 @@ namespace javascript {
   }
 
   string JavaScriptRightValue::Generate() {
-    return node->id->text;
+    if (node->array_type) {
+      switch (node->type) {
+        case TYPE_ENUM: {
+          vector<string> values;
+          for (EnumValue* v : node->evs) {
+            values.push_back(JavaScriptEnumValue(v).Generate());
+          }
+          return "[" + JavaScriptCommon::JoinVector(values, ", ") + "]";
+        }
+
+        case TYPE_STRUCT:
+          return JavaScriptStructValue(node->sv).Generate();
+
+        case TYPE_BOOL:
+        case TYPE_FLOAT:
+        case TYPE_DOUBLE:
+        case TYPE_INT32:
+        case TYPE_INT64:
+        case TYPE_UINT32:
+        case TYPE_UINT64: {
+          vector<string> values;
+          for (Token* t : node->dvs) {
+            values.push_back(t->text);
+          }
+          return "[" + JavaScriptCommon::JoinVector(values, ", ") + "]";
+        }
+
+        case TYPE_STRING: {
+          vector<string> values;
+          for (Token* t : node->dvs) {
+            values.push_back("\"" + t->text + "\"");
+          }
+          return "[" + JavaScriptCommon::JoinVector(values, ", ") + "]";
+        }
+
+        default:
+          return "";
+      }
+    }
+
+    switch (node->type) {
+      case TYPE_ENUM:
+        return JavaScriptEnumValue(node->ev).Generate();
+
+      case TYPE_STRUCT:
+        return JavaScriptStructValue(node->sv).Generate();
+
+      case TYPE_BOOL:
+      case TYPE_FLOAT:
+      case TYPE_DOUBLE:
+      case TYPE_INT32:
+      case TYPE_INT64:
+      case TYPE_UINT32:
+      case TYPE_UINT64:
+        return node->id->text;
+
+      case TYPE_STRING:
+        return "\"" + node->id->text + "\"";
+
+      default:
+        return "";
+    }
+  }
+
+  //
+  // JavaScriptStructValue
+  JavaScriptStructValue::JavaScriptStructValue(StructValue* node): node(node) {}
+
+  JavaScriptStructValue::~JavaScriptStructValue() {}
+
+  string JavaScriptStructValue::Generate() {
+    if (node->value) {
+      return "[]";
+    }
+
+    return "null";
   }
 
   //
@@ -52,5 +128,5 @@ namespace javascript {
   string JavaScriptDeclare::Generate() {
     return node->id->text + " = " + JavaScriptRightValue(node->rv).Generate();
   }
-}; // reviser
-}; // compiler
+}; // javascript 
+}; // reviser 

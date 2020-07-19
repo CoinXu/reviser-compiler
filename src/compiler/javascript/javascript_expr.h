@@ -20,17 +20,6 @@ namespace javascript {
   };
 
   //
-  // RightValue
-  class JavaScriptRightValue : public JavaScriptExpr {
-  public:
-    RightValue* node = nullptr;
-
-    string Generate();
-    JavaScriptRightValue(RightValue* node);
-    ~JavaScriptRightValue();
-  };
-
-  //
   // EnumValue
   class JavaScriptEnumValue : public JavaScriptExpr {
   public:
@@ -41,6 +30,27 @@ namespace javascript {
     ~JavaScriptEnumValue();
   };
 
+  //
+  // StructValue
+  class JavaScriptStructValue : public JavaScriptExpr {
+  public:
+    StructValue* node = nullptr;
+
+    string Generate();
+    JavaScriptStructValue(StructValue* node);
+    ~JavaScriptStructValue();
+  };
+
+  //
+  // RightValue
+  class JavaScriptRightValue : public JavaScriptExpr {
+  public:
+    RightValue* node = nullptr;
+
+    string Generate();
+    JavaScriptRightValue(RightValue* node);
+    ~JavaScriptRightValue();
+  };
   //
   // Assign
   class JavaScriptAssign : public JavaScriptExpr {

@@ -53,6 +53,7 @@ see [grammer.md](./grammer.md)
 + [x] support nested statement
 + [x] support scope.
 + [x] support write to file.
++ [ ] validate default value such as int64.
 + [ ] support package & import.
 + [x] syntax highligth for editor.
 + [ ] delete unused ast pointer.
