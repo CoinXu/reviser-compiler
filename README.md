@@ -1,9 +1,5 @@
 # data-reviser compiler
-compile [data-reviser](https://github.com/CoinXu/data-reviser) code to javascript or typescript.
-
-# Developer
-1. base on vscode `Remote-Containers` https://code.visualstudio.com/docs/remote/containers
-2. execute `Remote-Containers: Open Folder In Contaier` in vscode then chose this project root dir.
+easy way to write [data-reviser](https://github.com/CoinXu/data-reviser) code: write sample code named `dr` then use this tool compile to javascript or typescript.
 
 # Install
 ```bash
@@ -38,6 +34,10 @@ make uninstall
    ```
 2. execute `reviserc --ts-output=tsoutput example.dr` will output code to the terminal.
 
+# Developer
+1. base on vscode `Remote-Containers` https://code.visualstudio.com/docs/remote/containers
+2. execute `Remote-Containers: Open Folder In Contaier` in vscode then chose this project root dir.
+
 # Grammer
 see [grammer.md](./grammer.md)
 
@@ -53,7 +53,7 @@ see [grammer.md](./grammer.md)
 + [x] support nested statement
 + [x] support scope.
 + [x] support write to file.
-+ [ ] validate default value such as int64.
++ [x] validate default value such as int64.
 + [ ] support package & import.
 + [x] syntax highligth for editor.
 + [ ] delete unused ast pointer.
