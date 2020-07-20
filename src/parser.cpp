@@ -5,6 +5,7 @@
  */
 
 #include <parser.h>
+#include <helper.h>
 
 using namespace std;
 using namespace reviser;
@@ -68,10 +69,14 @@ namespace compiler {
     return false;
   }
 
-  void Parser::RuntimeError(string msg = "syntax error") {
-    message.SetLine(token.start_line);
-    message.SetColumn(token.column_start);
-    message.Runtime(msg + ": " + token.text);
+  void Parser::RuntimeError(string msg = "syntax error", Token* t = nullptr) {
+    if (!t) {
+      t = &token;
+    }
+
+    message.SetLine(t->start_line);
+    message.SetColumn(t->column_start);
+    message.Runtime(msg + ": " + t->text);
   }
 
   void Parser::Expect(TokenType type) {
@@ -268,8 +273,8 @@ namespace compiler {
 
     switch (data_type) {
       case TYPE_BOOL:
-        if (value != ReservedWordMap[RESERVED_FALSE] && value != ReservedWordMap[RESERVED_TRUE]) {
-          RuntimeError("expect true or false");
+        if (!helper::bool_is_bool(value)) {
+          RuntimeError("expect bool value but received", dvt);
         } else {
           generator->descriptor->AddDataTypesOnce(TYPE_BOOL);
           Next();
@@ -277,12 +282,50 @@ namespace compiler {
         break;
 
       case TYPE_FLOAT:
+        if (!helper::numeric_is_float(value)) {
+          RuntimeError("exceeds range of float", dvt);
+        }
+        generator->descriptor->AddDataTypesOnce(TYPE_FLOAT);
+        Expect(TOKEN_DIGIT);
+        break;
+
       case TYPE_DOUBLE:
+        if (!helper::numeric_is_double(value)) {
+          RuntimeError("exceeds range of double", dvt);
+        }
+        generator->descriptor->AddDataTypesOnce(TYPE_DOUBLE);
+        Expect(TOKEN_DIGIT);
+        break;
+
       case TYPE_INT32:
+        if (!helper::numeric_is_int32(value)) {
+          RuntimeError("exceeds range of int32", dvt);
+        }
+        generator->descriptor->AddDataTypesOnce(TYPE_INT32);
+        Expect(TOKEN_DIGIT);
+        break;
+
       case TYPE_INT64:
+        if (!helper::numeric_is_int64(value)) {
+          RuntimeError("exceeds range of int64", dvt);
+        }
+        generator->descriptor->AddDataTypesOnce(TYPE_INT64);
+        Expect(TOKEN_DIGIT);
+        break;
+
       case TYPE_UINT32:
+        if (!helper::numeric_is_uint32(value)) {
+          RuntimeError("exceeds range of uint32", dvt);
+        }
+        generator->descriptor->AddDataTypesOnce(TYPE_UINT32);
+        Expect(TOKEN_DIGIT);
+        break;
+
       case TYPE_UINT64:
-        generator->descriptor->AddDataTypesOnce(data_type);
+        if (!helper::numeric_is_uint64(value)) {
+          RuntimeError("exceeds range of uint64", dvt);
+        }
+        generator->descriptor->AddDataTypesOnce(TYPE_UINT64);
         Expect(TOKEN_DIGIT);
         break;
 

@@ -25,6 +25,7 @@
 #include <io/path.h>
 #include <io/printer_terminal.h>
 #include <io/printer_file.h>
+#include <cstdint>
 
 using namespace reviser;
 using namespace reviser::message;
