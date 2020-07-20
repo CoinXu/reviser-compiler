@@ -26,7 +26,6 @@ namespace compiler {
 
   string CodeGenerator::Generate() {
     string code;
-
     for (StmtSeqItem it: seq) {
       switch(it.type) {
         case STMT_TYPE_STRUCT:

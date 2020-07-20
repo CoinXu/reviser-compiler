@@ -82,8 +82,8 @@ namespace compiler {
     TokenType type;
     string text;
 
-    int start_line;       // 开始行号
-    int end_line;         // 结束行号
+    int start_line;      // 开始行号
+    int end_line;        // 结束行号
     int column_start;    // 列开始位置
     int column_end;      // 列结束位置
     int pos_start;       // 全部字符中开始位置

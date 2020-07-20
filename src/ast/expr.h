@@ -35,9 +35,9 @@ namespace ast {
   //
   // Foo foo = null
   // Foo foo = []
-  // id -> type
   class StructValue : public Expr {
   public:
+    // 即struct的类型，在grammery中，struct的id出现在类型位置处时，即表示声明类型为该struct
     Token* id;
     Token* value;
     StructValue(Token* id, Token* value);
@@ -57,7 +57,9 @@ namespace ast {
     DataType type;
     Token* id;
     bool array_type = false;
+    // 如果类型是基本数据类型数组，则将值存在dvs中
     vector<Token*> dvs;
+    // 如果类型是enum数组，则将值存在evs中
     vector<EnumValue*> evs;
     StructValue* sv;
     EnumValue* ev;

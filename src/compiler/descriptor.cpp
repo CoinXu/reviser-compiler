@@ -44,7 +44,6 @@ namespace compiler {
 
     for (int i = context.size() - 1; i >= 0; i--) {
       vector<ContextVariable> v = context.at(i);
-
       if (v.size() < 1) {
         continue;
       }
@@ -63,8 +62,7 @@ namespace compiler {
       return nullptr;
     }
 
-    vector<ContextVariable> v = context.back();  
-
+    vector<ContextVariable> v = context.back();
     for (int i = v.size() - 1; i >= 0; i--) {
       if (v.at(i).id == id) {
         return &v.at(i);
@@ -76,7 +74,6 @@ namespace compiler {
 
   DeclareType Descriptor::FindContextVariableTypeById(string id) {
     ContextVariable* variable = FindContextVariableById(id);
-
     if (!variable) {
       return DECLARE_UNDEFINED;
     }
@@ -86,7 +83,6 @@ namespace compiler {
 
   Enum* Descriptor::FindEnumContextVariableById(string id) {
     ContextVariable* variable = FindContextVariableById(id);
-
     if (!variable) {
       return nullptr;
     }
@@ -112,13 +108,8 @@ namespace compiler {
     return false;
   }
 
-  bool Descriptor::FindContextVariableEnumProperty(string id, string property) {
-    return EnumInlcudeProperty(FindEnumContextVariableById(id), property);
-  }
-
   Struct* Descriptor::FindStructContextVariableById(string id) {
     ContextVariable* variable = FindContextVariableById(id);
-
     if (!variable) {
       return nullptr;
     }
@@ -142,10 +133,6 @@ namespace compiler {
     }
 
     return false;
-  }
-
-  bool Descriptor::FindContextVariableStructProperty(string id, string propery) {
-    return StructIncludeProperty(FindStructContextVariableById(id), propery);
   }
 
   vector<string> Descriptor::Decorators() {

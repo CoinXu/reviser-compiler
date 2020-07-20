@@ -1,7 +1,7 @@
 //
 //  @date 2020-07-09
 //  @author duanxian0605@163.com
-//  @description
+//  @description 定义data-reviser库中的函数
 //
 
 #ifndef REVISER_COMPILER_DECORATER_SYNTAX
@@ -44,8 +44,8 @@ namespace compiler {
   };
 
   enum ReviserSyntaxType {
-    SYNTAX_CALLABLE,
-    SYNTAX_FUNCTION
+    SYNTAX_CALLABLE,  // 需要函数的函数
+    SYNTAX_FUNCTION   // 可以直接做为装饰器使用
   };
 
   enum ReviserSyntaxArgType {
