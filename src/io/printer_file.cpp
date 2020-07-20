@@ -12,7 +12,6 @@ namespace io {
   PrinterFile::PrinterFile(std::string path): path(path) {
     mkdir_parents(path);
     stream.open(path, std::ios::out | std::ios::trunc);
-
     if (!stream.is_open()) {
       throw std::runtime_error("not found file in path [" + path + "]");
     }

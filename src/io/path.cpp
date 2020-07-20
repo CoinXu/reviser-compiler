@@ -22,7 +22,6 @@ namespace io {
   string join(const string& a, const string& b) {
     string temp_a = a;
     string temp_b = b;
-
     if (temp_a.back() != separator) {
       temp_a += separator;
     }
@@ -48,7 +47,6 @@ namespace io {
   string normalize(const string& path) {
     string result = path;
     size_t index = 0;
-
     while (index < result.length()) {
       if (result[index] == separator && result[index + 1] == separator) {
         result.erase(index, 1);
@@ -85,7 +83,6 @@ namespace io {
   bool mkdir_parents(const string& path, int mode) {
     int size = 0;
     string current;
-
     while (size < path.size()) {
       current.push_back(path[size++]);
       if (current.back() == separator) {

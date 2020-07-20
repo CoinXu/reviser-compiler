@@ -61,12 +61,10 @@ namespace compiler {
   // private
   bool Parser::Accept(TokenType type) {
     token = tokenizer->Current();
-
     if (token.type == type) {
       tokenizer->Next();
       return true;
     }
-
     return false;
   }
 
@@ -118,7 +116,7 @@ namespace compiler {
     Expect(TOKEN_STRUCT);
     Expect(TOKEN_ID);
 
-    if (generator->descriptor->FindCurrentContextVariableById(token.text) 
+    if (generator->descriptor->FindCurrentContextVariableById(token.text)
       || (parent && generator->descriptor->StructIncludeProperty(parent, token.text))) {
       RuntimeError("duplicate declare named [" + token.text + "]");
     }
@@ -153,7 +151,6 @@ namespace compiler {
 
   StructProperty* Parser::ConsumeStructProperty() {
     vector<Decorater*> v;
-
     if (Accept(TOKEN_DECORATER)) {
       do {
         v.push_back(ConsumeDecorater());
@@ -168,7 +165,6 @@ namespace compiler {
     for (Decorater* d : v) {
       property->decoraters.push_back(d);
     }
-
     return property;
   }
 
@@ -207,6 +203,7 @@ namespace compiler {
         }
 
         RuntimeError("unknow array type [" + id + "]");
+        return nullptr;
       }
 
       if (type == DECLARE_STRUCT) {
@@ -219,9 +216,11 @@ namespace compiler {
 
       if (type == DECLARE_UNDEFINED) {
         RuntimeError("undefined type [" + id + "]");
+        return nullptr;
       }
 
       RuntimeError("unknow type [" + id + "]");
+      return nullptr;
     }
 
     RuntimeError("unexpected token");
@@ -283,7 +282,7 @@ namespace compiler {
       case TYPE_INT64:
       case TYPE_UINT32:
       case TYPE_UINT64:
-        generator->descriptor->AddDataTypesOnce(TYPE_FLOAT);
+        generator->descriptor->AddDataTypesOnce(data_type);
         Expect(TOKEN_DIGIT);
         break;
 
@@ -305,7 +304,6 @@ namespace compiler {
   // Foo foo = null
   Declare* Parser::ConsumeStructDeclare() {
     Token* sid = CloneToken(tokenizer->Previous());
-
     // struct type id
     if (!generator->descriptor->FindStructContextVariableById(sid->text)) {
       RuntimeError("undefined struct [" + sid->text + "] in current scope");
@@ -352,18 +350,18 @@ namespace compiler {
     }
 
     // enum variable id
-    if (!generator->descriptor->FindEnumContextVariableById(ei->text)) {
+    Enum* def = generator->descriptor->FindEnumContextVariableById(ei->text);
+    if (!def) {
       RuntimeError("undefined enum [" + ei->text + "] in current scope");
     }
 
     Expect(TOKEN_CONNECTION);
     Expect(TOKEN_ID);
-    Token* ep = CloneToken(token);
-
-    if (!generator->descriptor->EnumInlcudeProperty(generator->descriptor->FindEnumContextVariableById(ei->text), ep->text)) {
-      RuntimeError("undefined property [" + ep->text + "] in enum [" + ei->text + "]");
+    if (!generator->descriptor->EnumInlcudeProperty(def, token.text)) {
+      RuntimeError("undefined property [" + token.text + "] in enum [" + ei->text + "]");
     }
 
+    Token* ep = CloneToken(token);
     EnumValue* ev = new EnumValue(ei, ep);
     RightValue* rv = new RightValue(ev);
     Declare* declare = new Declare(TYPE_ENUM, id, eid, rv);
@@ -375,6 +373,7 @@ namespace compiler {
   Declare* Parser::ConsumeStructArrayDeclare(const Token& struct_id) {
     Expect(TOKEN_RIGHT_BRACKET);
     Expect(TOKEN_ID);
+
     Token* sid = CloneToken(struct_id);
     Token* id = CloneToken(token);
     StructValue* sv;
@@ -408,7 +407,6 @@ namespace compiler {
     Token* id = CloneToken(token);
 
     generator->descriptor->include_enum_array = true;
-
     return nullptr;
   }
 
@@ -459,7 +457,6 @@ namespace compiler {
     } while (Accept(TOKEN_COMMA));
 
     Expect(TOKEN_RIGHT_BRACE);
-
     return e;
   }
 
