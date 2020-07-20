@@ -37,7 +37,7 @@ namespace compiler {
 
     Message message;
 
-    void RuntimeError(string message);
+    void RuntimeError(string message, Token*);
     bool Accept(TokenType type);
     void Expect(TokenType type);
     void Next();

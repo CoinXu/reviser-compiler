@@ -40,7 +40,9 @@ namespace compiler {
     TOKEN_SEMICOLON = ';',
     TOKEN_COMMA = ',',
     TOKEN_CONNECTION = '.',
-    TOKEN_QUOTE = '"'
+    TOKEN_QUOTE = '"',
+    TOKEN_PLUS = '+',
+    TOKEN_HYPHEN= '-'
   };
 
   enum ReservedWord {

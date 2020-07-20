@@ -299,6 +299,14 @@ bool Tokenizer::Next() {
       current.text = input.substr(start_pos, pos - start_pos - 2);
       break;
 
+    case TOKEN_PLUS:
+    case TOKEN_HYPHEN:
+      current.type = TOKEN_DIGIT;
+      NextChar();
+      ConsumeNumber();
+      current.text = input.substr(start_pos - 1, pos - start_pos);
+      break;
+
     default:
       if (InCharacters<CharDigit>()) {
         current.type = TOKEN_DIGIT;
