@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/build/reviserc",
-            "args": ["--printer=fs", "--ts-output=ts", "example.dr"],
+            "args": ["--version", "example.dr"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -22,7 +22,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build",
+            // "preLaunchTask": "build",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]

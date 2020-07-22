@@ -1,5 +1,9 @@
 # data-reviser compiler
-easy way to write [data-reviser](https://github.com/CoinXu/data-reviser) code: write sample code named `dr` then use this tool compile to javascript or typescript.
+easy way to write [data-reviser](https://github.com/CoinXu/data-reviser) code: write sample code named `dr` then compile to javascript or typescript by this tool.
+
+# Prerequisites
+1. only support `Linux` system so far.
+2. `make` and `g++`.
 
 # Install
 ```bash
@@ -12,9 +16,14 @@ make uninstall
 ```
 
 # CLI Args
-+ --ts-output={path} - specify typescript code output directory, may be a absolute path or relative path base on `pwd`
-+ --js-output={path} - same as `--ts-output`, but for javascript code.
-+ --printer={fs|terminal} - specify output type, `fs` will write code to a file on disk.  default `terminal`
+### --ts-out={path}
+specify typescript code output directory, may be a absolute path or relative path base on `pwd`
+
+### --js-out={path}
+same as `--ts-output`, but for javascript code.
+
+### --printer={fs|terminal}
+specify output type, `fs` will write code to a file on disk.  default `terminal`
 
 # Example
 1. create `example.dr` then type below:
